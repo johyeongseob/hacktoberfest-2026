@@ -35,17 +35,19 @@ and dataset attribution.
 
 - **Ready:** WSL environment, installed packages, downloaded model, four demo
   sequences, expected annotations, and comparison script.
-- **Verified:** C1 inference runs on the CPU (30.20 seconds for the first response),
-  but the initial response repeats contradictory statements and is unusable.
-  The revised run finished without repetition in 22.63 seconds; its checklist
-  still contains an incorrect can position and incomplete restoration guidance.
-- **Pending:** Coworker feedback, offline verification, and DEV submission.
 - **Implemented:** A browser demo with photo selection, editable observations,
   review approvals, checklist drafting, and a reviewed JSON download.
 - **Completed:** One full C1 browser workflow in WSL, including reviewed JSON
   export. The local model made observation errors and repeated observations
   instead of generating actions. The coding assistant helped correct the text;
   the user reviewed and approved the final checklist against the photos.
-- **Next:** Preserve demo evidence and write the DEV submission with clear
-  attribution of model outputs, assisted corrections, and remaining limitations.
+- **Prepared:** Three demo screenshots and an American English DEV submission
+  draft following the challenge template.
+- **Local only:** Experiment results and the reviewed JSON export in `results/`
+  are excluded from Git. Code, documentation, demo images, and screenshots are
+  intended for the public repository.
+- **Next:** Review the draft, upload screenshots to DEV, add a demo video or
+  deployed link, and publish the submission. A DevRelay session link is optional.
+- **Not yet verified:** Coworker feedback, fully offline operation, other samples,
+  and personal-photo uploads through the complete browser workflow.
 
