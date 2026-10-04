@@ -1,2 +1,9 @@
 # Local model weights and Hugging Face download metadata
 /models/
+
+# Local Weekend Challenge inference results and reviewed exports
+/dev-challenge/weekend-challenge/results/
+
+# Generated Python cache files
+__pycache__/
+*.py[cod]

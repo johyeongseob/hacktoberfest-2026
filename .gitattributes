@@ -1,0 +1,2 @@
+# Keep Bash scripts compatible with WSL after Windows Git checkouts.
+*.sh text eol=lf
