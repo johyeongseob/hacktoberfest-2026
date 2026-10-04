@@ -1,11 +1,109 @@
 # Shared Workbench Reset Assistant
 
-A Weekend Challenge prototype for helping a coworker restore a shared workbench
-after use. The planned local VLM workflow compares a reference layout with a
-current layout and suggests a short cleanup checklist.
+A Weekend Challenge prototype for a coworker who has trouble remembering where
+objects originally belonged on a shared workbench. Keep the reference and current
+photos side by side, review local AI observations, and draft a cleanup checklist
+from the corrected observations. A coworker trial has not yet been completed.
 
 See [Project Flow](project-flow.md) for the end-to-end workflow, deliverables,
 and current progress.
+
+## Run the Browser Demo
+
+The demo uses the downloaded SmolVLM2 2.2B Q8 model through a local llama.cpp
+server. It does not use PyTorch for inference. Run both services in WSL and keep
+both terminals open. No hosted inference API key is required.
+
+Download the browser demo's Q8 model and vision projector from the repository root:
+
+```bash
+source ~/.venvs/hacktoberfest-2026/bin/activate
+cd /path/to/hacktoberfest-2026
+hf download ggml-org/SmolVLM2-2.2B-Instruct-GGUF \
+  SmolVLM2-2.2B-Instruct-Q8_0.gguf \
+  mmproj-SmolVLM2-2.2B-Instruct-Q8_0.gguf \
+  --local-dir models/SmolVLM2-2.2B-Instruct-GGUF
+```
+
+Skip this download if both files are already present. The 500M setup below is
+for the earlier PyTorch experiments, not the browser demo.
+Replace `/path/to/hacktoberfest-2026` with your repository path in WSL.
+
+First, build the server using the existing llama.cpp checkout and install the UI:
+
+```bash
+source ~/.venvs/hacktoberfest-2026/bin/activate
+cmake --build ~/tools/llama.cpp/build --config Release -j 8 --target llama-server
+python -m pip install 'streamlit>=1.40,<2'
+python -m pip check
+```
+
+Terminal 1: start the model server and wait until it reports that it is listening:
+
+```bash
+cd /path/to/hacktoberfest-2026/dev-challenge/weekend-challenge
+bash start_model_server.sh
+```
+
+Terminal 2: start the browser interface:
+
+```bash
+source ~/.venvs/hacktoberfest-2026/bin/activate
+cd /path/to/hacktoberfest-2026/dev-challenge/weekend-challenge
+python -m streamlit run app.py --server.address 127.0.0.1 --server.port 8501 \
+  --browser.gatherUsageStats false
+```
+
+Open `http://localhost:8501` in your Windows browser. Choose the C1 demo or upload
+two photos, click **Analyze both photos**, correct the observations against the
+images, and confirm them. Then draft, edit, and confirm the final checklist. The
+app resets approvals and checklist state when the photos or observations change.
+Download the reviewed result if you want to preserve the experiment.
+
+Uploads are normalized in memory and sent to the fixed localhost model endpoint.
+The app does not write uploaded photos to the repository. Downloads include AI
+text and user edits without embedded photos or machine paths; inspect free text
+for private information before sharing. The services bind to loopback addresses.
+
+### What Is Ready and What Still Needs Validation
+
+The C1 browser workflow was completed in WSL: local image analysis, observation
+editing and approval, checklist drafting, final editing and approval, and JSON
+export. The user's screenshots document this run:
+[Photo comparison](screenshots/reference-and-current.png),
+[reviewed observations](screenshots/reviewed-observations.png), and
+[reviewed checklist](screenshots/reviewed-checklist.png).
+The reviewed export is kept locally as
+`results/C1-template_00000-traj_00000-reviewed-result.json`.
+The entire `results/` directory is excluded from Git; it is not part of the
+public repository. Earlier committed results may remain in Git history.
+
+The model's observations included incorrect cup orientation, can color, and
+remote-control face orientation. Its checklist repeated mixed observations
+instead of giving restoration instructions. The corrected observations and final
+checklist were supplied with assistance from the coding assistant and confirmed
+by the user against the photos. They are not successful autonomous outputs from
+the local model. The export preserves both raw AI responses and reviewed text.
+
+User review is part of the workflow; this is not autonomous cleanup or a
+robot-control system. The app never reads expected-result annotations to generate
+observations or checklists. Other samples and personal-photo uploads have not
+been validated through the complete browser workflow.
+
+Before submitting, upload the screenshots to DEV, add a demo video or deployed
+link as requested by the submission template, and explain these limitations in
+the DEV post. If possible, ask the
+coworker to try it and record actual feedback. Test with internet disconnected
+before claiming offline execution. DEV signup is separate from project submission.
+
+Open innovation matters here because the open-weight model performs image
+analysis locally, the prompt and review workflow are editable, and the reference
+photo can remain on the user's laptop. The demo has no hosted inference API fee;
+setup, hardware, and electricity still have costs. These benefits do not establish
+better accuracy than a closed model or a validated offline deployment.
+
+References: [llama.cpp server](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md),
+[Q8 model files](https://huggingface.co/ggml-org/SmolVLM2-2.2B-Instruct-GGUF/tree/main).
 
 ## Local Model Setup
 
@@ -69,6 +167,65 @@ Use `--sample D10-template_00000-traj_00000` to select another demo, or
 `--max-new-tokens 384` if a response reaches the default token limit.
 
 ## Demo Samples
+
+### Q8 Position and Orientation Diagnostic
+
+With the Q8 model and projector downloaded and `llama-mtmd-cli` built in
+`~/tools/llama.cpp/build/bin/`, run from this challenge directory:
+
+```bash
+bash describe_layout_q8.sh
+```
+
+The script asks for positions and visible orientations independently for C1's
+reference and current images. Each image uses a new process without the other
+image's answer, object names, or expected annotations. Review both descriptions
+before using them to construct any restoration checklist. Coarse position labels
+may miss small movements. Raw logs are saved in a unique directory under `/tmp/`,
+outside Git, because runtime output may contain machine paths. Preserve reviewed
+findings in `results/` after inspecting the output.
+
+Override `LLAMA_MTMD_CLI` if the executable is installed elsewhere. A C1 run
+completed, but the reference description misreported the cup handle and remote
+orientation; the current description omitted orientation details. This diagnostic
+does not establish reliable spatial understanding.
+
+To test whether a user-provided object inventory helps the two-image comparison:
+
+```bash
+python compare_layout.py --mode named-compare \
+  --objects "red cup" "beverage can" "remote control"
+```
+
+This experiment adds object names only, without positions, orientations, or
+expected actions. It uses the same two images and generation settings as compare
+mode and saves to `results/C1-template_00000-traj_00000-named-comparison.json`.
+Evaluate it as assisted recognition: the object names are supplied by the user,
+not discovered independently by the model. Expected-result files are never read.
+
+To compare all five ordered images while retaining the endpoint restoration task:
+
+```bash
+python compare_layout.py --mode sequence --max-new-tokens 256
+```
+
+This mode supplies frame000 through frame004 in order and asks to restore the
+last layout to the first. It adds no object names or expected actions. Results
+are saved separately to `results/C1-template_00000-traj_00000-sequence.json`.
+This is a multi-image experiment, not video with verified timing; its sequence
+labels require a slightly different prompt from the two-image run.
+
+To diagnose scene understanding separately from comparison, describe the two
+endpoint images independently:
+
+```bash
+python compare_layout.py --mode describe --max-new-tokens 128
+```
+
+The model is loaded once, but each image receives a separate prompt without the
+other image or its description. Results are saved to
+`results/C1-template_00000-traj_00000-descriptions.json`, leaving the comparison
+result intact. Expected annotations are not provided in either mode.
 
 ### Initial Inference Result
 
