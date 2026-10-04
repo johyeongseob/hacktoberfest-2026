@@ -1,0 +1,31 @@
+{
+  "source_trajectory": "dataset_sample/C1/template_00000/traj_00000",
+  "source_view": "rgb_top.png",
+  "frames": [
+    {
+      "source_frame": "000",
+      "image": "frame000.png"
+    },
+    {
+      "source_frame": "001",
+      "image": "frame001.png"
+    },
+    {
+      "source_frame": "002",
+      "image": "frame002.png"
+    },
+    {
+      "source_frame": "003",
+      "image": "frame003.png"
+    },
+    {
+      "source_frame": "004",
+      "image": "frame004.png"
+    }
+  ],
+  "reference_image": "frame000.png",
+  "current_image": "frame004.png",
+  "timing": "Source frame order is preserved. Timestamps, frame rate, and uniform time intervals have not been verified.",
+  "task": "Describe layout changes, then suggest how to restore the final layout to the reference layout.",
+  "evaluation": "expected-result.json evaluates final-to-reference restoration only, not intermediate transitions."
+}
