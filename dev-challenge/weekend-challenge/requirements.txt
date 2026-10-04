@@ -1,0 +1,8 @@
+# Install compatible CPU PyTorch and torchvision wheels first (see README.md).
+torch>=2.6,<3
+torchvision
+transformers>=4.57,<5
+huggingface-hub>=0.34,<1
+accelerate>=1.2,<2
+Pillow>=10,<13
+num2words>=0.5.14,<0.6
