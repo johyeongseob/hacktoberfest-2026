@@ -42,12 +42,12 @@ and dataset attribution.
   instead of generating actions. The coding assistant helped correct the text;
   the user reviewed and approved the final checklist against the photos.
 - **Prepared:** Three demo screenshots and an American English DEV submission
-  draft following the challenge template.
+  draft following the challenge template, including local execution instructions.
 - **Local only:** Experiment results and the reviewed JSON export in `results/`
   are excluded from Git. Code, documentation, demo images, and screenshots are
   intended for the public repository.
-- **Next:** Review the draft, upload screenshots to DEV, add a demo video or
-  deployed link, and publish the submission. A DevRelay session link is optional.
+- **Next:** Review the draft, upload the three-screen local demo walkthrough
+  to DEV, and publish the submission. A DevRelay session link is optional.
 - **Not yet verified:** Coworker feedback, fully offline operation, other samples,
   and personal-photo uploads through the complete browser workflow.
 

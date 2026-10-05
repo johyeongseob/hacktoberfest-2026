@@ -90,9 +90,9 @@ robot-control system. The app never reads expected-result annotations to generat
 observations or checklists. Other samples and personal-photo uploads have not
 been validated through the complete browser workflow.
 
-Before submitting, upload the screenshots to DEV, add a demo video or deployed
-link as requested by the submission template, and explain these limitations in
-the DEV post. If possible, ask the
+The submission draft presents a three-screen walkthrough and local execution
+instructions. Before submitting, upload the screenshots to DEV, verify the
+repository links, and explain the model limitations in the post. If possible, ask the
 coworker to try it and record actual feedback. Test with internet disconnected
 before claiming offline execution. DEV signup is separate from project submission.
 
