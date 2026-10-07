@@ -30,24 +30,3 @@ robot control and VLA integration are future work.
 TTU samples are demo data, not company workbench photos. Expected annotations are
 qualitative review aids, not official dataset labels. See `README.md` for setup
 and dataset attribution.
-
-## Current Status
-
-- **Ready:** WSL environment, installed packages, downloaded model, four demo
-  sequences, expected annotations, and comparison script.
-- **Implemented:** A browser demo with photo selection, editable observations,
-  review approvals, checklist drafting, and a reviewed JSON download.
-- **Completed:** One full C1 browser workflow in WSL, including reviewed JSON
-  export. The local model made observation errors and repeated observations
-  instead of generating actions. The coding assistant helped correct the text;
-  the user reviewed and approved the final checklist against the photos.
-- **Prepared:** Three demo screenshots and an American English DEV submission
-  draft following the challenge template, including local execution instructions.
-- **Local only:** Experiment results and the reviewed JSON export in `results/`
-  are excluded from Git. Code, documentation, demo images, and screenshots are
-  intended for the public repository.
-- **Next:** Review the draft, upload the three-screen local demo walkthrough
-  to DEV, and publish the submission. A DevRelay session link is optional.
-- **Not yet verified:** Coworker feedback, fully offline operation, other samples,
-  and personal-photo uploads through the complete browser workflow.
-
