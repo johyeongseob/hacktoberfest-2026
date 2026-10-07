@@ -5,6 +5,8 @@ objects originally belonged on a shared workbench. The app uses a local
 open-weight vision-language model to draft observations and a cleanup checklist
 for human review.
 
+Published on DEV as my Hacktoberfest Weekend Challenge submission: [Where Does This Belong? An AI Workbench Reset Assistant for a Coworker](https://dev.to/johyeongseob/where-did-this-go-a-local-ai-workbench-reset-assistant-for-a-coworker-42co)
+
 <img src="screenshots/demo.png" alt="Shared Workbench Reset Assistant with sample selection and two photo inputs" width="100%">
 
 ## Workflow
