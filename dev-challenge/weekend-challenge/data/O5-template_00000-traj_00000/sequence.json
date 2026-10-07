@@ -1,5 +1,4 @@
 {
-  "source_trajectory": "dataset_sample/O5/template_00000/traj_00000",
   "source_view": "rgb_top.png",
   "frames": [
     {
@@ -24,8 +23,5 @@
     }
   ],
   "reference_image": "frame000.png",
-  "current_image": "frame004.png",
-  "timing": "Source frame order is preserved. Timestamps, frame rate, and uniform time intervals have not been verified.",
-  "task": "Describe layout changes, then suggest how to restore the final layout to the reference layout.",
-  "evaluation": "expected-result.json evaluates final-to-reference restoration only, not intermediate transitions."
+  "current_image": "frame004.png"
 }
