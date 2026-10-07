@@ -5,9 +5,7 @@ objects originally belonged on a shared workbench. The app uses a local
 open-weight vision-language model to draft observations and a cleanup checklist
 for human review.
 
-<p align="center">
-  <img src="screenshots/demo.png" alt="Shared Workbench Reset Assistant with sample selection and two photo inputs" width="800">
-</p>
+<img src="screenshots/demo.png" alt="Shared Workbench Reset Assistant with sample selection and two photo inputs" width="100%">
 
 ## Workflow
 
