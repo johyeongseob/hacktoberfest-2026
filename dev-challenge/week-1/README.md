@@ -2,7 +2,7 @@
 
 Hacktoberfest 2026 DEV Challenge, Week 1 (theme: Touch Grass).
 
-Status: M1 and M2 done. M3 next.
+Status: M1, M2, and M3 done. Results cleanup and the DEV post next.
 
 ## Idea
 
@@ -166,6 +166,56 @@ desktop apps during this long run, and memory use was high (about 27 of
 31 GB), so the M1 number is the better estimate of an unloaded CPU. The
 59.5 s call is an outlier, likely a system stall rather than the model.
 
+### M3: Paraphrased instructions (October 9, 2026)
+
+Same setup as M2, run through [picnic_rollout.py](picnic_rollout.py): 2 items
+x 5 instructions x 10 episodes, with the same initial states and seeds for
+every instruction. The instructions are listed in [M3 instructions](#m3-instructions).
+Runs 1–7 used [run_m3.sh](run_m3.sh); the last three butter runs were
+restarted by hand after the laptop battery ran low, with the same arguments.
+
+| Instruction | Cream cheese | Butter | Both |
+| --- | --- | --- | --- |
+| Original: pick up the {item} and place it in the basket | 10/10 | 10/10 | 20/20 |
+| A. grab the {item} and put it in the basket | 3/10 | 10/10 | 13/20 |
+| B. {item} in the basket | 0/10 | 0/10 | 0/20 |
+| C. pack the {item} for our picnic | 0/10 | 2/10 | 2/20 |
+| D. could you put the {item} in the picnic basket? | 3/10 | 10/10 | 13/20 |
+| **All paraphrases** | **6/40** | **22/40** | **28/80** |
+
+Per episode (initial states 0–9, `O` success, `.` failure):
+
+| Instruction | Cream cheese | Butter |
+| --- | --- | --- |
+| Original | `OOOOOOOOOO` | `OOOOOOOOOO` |
+| A. grab ... put | `OOO.......` | `OOOOOOOOOO` |
+| B. short | `..........` | `..........` |
+| C. pack ... picnic | `..........` | `......OO..` |
+| D. could you ... | `..OOO.....` | `OOOOOOOOOO` |
+
+Every failure ran to the 280-step limit. Successful episodes were slower
+than with the original instruction (mean 164 vs 124 steps for cream cheese,
+154–235 vs 151 for butter).
+
+What the numbers show:
+
+- The original template works (20/20, matching M2). Any change lowers the
+  success rate, from 20/20 to 28/80 (35%) across all paraphrases.
+- B, with no verb at all, failed every time for both items. C, with a new
+  verb and no mention of the basket, nearly always failed (2/20).
+- A and D keep the "put ... in the basket" structure. They held up fully
+  for butter but dropped to 3/10 for cream cheese, so the same wording can
+  work for one item and fail for another.
+- With 10 episodes per cell, only large gaps are meaningful. The 0/20 and
+  2/20 results and the 10/10 vs 3/10 item gap are large; small differences
+  are not.
+
+Failure modes (wrong object, no grasp, no release) are not yet classified;
+see the videos in `outputs/m3-paraphrase/`.
+
+SmolVLA calls during M3: 2,235, mean 2.26 s per call. Total episode time
+was about 119 minutes.
+
 ## M3 instructions
 
 Every LIBERO-Object task in the training data uses one template with only the
@@ -201,6 +251,33 @@ random state at the start of each task is not the same. Commands are in
 
 The paraphrases were drafted with AI assistance and reviewed by the author.
 
+Extension (October 10, 2026): because the same wording worked for butter but
+not for cream cheese, the five instructions are repeated for orange juice
+(task 9, a carton) and alphabet soup (task 0, a can), which also succeeded
+10/10 in M2. Commands are in [run_m3_extra.sh](run_m3_extra.sh).
+
+## Local outputs
+
+Every run keeps its videos and metrics in `outputs/`, which stays out of Git
+because of its size. Keep these folders for later visualization and do not
+reuse a folder name for a new run, since videos with the same name are
+overwritten.
+
+| Folder | Contents | Video rate |
+| --- | --- | --- |
+| `outputs/smoke-ketchup*`, `outputs/rollout-check` | M1 and loop check | 80 fps / 20 fps |
+| `outputs/m2-object` | M2: 100 videos, `eval_info.json`, `inference_timing.json` | 80 fps |
+| `outputs/m3-paraphrase` | M3: 100 videos, `results.jsonl` | 20 fps |
+| `outputs/grids` | 2x5 grids made by [make_grid.py](make_grid.py) | 20 fps |
+
+[make_grid.py](make_grid.py) tiles the 10 episodes of one item into a 2x5
+video, labeled with episode number and outcome:
+
+```bash
+python make_grid.py m2 --task-id 3
+python make_grid.py m3 --task-id 1 --instruction "grab the cream cheese and put it in the basket"
+```
+
 ## Plan
 
 Submission deadline: October 12, 2026, 06:59 UTC.
@@ -210,7 +287,7 @@ Submission deadline: October 12, 2026, 06:59 UTC.
 | M0. Plan | Oct 9 | Choose the topic, model, checkpoint, and benchmark. Write this README and [setup.md](setup.md). | Done |
 | M1. Local smoke test | Oct 9 | Install in WSL, then run the ketchup task (ID 4) for one episode on CPU. | Done. See [Results](#m1-local-smoke-test-october-9-2026). |
 | M2. Picnic item success rates | Oct 9–10 | Run LIBERO-Object tasks 0–9 with N episodes each. | Done: 89/100. See [Results](#m2-picnic-item-success-rates-october-9-2026). Failure videos still to review. |
-| M3. Paraphrased instructions | Oct 10 | Run the [M3 instructions](#m3-instructions): 2 items x 4 paraphrases x 10 episodes, plus the original instruction through our own loop. | A table compares original and paraphrased success rates. |
+| M3. Paraphrased instructions | Oct 10 | Run the [M3 instructions](#m3-instructions): 2 items x 4 paraphrases x 10 episodes, plus the original instruction through our own loop. | Done: original 20/20, paraphrases 28/80. See [Results](#m3-paraphrased-instructions-october-9-2026). Failure videos still to review. |
 | M4. Real picnic | Oct 10–11 | Pack a real picnic with the same items, go outside, and record it. | Photos and notes from the outdoor use exist. |
 | M5. Clean up | Oct 11 | Update results in this README. Review and redact the development session. | The repository shows how to reproduce the results and what they were. |
 | M6. DEV post | Oct 11–12 | Write and publish the post with the `#hf26challenge` tag. | The post is published before the deadline, aiming for the morning of Oct 12 (KST). |
