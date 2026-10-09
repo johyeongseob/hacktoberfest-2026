@@ -19,7 +19,7 @@ The robot runs in simulation because there is no physical robot.
 | Layer | Choice |
 | --- | --- |
 | VLA model | `lerobot/smolvla_libero` (SmolVLA fine-tuned from `lerobot/smolvla_base` on `lerobot/libero`) |
-| Runner | LeRobot 0.6.1 (`lerobot-eval`), wrapped by [run_eval.py](run_eval.py) for inference timing |
+| Runner | LeRobot 0.6.1 (`lerobot-eval`), wrapped by [benchmark_eval.py](benchmark_eval.py) for inference timing |
 | Benchmark | LIBERO-Object (`libero_object`) |
 | Simulation | robosuite on MuJoCo |
 
@@ -127,7 +127,7 @@ checkpoint, LIBERO assets). Later runs work offline.
 
 Same setup as M1. All ten LIBERO-Object tasks, 10 episodes each (initial
 states 0–9, seeds 1000–1009), original instructions, one `lerobot-eval` run
-via [run_eval.py](run_eval.py) from 15:43 to 17:08 local time.
+via [benchmark_eval.py](benchmark_eval.py) from 15:43 to 17:08 local time.
 
 | ID | Item | Success |
 | --- | --- | --- |
