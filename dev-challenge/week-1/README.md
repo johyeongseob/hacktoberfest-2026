@@ -49,6 +49,46 @@ All ten tasks are "pick up the X and place it in the basket".
   measures whether it repeats trained tasks from new initial states, not
   whether it solves unseen tasks. Paraphrased instructions are the unseen
   part.
+- CPU inference is slower than real time. See below.
+
+### CPU inference is slower than real time
+
+The robot is controlled at 20 Hz, so each action covers 0.05 s. SmolVLA
+predicts a chunk of 50 actions per call, and we execute the first 10 before
+looking again (`n_action_steps=10`). One call therefore has to plan 0.5 s of
+motion.
+
+On this laptop CPU, one call takes 1.15 s when the machine is otherwise idle
+(M1) and 1.81 s median, 2.17 s mean during the long M2 run.
+
+```text
+Simulation (time pauses while the model thinks):
+  [think 1.15 s][move 0.5 s][think 1.15 s][move 0.5 s] ...
+  The simulator waits, so success rates are unaffected.
+
+Real robot (time keeps going):
+  [think 1.15 s][move 0.5 s][think 1.15 s][move 0.5 s] ...
+   arm stopped              arm stopped
+```
+
+On a real arm, the robot would either stop for about 1.15 s after every
+0.5 s of motion, moving only about 30% of the time (0.5 / 1.65 s), or keep
+going while the next plan is computed from an image that is already more
+than a second old. Either way, the motion would be stop-and-go or late to
+react, and the 10-step plan would need to be about 2.3 times faster to keep
+up.
+
+Ways to close the gap, none tested here:
+
+- Run inference on a GPU or an optimized runtime such as OpenVINO.
+- Compute the next chunk while the current one executes (asynchronous
+  inference, described in the SmolVLA paper).
+- Execute more of each chunk per call. This trades accuracy for speed:
+  running all 50 steps costs about 20 points on LIBERO
+  ([huggingface/lerobot#4614](https://github.com/huggingface/lerobot/issues/4614)).
+
+In simulation the delay does not change the results, so all success rates
+in this project are valid regardless of speed.
 
 ## Results
 
@@ -169,7 +209,7 @@ Submission deadline: October 12, 2026, 06:59 UTC.
 | --- | --- | --- | --- |
 | M0. Plan | Oct 9 | Choose the topic, model, checkpoint, and benchmark. Write this README and [setup.md](setup.md). | Done |
 | M1. Local smoke test | Oct 9 | Install in WSL, then run the ketchup task (ID 4) for one episode on CPU. | Done. See [Results](#m1-local-smoke-test-october-9-2026). |
-| M2. Picnic item success rates | Oct 9–10 | Run LIBERO-Object tasks 0–9 with N episodes each. Use a DigitalOcean GPU Droplet only if CPU runs are too slow, and delete it afterward. | Done: 89/100. See [Results](#m2-picnic-item-success-rates-october-9-2026). Failure videos still to review. |
+| M2. Picnic item success rates | Oct 9–10 | Run LIBERO-Object tasks 0–9 with N episodes each. | Done: 89/100. See [Results](#m2-picnic-item-success-rates-october-9-2026). Failure videos still to review. |
 | M3. Paraphrased instructions | Oct 10 | Run the [M3 instructions](#m3-instructions): 2 items x 4 paraphrases x 10 episodes, plus the original instruction through our own loop. | A table compares original and paraphrased success rates. |
 | M4. Real picnic | Oct 10–11 | Pack a real picnic with the same items, go outside, and record it. | Photos and notes from the outdoor use exist. |
 | M5. Clean up | Oct 11 | Update results in this README. Review and redact the development session. | The repository shows how to reproduce the results and what they were. |

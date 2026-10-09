@@ -29,6 +29,7 @@ from lerobot.utils.io_utils import write_video
 from lerobot.utils.random_utils import set_seed
 
 POLICY_PATH = "lerobot/smolvla_libero"
+DEVICE = "cpu"
 SUITE = "libero_object"
 # The checkpoint was trained with the LIBERO cameras renamed (see its train_config.json).
 RENAME_MAP = {
@@ -55,7 +56,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--instruction", default=None, help="Replace the original LIBERO instruction")
     parser.add_argument("--episodes", type=int, default=1)
     parser.add_argument("--seed", type=int, default=1000)
-    parser.add_argument("--device", default="cpu", help="cpu or cuda")
     parser.add_argument("--n-action-steps", type=int, default=10)
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/picnic-rollout"))
     return parser.parse_args()
@@ -68,11 +68,6 @@ def add_batch_dim(value):
     if isinstance(value, np.ndarray):
         return value[None, ...]
     return value
-
-
-def sync(device: str) -> None:
-    if device == "cuda":
-        torch.cuda.synchronize()
 
 
 def main() -> None:
@@ -89,7 +84,7 @@ def main() -> None:
 
     policy_cfg = PreTrainedConfig.from_pretrained(POLICY_PATH)
     policy_cfg.pretrained_path = Path(POLICY_PATH)
-    policy_cfg.device = args.device
+    policy_cfg.device = DEVICE
     # The checkpoint ships 50, which replays a whole chunk blind (huggingface/lerobot#4614).
     policy_cfg.n_action_steps = args.n_action_steps
     policy = make_policy(cfg=policy_cfg, env_cfg=env_cfg, rename_map=RENAME_MAP)
@@ -99,7 +94,7 @@ def main() -> None:
         policy_cfg=policy_cfg,
         pretrained_path=policy_cfg.pretrained_path,
         preprocessor_overrides={
-            "device_processor": {"device": args.device},
+            "device_processor": {"device": DEVICE},
             "rename_observations_processor": {"rename_map": RENAME_MAP},
         },
     )
@@ -134,11 +129,9 @@ def main() -> None:
             # Infer: SmolVLA predicts a 50-action chunk when its queue is empty,
             # otherwise it returns the next queued action.
             runs_model = len(policy._queues[ACTION]) == 0
-            sync(args.device)
             start = time.perf_counter()
             with torch.inference_mode():
                 action = policy.select_action(batch)
-            sync(args.device)
             if runs_model:
                 inference_times.append(time.perf_counter() - start)
 
@@ -170,7 +163,7 @@ def main() -> None:
             "inference_calls": len(inference_times),
             "inference_total_s": round(sum(inference_times), 2),
             "inference_mean_s": round(sum(inference_times) / len(inference_times), 3),
-            "device": args.device,
+            "device": DEVICE,
             "video": str(video_path),
         }
         results.append(result)

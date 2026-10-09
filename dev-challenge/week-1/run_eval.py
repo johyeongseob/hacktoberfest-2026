@@ -14,7 +14,6 @@ import sys
 import time
 from pathlib import Path
 
-import torch
 from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
 from lerobot.scripts import lerobot_eval
 
@@ -22,21 +21,13 @@ chunk_times_s: list[float] = []
 select_action_calls = 0
 
 
-def _sync() -> None:
-    # CUDA kernels run asynchronously, so wait for them before reading the clock.
-    if torch.cuda.is_available():
-        torch.cuda.synchronize()
-
-
 _original_get_action_chunk = SmolVLAPolicy._get_action_chunk
 _original_select_action = SmolVLAPolicy.select_action
 
 
 def _timed_get_action_chunk(self, *args, **kwargs):
-    _sync()
     start = time.perf_counter()
     actions = _original_get_action_chunk(self, *args, **kwargs)
-    _sync()
     chunk_times_s.append(time.perf_counter() - start)
     return actions
 
