@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# M3 extension: the same five instructions for orange juice (task 9) and
-# alphabet soup (task 0). Both succeeded 10/10 in M2.
+# Paraphrased instructions, extension: the same five instructions for orange
+# juice (task 9) and alphabet soup (task 0). Both succeeded 10/10 in the baseline.
 # Run from dev-challenge/week-1 with the hf26-week1 environment active:
-#   bash run_m3_extra.sh 2>&1 | tee -a outputs/m3-paraphrase/run.log
+#   bash paraphrases/run_paraphrases_extra.sh 2>&1 | tee -a outputs/m3-paraphrase/run.log
 # Results append to outputs/m3-paraphrase/results.jsonl.
 
 set -euo pipefail
@@ -15,7 +15,7 @@ EPISODES=${EPISODES:-10}
 mkdir -p "$OUT"
 
 run() {
-  python picnic_rollout.py --task-id "$1" --episodes "$EPISODES" --output-dir "$OUT" "${@:2}"
+  python paraphrases/picnic_rollout.py --task-id "$1" --episodes "$EPISODES" --output-dir "$OUT" "${@:2}"
 }
 
 # Orange juice

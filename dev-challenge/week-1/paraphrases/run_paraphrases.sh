@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# M3: paraphrased instructions for cream cheese (task 1) and butter (task 6).
+# Paraphrased instructions for cream cheese (task 1) and butter (task 6).
 # Run from dev-challenge/week-1 with the hf26-week1 environment active:
 #   mkdir -p outputs/m3-paraphrase
-#   bash run_m3.sh 2>&1 | tee outputs/m3-paraphrase/run.log
+#   bash paraphrases/run_paraphrases.sh 2>&1 | tee outputs/m3-paraphrase/run.log
 # Each line appends to outputs/m3-paraphrase/results.jsonl.
 
 set -euo pipefail
@@ -12,7 +12,7 @@ EPISODES=${EPISODES:-10}
 mkdir -p "$OUT"
 
 run() {
-  python picnic_rollout.py --task-id "$1" --episodes "$EPISODES" --output-dir "$OUT" "${@:2}"
+  python paraphrases/picnic_rollout.py --task-id "$1" --episodes "$EPISODES" --output-dir "$OUT" "${@:2}"
 }
 
 # Original instruction through our own loop (M2 baseline: 10/10 for both).

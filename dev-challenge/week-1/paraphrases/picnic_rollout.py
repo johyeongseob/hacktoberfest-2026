@@ -7,8 +7,8 @@ difference is that the language instruction can be replaced.
 
 Examples:
 
-    python picnic_rollout.py --task-id 4
-    python picnic_rollout.py --task-id 4 --instruction "grab the ketchup for the picnic basket"
+    python paraphrases/picnic_rollout.py --task-id 4
+    python paraphrases/picnic_rollout.py --task-id 4 --instruction "grab the ketchup for the picnic basket"
 """
 
 import argparse
@@ -145,7 +145,10 @@ def main() -> None:
                 break
 
         episode_s = time.perf_counter() - episode_start
-        video_path = args.output_dir / f"task{args.task_id}_{label}_ep{episode}.mp4"
+        # One folder per item and per instruction, e.g. videos/task6_butter/original/ep0.mp4.
+        item_dir = f"task{args.task_id}_{ITEMS[args.task_id].replace(' ', '-')}"
+        video_path = args.output_dir / "videos" / item_dir / label / f"ep{episode}.mp4"
+        video_path.parent.mkdir(parents=True, exist_ok=True)
         # Write at the control rate so the video plays in simulated real time.
         write_video(video_path, frames, fps=env_cfg.fps)
 

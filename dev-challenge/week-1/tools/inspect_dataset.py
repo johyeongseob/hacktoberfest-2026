@@ -5,8 +5,8 @@ about 20 MB), summarizes the LIBERO-Object tasks, then downloads only the
 video files that hold one ketchup episode (one file per camera, about 75 MB)
 and saves sample frames.
 
-    python inspect_dataset.py
-    python inspect_dataset.py --item butter --nth 3
+    python tools/inspect_dataset.py
+    python tools/inspect_dataset.py --item butter --nth 3
 """
 
 import argparse

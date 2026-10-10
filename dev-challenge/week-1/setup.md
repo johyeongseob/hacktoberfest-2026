@@ -87,13 +87,13 @@ Use `--policy.n_action_steps=10`.
 EGL is set in the activate script. If rendering fails, run
 `export MUJOCO_GL=osmesa` and retry.
 
-[benchmark_eval.py](benchmark_eval.py) takes the same arguments as `lerobot-eval`. It also
+[benchmark_eval.py](baseline/benchmark_eval.py) takes the same arguments as `lerobot-eval`. It also
 times every SmolVLA action-chunk prediction, prints a summary, and writes
 `inference_timing.json` to the output directory.
 
 ```bash
 cd /mnt/c/Users/silve/Desktop/hacktoberfest-2026/dev-challenge/week-1
-python benchmark_eval.py \
+python baseline/benchmark_eval.py \
   --policy.path=lerobot/smolvla_libero \
   --policy.device=cpu \
   --policy.n_action_steps=10 \

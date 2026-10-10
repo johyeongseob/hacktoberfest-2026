@@ -2,7 +2,7 @@
 
 Usage: pass the same arguments as `lerobot-eval`, for example
 
-    python benchmark_eval.py --policy.path=lerobot/smolvla_libero --env.type=libero ...
+    python baseline/benchmark_eval.py --policy.path=lerobot/smolvla_libero --env.type=libero ...
 
 The script times every SmolVLA forward pass that predicts an action chunk,
 prints a summary, and writes `inference_timing.json` to `--output_dir`.
