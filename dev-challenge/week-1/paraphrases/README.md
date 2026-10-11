@@ -63,7 +63,7 @@ which wordings fail, but not which single change causes the failure.
 
 Alphabet soup (task 0), cream cheese (task 1), butter (task 6), and orange
 juice (task 9), the four items that succeeded 10/10 with the original
-instruction in the [baseline](../baseline/baseline_results.md). A drop with a
+instruction in the [baseline](../baseline/README.md). A drop with a
 paraphrase therefore points to the wording, not to the grasp.
 
 ## Results (October 9–10, 2026)
@@ -155,6 +155,6 @@ size hypothesis.
 Each SmolVLA call plans 0.5 s of motion but took 2.07 s on average here
 (4,448 calls). The simulator waits, so success rates are unaffected, but a
 real arm would stop and go, as shown in the
-[baseline smoke test](../baseline/baseline_results.md#smoke-test-october-9-2026).
+[baseline smoke test](../baseline/README.md#smoke-test-october-9-2026).
 Real-time control would need faster inference (for example, a GPU) and
 asynchronous inference; neither was tested.

@@ -62,7 +62,7 @@ The robot runs in simulation because there is no physical robot.
 All ten picnic items with their original instructions, 10 episodes each:
 **89 of 100 episodes succeeded**. Per-item results, the result video, and a comparison with
 public results of the same checkpoint are in
-[baseline/baseline_results.md](baseline/baseline_results.md), together with
+[baseline/README.md](baseline/README.md), together with
 the one-episode smoke test that came first.
 
 ### Paraphrased instructions (October 9–10, 2026)
@@ -73,7 +73,7 @@ and four paraphrases, 10 episodes each. The original succeeds **40/40**;
 the paraphrases only **52/160 (33%)**. The two wordings that drop
 "put ... in the basket" almost never work (2/40 each). The instruction
 variants, per-item results, result videos, and possible causes are in
-[paraphrases/paraphrases_results.md](paraphrases/paraphrases_results.md).
+[paraphrases/README.md](paraphrases/README.md).
 
 ## Known limits
 
@@ -105,7 +105,7 @@ motion.
 On this laptop CPU, one call takes 1.15 s, so a real arm would stop and go:
 8.8 s of simulated motion becomes about 29.5 s, as the video shows. The
 simulator waits, so success rates are unaffected. Details are in the
-[smoke test](baseline/baseline_results.md#smoke-test-october-9-2026).
+[smoke test](baseline/README.md#smoke-test-october-9-2026).
 
 ## Files and reproduction
 
@@ -114,8 +114,8 @@ Week 1 environment.
 
 | Path | Contents |
 | --- | --- |
-| [baseline/](baseline/) | [run_smoke_test.sh](baseline/run_smoke_test.sh), [run_baseline.sh](baseline/run_baseline.sh), [benchmark_eval.py](baseline/benchmark_eval.py), and [baseline_results.md](baseline/baseline_results.md) |
-| [paraphrases/](paraphrases/) | [run_paraphrases.sh](paraphrases/run_paraphrases.sh), [picnic_rollout.py](paraphrases/picnic_rollout.py), and [paraphrases_results.md](paraphrases/paraphrases_results.md) |
+| [baseline/](baseline/) | [run_smoke_test.sh](baseline/run_smoke_test.sh), [run_baseline.sh](baseline/run_baseline.sh), [benchmark_eval.py](baseline/benchmark_eval.py), and [README.md](baseline/README.md) (results) |
+| [paraphrases/](paraphrases/) | [run_paraphrases.sh](paraphrases/run_paraphrases.sh), [picnic_rollout.py](paraphrases/picnic_rollout.py), and [README.md](paraphrases/README.md) (results) |
 | [tools/](tools/) | [make_grid.py](tools/make_grid.py) (episode grids) and [make_stop_and_go.py](tools/make_stop_and_go.py) (real-robot timing video) |
 | [assets/](assets/) | Result videos as animated WebP, split into `smoke_test/`, `baseline/`, and `paraphrases/` |
 
@@ -141,7 +141,7 @@ The project is organized as milestones M0–M4.
 | Milestone | Description |
 | --- | --- |
 | M0. Plan | Chose the topic (packing picnic items), the model (`lerobot/smolvla_libero`), and the benchmark (LIBERO-Object), and wrote this README and [setup.md](setup.md). |
-| M1. Smoke test | Installed LeRobot with SmolVLA and LIBERO in WSL and ran one ketchup episode on CPU to confirm that the model loads, produces actions, and completes the task. See [baseline/baseline_results.md](baseline/baseline_results.md#smoke-test-october-9-2026). |
-| M2. Baseline | Ran all ten picnic items with their original training instructions (`pick up the {item} and place it in the basket`), 10 episodes each, to measure how well the checkpoint performs before any wording changes. See [baseline/baseline_results.md](baseline/baseline_results.md). |
-| M3. Paraphrased instructions | Reworded the instruction in four ways for the four items that scored 10/10 in the baseline, to test whether a person can ask the robot to pack an item in their own words. This is the main experiment. See [paraphrases/paraphrases_results.md](paraphrases/paraphrases_results.md). |
+| M1. Smoke test | Installed LeRobot with SmolVLA and LIBERO in WSL and ran one ketchup episode on CPU to confirm that the model loads, produces actions, and completes the task. See [baseline/README.md](baseline/README.md#smoke-test-october-9-2026). |
+| M2. Baseline | Ran all ten picnic items with their original training instructions (`pick up the {item} and place it in the basket`), 10 episodes each, to measure how well the checkpoint performs before any wording changes. See [baseline/README.md](baseline/README.md). |
+| M3. Paraphrased instructions | Reworded the instruction in four ways for the four items that scored 10/10 in the baseline, to test whether a person can ask the robot to pack an item in their own words. This is the main experiment. See [paraphrases/README.md](paraphrases/README.md). |
 | M4. DEV post | Writes up the project for the Hacktoberfest DEV challenge with the `#hf26challenge` tag. |

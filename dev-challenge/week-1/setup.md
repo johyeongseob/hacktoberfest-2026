@@ -89,5 +89,5 @@ python baseline/benchmark_eval.py   --policy.path=lerobot/smolvla_libero   --pol
 ```
 
 The episode succeeded (1/1, 176 steps); see
-[baseline_results.md](baseline/baseline_results.md#smoke-test-october-9-2026).
+[baseline/README.md](baseline/README.md#smoke-test-october-9-2026).
 The same command is in [run_smoke_test.sh](baseline/run_smoke_test.sh).
