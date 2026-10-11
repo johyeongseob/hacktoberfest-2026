@@ -77,7 +77,7 @@ download, set `HF_HUB_OFFLINE=1` to run without internet.
 `camera2`, but LeRobot 0.6.1 does not apply the saved mapping automatically
 ([huggingface/lerobot#4578](https://github.com/huggingface/lerobot/pull/4578)),
 so the command passes `--rename_map`. The checkpoint also ships
-`n_action_steps=50`, which costs about 20 points on LIBERO
+`n_action_steps=50`, which costs about 20 points on LIBERO-Object
 ([huggingface/lerobot#4614](https://github.com/huggingface/lerobot/issues/4614)),
 so the command passes `--policy.n_action_steps=10`.
 
