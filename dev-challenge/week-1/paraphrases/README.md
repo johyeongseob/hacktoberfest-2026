@@ -1,13 +1,28 @@
 # Paraphrased instructions
 
 <p align="center">
+  <b>Alphabet soup</b><br>
+  <img src="../assets/paraphrases/paraphrases_alphabet_soup.webp" alt="Alphabet soup: original instruction and paraphrases A to D">
+</p>
+
+<p align="center">
+  <b>Cream cheese</b><br>
   <img src="../assets/paraphrases/paraphrases_cream_cheese.webp" alt="Cream cheese: original instruction and paraphrases A to D">
 </p>
 
-The same cream cheese task with five instructions, left to right: the
-original training sentence and paraphrases A to D. Each tile shows the first
-successful episode for that instruction, or episode 0 when all 10 failed.
-The original succeeded 10 of 10 times; A and D only 3 of 10, B and C never.
+<p align="center">
+  <b>Butter</b><br>
+  <img src="../assets/paraphrases/paraphrases_butter.webp" alt="Butter: original instruction and paraphrases A to D">
+</p>
+
+<p align="center">
+  <b>Orange juice</b><br>
+  <img src="../assets/paraphrases/paraphrases_orange_juice.webp" alt="Orange juice: original instruction and paraphrases A to D">
+</p>
+
+One row per item, left to right: the original training sentence and
+paraphrases A to D. Each tile shows the first successful episode out of the
+ten episodes for that instruction, or episode 0 when all 10 failed.
 
 ## Question
 
@@ -75,8 +90,6 @@ instruction. The original instruction is rerun through the same loop as the
 control. The commands for all four items are in
 [run_paraphrases.sh](run_paraphrases.sh).
 
-### Quantitative results
-
 Success out of 10 episodes per item and instruction:
 
 | Instruction | 0: alphabet soup | 1: cream cheese | 6: butter | 9: orange juice | All |
@@ -104,37 +117,7 @@ What the numbers show:
   results and the butter vs cream cheese gap are large; differences of one
   or two episodes are not.
 
-### Qualitative results
-
-One row per item, left to right: original, A, B, C, D. Each tile shows the
-first successful episode for that instruction, or episode 0 when all 10
-failed.
-
-**Alphabet soup:**
-
-<p align="center">
-  <img src="../assets/paraphrases/paraphrases_alphabet_soup.webp" alt="Alphabet soup: original instruction and paraphrases A to D">
-</p>
-
-**Cream cheese:**
-
-<p align="center">
-  <img src="../assets/paraphrases/paraphrases_cream_cheese.webp" alt="Cream cheese: original instruction and paraphrases A to D">
-</p>
-
-**Butter:**
-
-<p align="center">
-  <img src="../assets/paraphrases/paraphrases_butter.webp" alt="Butter: original instruction and paraphrases A to D">
-</p>
-
-**Orange juice:**
-
-<p align="center">
-  <img src="../assets/paraphrases/paraphrases_orange_juice.webp" alt="Orange juice: original instruction and paraphrases A to D">
-</p>
-
-### Why do paraphrases fail?
+## Why do paraphrases fail?
 
 The causes below are hypotheses; the runs above cannot tell which of them is
 responsible.
@@ -150,7 +133,7 @@ Running the same instructions on a larger LIBERO checkpoint, such as
 `lerobot/pi05_libero_finetuned` (about 3B parameters), would test the model
 size hypothesis.
 
-### Limitation: CPU inference is not real time
+## Limitation: CPU inference is not real time
 
 Each SmolVLA call plans 0.5 s of motion but took 2.07 s on average here
 (4,448 calls). The simulator waits, so success rates are unaffected, but a
