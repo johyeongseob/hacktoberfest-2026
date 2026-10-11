@@ -73,44 +73,21 @@ download, set `HF_HUB_OFFLINE=1` to run without internet.
 
 ## 5. Smoke test: ketchup task, one episode
 
-`lerobot/smolvla_libero` was trained with the LIBERO cameras renamed to
-`camera1` and `camera2` (see its `train_config.json`). The LIBERO environment
-still emits `image` and `image2`, so evaluation needs the same `--rename_map`.
-In LeRobot 0.6.1 the saved mapping is not applied automatically
-([huggingface/lerobot#4578](https://github.com/huggingface/lerobot/pull/4578)).
+`lerobot/smolvla_libero` expects the cameras renamed to `camera1` and
+`camera2`, but LeRobot 0.6.1 does not apply the saved mapping automatically
+([huggingface/lerobot#4578](https://github.com/huggingface/lerobot/pull/4578)),
+so the command passes `--rename_map`. The checkpoint also ships
+`n_action_steps=50`, which costs about 20 points on LIBERO
+([huggingface/lerobot#4614](https://github.com/huggingface/lerobot/issues/4614)),
+so the command passes `--policy.n_action_steps=10`.
 
-The checkpoint also ships `n_action_steps=50`, which replays a whole action
-chunk before looking again and costs about 20 points on LIBERO
-([huggingface/lerobot#4614](https://github.com/huggingface/lerobot/issues/4614)).
-Use `--policy.n_action_steps=10`.
-
-EGL is set in the activate script. If rendering fails, run
-`export MUJOCO_GL=osmesa` and retry.
-
-[benchmark_eval.py](baseline/benchmark_eval.py) takes the same arguments as `lerobot-eval`. It also
-times every SmolVLA action-chunk prediction, prints a summary, and writes
-`inference_timing.json` to the output directory.
+The first run, from `dev-challenge/week-1` with internet access, downloaded
+about 3.3 GB (SmolVLA checkpoint, SmolVLM2 backbone, LIBERO assets):
 
 ```bash
-cd /mnt/c/Users/silve/Desktop/hacktoberfest-2026/dev-challenge/week-1
-python baseline/benchmark_eval.py \
-  --policy.path=lerobot/smolvla_libero \
-  --policy.device=cpu \
-  --policy.n_action_steps=10 \
-  --env.type=libero \
-  --env.task=libero_object \
-  --env.task_ids='[4]' \
-  --eval.batch_size=1 \
-  --eval.n_episodes=1 \
-  --rename_map='{"observation.images.image": "observation.images.camera1", "observation.images.image2": "observation.images.camera2"}' \
-  --output_dir=./outputs/smoke-ketchup
+python baseline/benchmark_eval.py   --policy.path=lerobot/smolvla_libero   --policy.device=cpu   --policy.n_action_steps=10   --env.type=libero   --env.task=libero_object   --env.task_ids='[4]'   --eval.batch_size=1   --eval.n_episodes=1   --rename_map='{"observation.images.image": "observation.images.camera1", "observation.images.image2": "observation.images.camera2"}'   --output_dir=./outputs/smoke-ketchup-timing
 ```
 
-Record:
-
-- Whether the model loads and actions are produced.
-- Whether the episode succeeds.
-- Wall-clock time for the episode.
-- Any errors, including first-run LIBERO configuration prompts.
-
-`outputs/` holds local results and should stay out of Git.
+The episode succeeded (1/1, 176 steps); see
+[baseline_results.md](baseline/baseline_results.md#smoke-test-october-9-2026).
+The same command is in [run_smoke_test.sh](baseline/run_smoke_test.sh).
