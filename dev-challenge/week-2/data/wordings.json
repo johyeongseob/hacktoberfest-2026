@@ -1,0 +1,27 @@
+{
+  "about": {
+    "templates": "{item} is replaced with the item name",
+    "training": "original and taught (A to D)",
+    "test_only": "unseen (E to H), fixed before any training or evaluation",
+    "rules_for_unseen": [
+      "a request a person might actually say",
+      "none of the verbs pick, place, grab, put, pack",
+      "a sentence structure different from each of A to D",
+      "each of E to H different from the others",
+      "the basket stays the target"
+    ]
+  },
+  "original": "pick up the {item} and place it in the basket",
+  "taught": {
+    "A": "grab the {item} and put it in the basket",
+    "B": "{item} in the basket",
+    "C": "pack the {item} for our picnic",
+    "D": "could you put the {item} in the picnic basket?"
+  },
+  "unseen": {
+    "E": "toss the {item} into the basket",
+    "F": "the basket still needs the {item}",
+    "G": "can you get the {item} into the basket for me?",
+    "H": "move the {item} over to the basket"
+  }
+}

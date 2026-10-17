@@ -10,3 +10,6 @@ __pycache__/
 
 # Local Week 1 evaluation outputs (videos, logs)
 /dev-challenge/week-1/outputs/
+
+# Week 2 results copied from the GPU machine (videos, logs)
+/dev-challenge/week-2/outputs/
