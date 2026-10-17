@@ -19,6 +19,11 @@ way your users talk takes N demos per item and $X of GPU time." That service
 only exists because the weights are open: a closed VLA cannot be fine-tuned
 on a customer's own data, inspected, or run on the customer's own hardware.
 
+The GPU is rented by the hour, not bought: one H100 costs $3.39 per hour on
+DigitalOcean, and the whole experiment is planned at about six hours (about
+$20), against roughly $25,000 to $40,000 to buy one H100. The measured hours
+and cost replace this estimate in the results.
+
 ## Experiment
 
 - **Start:** `lerobot/smolvla_libero`, the Week 1 checkpoint.
