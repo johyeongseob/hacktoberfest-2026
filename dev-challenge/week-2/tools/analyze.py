@@ -214,7 +214,8 @@ def main() -> None:
         ax.set_xticks(xs, n_ticks)
         ax.set_xlabel("Training demos per item (N); each point is a separate fine-tuned model")
         ax.set_ylabel("Test success rate (%)")
-        ax.set_ylim(0, 100)
+        ax.set_ylim(0, 103)  # headroom so markers at 100% are not cut off
+        ax.set_yticks(range(0, 101, 20))
         ax.grid(alpha=0.3)
         ax.legend(loc="lower right")
         ax.set_title("Test success by number of training demos (bands: 95% intervals)")
