@@ -2,7 +2,6 @@
 
 **Repository:** [johyeongseob/skills-getting-started-with-github-copilot](https://github.com/johyeongseob/skills-getting-started-with-github-copilot)
 **Pull request:** [#3 Improve student activity registration system](https://github.com/johyeongseob/skills-getting-started-with-github-copilot/pull/3)
-**Status:** Submitted (exercise issue closed as completed)
 
 A GitHub Skills exercise on the Mergington High School activities site (FastAPI backend, static HTML/JS frontend).
 

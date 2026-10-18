@@ -4,16 +4,16 @@ My participation in [Global Hack Week: Hacktoberfest](https://ghw.mlh.com/events
 
 I focused on the **GitHub challenges**, which needed only my existing GitHub account and taught skills I use day to day, plus the week's **registration challenges**.
 
-## Submitted challenges
+## Challenges
 
-| # | Challenge | Repository | Status | Notes |
-|---|---|---|---|---|
-| 1 | [Registration challenges](challenges/01-registration.md): Register and Check In, Address Form, GitHub Student Developer Pack, Sign up for a Cursor Pro Account | — | Partly approved | Cursor Pro is now "Premium" in the X Subscription |
-| 2 | [Code with Codespaces](challenges/02-code-with-codespaces.md) | [skills-code-with-codespaces](https://github.com/johyeongseob/skills-code-with-codespaces) | Approved | Custom dev container |
-| 3 | [Intro to Repository Management](challenges/03-repository-management.md) | [skills-introduction-to-repository-management](https://github.com/johyeongseob/skills-introduction-to-repository-management) | Approved | Rulesets, CODEOWNERS, security setup |
-| 4 | [Getting Started with Copilot](challenges/04-getting-started-with-copilot.md) | [skills-getting-started-with-github-copilot](https://github.com/johyeongseob/skills-getting-started-with-github-copilot) | Submitted | Ask, inline, Agent, and Plan modes; [PR #3](https://github.com/johyeongseob/skills-getting-started-with-github-copilot/pull/3) |
-| 5 | [Use GitHub Copilot to complete any of this week's challenges](challenges/05-use-copilot-for-a-challenge.md) | [skills-getting-started-with-github-copilot](https://github.com/johyeongseob/skills-getting-started-with-github-copilot) | Submitted | Copilot used across challenge 4 |
-| 6 | [Use GitHub Copilot to Build a Simple Application](challenges/06-copilot-simple-application.md) | [copilot-adventure-game](https://github.com/johyeongseob/copilot-adventure-game) | Submitted | CLI choose-your-own-adventure game |
+| # | Challenge | Repository | Notes |
+|---|---|---|---|
+| 1 | [Registration challenges](01-registration.md): Register and Check In, Address Form, GitHub Student Developer Pack, Sign up for a Cursor Pro Account | — | Cursor Pro is now "Premium" in the X Subscription |
+| 2 | [Code with Codespaces](github/02-code-with-codespaces.md) | [skills-code-with-codespaces](https://github.com/johyeongseob/skills-code-with-codespaces) | Custom dev container |
+| 3 | [Intro to Repository Management](github/03-repository-management.md) | [skills-introduction-to-repository-management](https://github.com/johyeongseob/skills-introduction-to-repository-management) | Rulesets, CODEOWNERS, security setup |
+| 4 | [Getting Started with Copilot](github/04-getting-started-with-copilot.md) | [skills-getting-started-with-github-copilot](https://github.com/johyeongseob/skills-getting-started-with-github-copilot) | Ask, inline, Agent, and Plan modes; [PR #3](https://github.com/johyeongseob/skills-getting-started-with-github-copilot/pull/3) |
+| 5 | [Use GitHub Copilot to complete any of this week's challenges](github/05-use-copilot-for-a-challenge.md) | [skills-getting-started-with-github-copilot](https://github.com/johyeongseob/skills-getting-started-with-github-copilot) | Copilot used across challenge 4 |
+| 6 | [Use GitHub Copilot to Build a Simple Application](github/06-copilot-simple-application.md) | [copilot-adventure-game](https://github.com/johyeongseob/copilot-adventure-game) | CLI choose-your-own-adventure game |
 
 ## Livestreams
 

@@ -1,7 +1,6 @@
 # Code with Codespaces
 
 **Repository:** [johyeongseob/skills-code-with-codespaces](https://github.com/johyeongseob/skills-code-with-codespaces)
-**Status:** Approved (exercise issue closed as completed)
 
 A GitHub Skills exercise on cloud development environments.
 

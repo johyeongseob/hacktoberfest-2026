@@ -1,9 +1,8 @@
 # Use GitHub Copilot to complete any of this week's challenges
 
 **Repository:** [johyeongseob/skills-getting-started-with-github-copilot](https://github.com/johyeongseob/skills-getting-started-with-github-copilot)
-**Status:** Submitted
 
-I completed [Getting Started with Copilot](04-getting-started-with-copilot.md) using Copilot (Copilot Student plan) throughout, and submitted screenshots of:
+I completed [Getting Started with Copilot](04-getting-started-with-copilot.md) using Copilot (Copilot Student plan) throughout:
 
 1. Copilot Chat with `#codebase` locating the duplicate-signup bug
 2. An inline suggestion (grey ghost text) adding the duplicate check

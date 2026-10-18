@@ -1,7 +1,6 @@
 # Use GitHub Copilot to Build a Simple Application
 
 **Repository:** [johyeongseob/copilot-adventure-game](https://github.com/johyeongseob/copilot-adventure-game)
-**Status:** Submitted
 
 ## What I built
 

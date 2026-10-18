@@ -1,7 +1,6 @@
 # Intro to Repository Management
 
 **Repository:** [johyeongseob/skills-introduction-to-repository-management](https://github.com/johyeongseob/skills-introduction-to-repository-management)
-**Status:** Approved (exercise issue closed as completed)
 
 A GitHub Skills exercise on preparing a repository (the Mergington High School activities site) for safe collaboration.
 
