@@ -19,7 +19,7 @@ tags:
 LIBERO-Object picnic items can be requested in new words. One demo per item
 (four in total, about $1.50 of rented A100 time) lifts taught wordings from
 31% to 80% and never-seen wordings from 29% to 78%.
-Code and full results: [GitHub, Week 2](https://github.com/johyeongseob/hacktoberfest-2026/tree/main/dev-challenge/week-2).
+Write-up: [DEV post](https://dev.to/johyeongseob/for-the-price-of-a-coffee-my-picnic-robot-learned-how-i-talk-11n9). Code and full results: [GitHub, Week 2](https://github.com/johyeongseob/hacktoberfest-2026/tree/main/dev-challenge/week-2).
 
 ## Results
 

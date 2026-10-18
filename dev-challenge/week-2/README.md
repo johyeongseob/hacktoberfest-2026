@@ -2,10 +2,10 @@
 
 Hacktoberfest 2026 DEV Challenge, Week 2 (theme: Side Hustle).
 
-Status: experiment and results done (2026-10-18). The six fine-tuned
-checkpoints and a model card are public on the Hugging Face Hub:
-[johyeongseob725/smolvla-libero-picnic-wordings](https://huggingface.co/johyeongseob725/smolvla-libero-picnic-wordings). The DEV post is
-next.
+Status: done. DEV post: [For the Price of a Coffee, My Picnic Robot Learned
+How I Talk](https://dev.to/johyeongseob/for-the-price-of-a-coffee-my-picnic-robot-learned-how-i-talk-11n9) (2026-10-19). The six fine-tuned checkpoints and a model
+card are public on the Hugging Face Hub:
+[johyeongseob725/smolvla-libero-picnic-wordings](https://huggingface.co/johyeongseob725/smolvla-libero-picnic-wordings).
 
 <p align="center">
   <img src="assets/taught_C_unseen_F_n0_vs_n1.webp" alt="Four picnic items, before and after fine-tuning with one demo per item, for a taught and an unseen phrasing">
@@ -246,7 +246,7 @@ processes ran), against 1.15 s on the Week 1 laptop CPU.
 | M3 | Fine-tune N = 1, 3, 5, 10, 20, 40 in one run; pick each checkpoint on the validation states | Done: chosen checkpoints uploaded to a Hugging Face repo |
 | M4 | Test the chosen checkpoints; draw the figures and the result videos | Done: [Results](#results) |
 | M5 | Publish the chosen checkpoints on the Hugging Face Hub with a model card | Done: [model page](https://huggingface.co/johyeongseob725/smolvla-libero-picnic-wordings) ([model_card.md](model_card.md)) |
-| M6 | DEV post | To do: `devchallenge`, `hf26challenge` |
+| M6 | DEV post | Done: [published](https://dev.to/johyeongseob/for-the-price-of-a-coffee-my-picnic-robot-learned-how-i-talk-11n9) with `devchallenge`, `hf26challenge` |
 
 Not done: extra training seeds for N = 1 and 5.
 
