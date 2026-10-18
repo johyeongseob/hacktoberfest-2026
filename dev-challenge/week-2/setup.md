@@ -259,7 +259,8 @@ cd /workspace/hacktoberfest-2026/dev-challenge/week-2
 python upload_chosen.py --repo johyeongseob725/smolvla-libero-picnic-wordings --runs n1-s1000 n3-s1000 n5-s1000 n10-s1000 n20-s1000 n40-s1000
 ```
 
-Leave out runs that did not finish.
+Leave out runs that did not finish. In a run name such as `n5-s1000`, `n5`
+is N = 5 and `s1000` is the training seed 1000, not a step.
 
 Later, any of them runs on the laptop CPU, for example:
 
