@@ -5,7 +5,7 @@
 # e.g. bash run_train.sh 5        -> OUT_ROOT/n5-s1000
 #      bash run_train.sh 5 1001   -> OUT_ROOT/n5-s1001
 # STEPS (default 3000) is the same for every N. A checkpoint is saved every
-# SAVE_FREQ (default 500) steps, and the loss is logged every 10 steps.
+# SAVE_FREQ (default 1000) steps, and the loss is logged every 10 steps.
 # watch_eval.py scores each checkpoint on the validation set while training
 # continues.
 # The learning rate is lower than the smolvla_libero recipe (1e-4) because this
@@ -18,7 +18,7 @@ set -euo pipefail
 N=${1:?usage: bash run_train.sh N [SEED]}
 SEED=${2:-1000}
 STEPS=${STEPS:-3000}
-SAVE_FREQ=${SAVE_FREQ:-500}
+SAVE_FREQ=${SAVE_FREQ:-1000}
 LR=${LR:-2.5e-5}
 WARMUP=${WARMUP:-200}
 BATCH=${BATCH:-32}

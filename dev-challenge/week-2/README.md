@@ -2,7 +2,7 @@
 
 Hacktoberfest 2026 DEV Challenge, Week 2 (theme: Side Hustle).
 
-Status: planning.
+Status: experiment done (2026-10-18); results write-up in progress.
 
 ## Idea
 
@@ -19,10 +19,9 @@ way your users talk takes N demos per item and $X of GPU time." That service
 only exists because the weights are open: a closed VLA cannot be fine-tuned
 on a customer's own data, inspected, or run on the customer's own hardware.
 
-The GPU is rented by the hour, not bought: one H100 costs $3.39 per hour on
-DigitalOcean, and the whole experiment is planned at about six hours (about
-$20), against roughly $25,000 to $40,000 to buy one H100. The measured hours
-and cost replace this estimate in the results.
+The GPU is rented by the hour, not bought: one A100 SXM 80 GB costs $1.82
+per hour on RunPod (GPU and disks), and the whole experiment took about six
+hours (about $11), against roughly $10,000 to $15,000 to buy one A100.
 
 ## Experiment
 
@@ -31,20 +30,20 @@ and cost replace this estimate in the results.
   Week 1 items only (alphabet soup, cream cheese, butter, orange juice), the
   first N demos per item (each item has 44 or 45 demos). Each N is a
   separate fine-tune from `smolvla_libero`, and the subsets are nested
-  (1 within 5 within 40). Each demo is trained with five instructions: the
-  original and wordings A to D. Training on all ten items is left for
-  Week 3 if needed.
-  - **Core:** N = 1, 5, 40 (start, rise, end of the curve).
-  - **If time allows, in this order:** N = 10; N = 3 and 20; two more
-    training seeds for N = 1 and 5 (error bars).
+  (1 within 3 within 5, and so on up to 40). Each demo is trained with five
+  instructions: the original and wordings A to D. Training on all ten items
+  is left for Week 3 if needed.
+  - **Runs:** N = 1, 3, 5, 10, 20, 40, all in one go, one training seed
+    each. Extra seeds for N = 1 and 5 (error bars) were planned but not
+    run.
 - **Training length:** every N trains for the same 3000 steps, the whole
   model as in the `smolvla_libero` recipe, with the loss logged every 10
-  steps. A checkpoint every 500 steps (six per run) is scored on validation
-  initial states 10 to 14 (wordings A to D, 80 episodes) while training
-  continues, and the best one per N goes to the test. The test initial
-  states 0 to 9 are never used for this choice. The validation scores give
-  a success-versus-training-step curve per N that shows overfitting, next
-  to the loss curve.
+  steps. The 1000, 2000, and 3000-step checkpoints are scored on
+  validation initial states 10 to 14 (wordings A to D, 80 episodes) while
+  training continues, and the best one per N goes to the test. The test
+  initial states 0 to 9 are never used for this choice. The validation
+  scores give a success-versus-training-step curve per N, next to the loss
+  curve.
 - **Compared with the original `smolvla_libero` training** (from its
   `train_config.json`), 3000 steps is short but enough, because the
   starting point already does the task and the data is much smaller:
@@ -68,43 +67,41 @@ and cost replace this estimate in the results.
 | Original | Training sentence | Did the robot forget what it already did? |
 | Other items | Training sentence for the six untrained items (60 episodes) | Did training on four items break the other six? |
 
-- **N = 0:** Week 1 results for A to D (52/160), the original (40/40), and
-  the other six items (49/60), re-checked on the GPU machine; E to H
-  measured before any training.
-- **Result figure:** success rate against demos per item (0, 1, 5, 40, plus
-  any extra points), one line each for taught, unseen, original, and other
-  items.
+- **N = 0:** `smolvla_libero` before any training, re-measured on the GPU
+  with the same test set, E to H included (Week 1 on the laptop CPU: A to
+  D 52/160, original 40/40, other six items 49/60).
+- **Result figure:** success rate against demos per item (0, 1, 3, 5, 10,
+  20, 40), one line each for taught, unseen, original, and other items.
 - **Result videos:** the same scene and wording across N (for example "pack
   the butter for our picnic" at N = 0, 1, 5, 40), built with the Week 1
   `tools/make_grid.py`.
-- **Cost:** GPU hours and dollars per run, and inference timing, go in the
-  results doc from the start.
+- **Cost:** GPU hours and dollars, and inference timing, in the results
+  doc.
 
 ## Plan
 
-| Step | Work | Done when |
+| Step | Work | Status |
 | --- | --- | --- |
-| M0 | Rent a GPU, install LeRobot 0.6.1 with CUDA, run a smoke test there (EGL rendering) | Butter, original wording: success in about 145 steps, as on the laptop |
+| M0 | Rent a GPU, install LeRobot 0.6.1 with CUDA, run a smoke test there (EGL rendering) | Done: butter, original wording, success in 144 steps |
 | M1 | Fix wordings E to H; build the N-demo subsets and five-instruction relabeling; pin the `lerobot/libero` revision | Done: [data/wordings.json](data/wordings.json), [data/subsets.json](data/subsets.json), [train_relabel.py](train_relabel.py) |
-| M2 | Measure N = 0 on the GPU (the full test set) | Baseline row of the results table |
-| M3 | Fine-tune N = 1, 5, 40; pick each checkpoint on the validation states | Chosen checkpoints uploaded to a private Hugging Face repo, training cost logged |
-| M4 | Test the chosen checkpoints; draw the figure and the video grid | Results doc with the table, figure, videos, cost, and inference timing |
-| M5 | Publish the best checkpoint on the Hugging Face Hub with a model card | Public model repo that runs with a documented command |
-| Extra | N = 10, N = 3 and 20, extra seeds for N = 1 and 5 | Points added to the same table and figure |
-| M6 | DEV post | Published with `devchallenge`, `hf26challenge` |
+| M2 | Measure N = 0 on the GPU (the full test set) | Done |
+| M3 | Fine-tune N = 1, 3, 5, 10, 20, 40 in one run; pick each checkpoint on the validation states | Done: chosen checkpoints in a private Hugging Face repo |
+| M4 | Test the chosen checkpoints; draw the figure and the video grid | Tests done; results doc with the table, figure, videos, cost, and inference timing in progress |
+| M5 | Publish the chosen checkpoints on the Hugging Face Hub with a model card | To do |
+| M6 | DEV post | To do: `devchallenge`, `hf26challenge` |
 
 ## Risks
 
-- **Deadline:** October 18, 11:59 PM PDT (October 19, 15:59 KST). If time
-  runs short, stop after the core N = 1, 5, 40. Training and evaluation run
-  on the GPU machine at the same time; the laptop CPU is too slow for the
-  roughly 4,400 evaluation episodes.
+- **Deadline:** October 18, 11:59 PM PDT (October 19, 15:59 KST).
+  Training and evaluation ran on the GPU machine at the same time; the
+  laptop CPU is too slow for the roughly 4,400 evaluation episodes.
 - **CPU vs GPU:** Week 1 ran on CPU; GPU arithmetic can flip a few
   episodes. N = 0 is re-measured on the GPU for that reason.
 - **Small N is noisy and can overfit:** with 1 to 5 demos per item, the
   choice of demos and the training seed can move the result, and the same
-  frames are repeated many times. Validation-based checkpoint choice and
-  the extra seeds address this.
+  frames are repeated many times. Validation-based checkpoint choice
+  addresses overfitting; with one seed per N, the seed's effect is not
+  measured.
 
 ## Stack
 
@@ -114,5 +111,5 @@ and cost replace this estimate in the results.
 | Training data | `lerobot/libero`, LIBERO-Object episodes (MP4 video) |
 | Runner | LeRobot 0.6.1. Training: [run_train.sh](run_train.sh) runs [train_relabel.py](train_relabel.py), `lerobot-train` with the five-wording relabeling. Evaluation: [run_eval.py](run_eval.py) runs [rollout.py](rollout.py) (the Week 1 loop with the checkpoint, initial state, and wordings as arguments) in parallel; [watch_eval.py](watch_eval.py) validates each checkpoint during training and tests the best. [run_all.sh](run_all.sh) starts all of it in one tmux session |
 | Benchmark | LIBERO-Object, same items and protocol as Week 1 |
-| Hardware | One cloud GPU, DigitalOcean H100 or RunPod A100 (to be decided); setup in [setup.md](setup.md) |
+| Hardware | One RunPod pod with 1x A100 SXM 80 GB (`NVIDIA A100-SXM4-80GB`), 16 vCPU; setup in [setup.md](setup.md) |
 | Demo subsets | [data/subsets.json](data/subsets.json), built by [data/make_subsets.py](data/make_subsets.py) from `lerobot/libero` revision `a1aaacb` |

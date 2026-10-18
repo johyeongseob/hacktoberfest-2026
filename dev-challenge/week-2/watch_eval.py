@@ -1,10 +1,11 @@
-"""Validate every checkpoint of one training run as it appears, then test the best.
+"""Validate the checkpoints of one training run as they appear, then test the best.
 
 Start it next to `run_train.sh` (or after training). For each checkpoint step
 (every SAVE_FREQ steps up to STEPS) it waits until the checkpoint is fully
 written, runs the validation set (A-D, initial states 10-14, 80 episodes,
 no videos), and records the score. When all checkpoints are scored, it picks
 the best (ties go to the earlier step) and runs the test set on it.
+SAVE_FREQ must match run_train.sh (default 1000).
 
 Outputs, under EVAL_ROOT (default /workspace/outputs/week2/eval):
     <run>-val-<step>/     validation results per checkpoint
@@ -31,7 +32,7 @@ def main() -> None:
     parser.add_argument("--train-root", type=Path, default=Path("/workspace/outputs/week2/train"))
     parser.add_argument("--eval-root", type=Path, default=Path("/workspace/outputs/week2/eval"))
     parser.add_argument("--steps", type=int, default=3000)
-    parser.add_argument("--save-freq", type=int, default=500)
+    parser.add_argument("--save-freq", type=int, default=1000, help="Validate every this many steps")
     parser.add_argument("--parallel", type=int, default=4, help="Rollout processes per validation")
     args = parser.parse_args()
 

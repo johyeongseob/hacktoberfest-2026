@@ -4,7 +4,8 @@
 # Windows in the tmux session "week2":
 #   n0        test set on lerobot/smolvla_libero (N = 0)
 #   train     run_train.sh for each N in RUNS, one after another
-#   n<N>      watch_eval.py for each run: validation per checkpoint, then test
+#   n<N>      watch_eval.py for each run: validation at 1000/2000/3000 steps,
+#             then the test set on the best checkpoint
 #   done      waits for every test summary and writes ALL_DONE.txt
 # RUNS defaults to the core runs 1 5 40 followed by the extras 10 3 20.
 # Attach with `tmux attach -t week2`; detach with Ctrl-b d.
