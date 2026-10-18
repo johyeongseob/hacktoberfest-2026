@@ -9,6 +9,7 @@ Writes, under RESULTS (default results/):
     tables.md                       all tables, with 95% Wilson intervals
     success_vs_n.png                success rate against demos per item
     wording_by_n.png                successes per wording and N
+    overview.png                    the two above side by side
     training.png                    loss and validation curves
 
 Runs on the laptop CPU in a few seconds (needs matplotlib):
@@ -43,6 +44,8 @@ SETS = {
     "other": "Other 6 items",
 }
 COLORS = {"taught": "#1f77b4", "unseen": "#ff7f0e", "original": "#2ca02c", "other": "#7f7f7f"}
+# Filled markers (●) for what the fine-tune saw, hollow (○) for what it did not, in both charts.
+IN_TRAINING = {"taught", "original"}
 
 
 def run_name(n: int) -> str:
@@ -191,44 +194,65 @@ def main() -> None:
                      rows), ""]
     (args.results / "tables.md").write_text("\n".join(out), encoding="utf-8")
 
-    # Figure 1: success rate against N.
+    # Figures 1 and 2 are drawn by two helpers, once each on their own and once side by
+    # side (overview.png), so the pair also works where images cannot be placed in a row.
     xs = list(range(len(NS)))
-    fig, ax = plt.subplots(figsize=(7, 4.2))
-    for s, label in SETS.items():
-        ks = [by_set[n][s] for n in NS]
-        ys = [100 * k / t for k, t in ks]
-        lo = [100 * wilson(k, t)[0] for k, t in ks]
-        hi = [100 * wilson(k, t)[1] for k, t in ks]
-        ax.plot(xs, ys, marker="o", color=COLORS[s], label=label)
-        ax.fill_between(xs, lo, hi, color=COLORS[s], alpha=0.12)
-    ax.set_xticks(xs, ["0\n(no fine-tune)", *(str(n) for n in NS[1:])])
-    ax.set_xlabel("Training demos per item (N); each point is a separate fine-tuned model")
-    ax.set_ylabel("Test success rate (%)")
-    ax.set_ylim(0, 100)
-    ax.grid(alpha=0.3)
-    ax.legend(loc="lower right")
-    ax.set_title("Test success by number of training demos (bands: 95% intervals)")
-    fig.tight_layout()
+    n_ticks = ["0\n(no fine-tune)", *(str(n) for n in NS[1:])]
+    grid = [[count(test[n], lambda r, w=w: r["item"] in TRAINED_ITEMS and r["wording"] == w)[0] for n in NS]
+            for w in WORDINGS]
+
+    def draw_success(ax) -> None:
+        # Success rate against N, one line per set, with 95% Wilson bands.
+        for s, label in SETS.items():
+            ks = [by_set[n][s] for n in NS]
+            ys = [100 * k / t for k, t in ks]
+            lo = [100 * wilson(k, t)[0] for k, t in ks]
+            hi = [100 * wilson(k, t)[1] for k, t in ks]
+            ax.plot(xs, ys, marker="o", markersize=7, markeredgewidth=1.5, color=COLORS[s], label=label,
+                    markerfacecolor=COLORS[s] if s in IN_TRAINING else "white")
+            ax.fill_between(xs, lo, hi, color=COLORS[s], alpha=0.12)
+        ax.set_xticks(xs, n_ticks)
+        ax.set_xlabel("Training demos per item (N); each point is a separate fine-tuned model")
+        ax.set_ylabel("Test success rate (%)")
+        ax.set_ylim(0, 100)
+        ax.grid(alpha=0.3)
+        ax.legend(loc="lower right")
+        ax.set_title("Test success by number of training demos (bands: 95% intervals)")
+
+    def draw_wordings(fig, ax) -> None:
+        # Wording x N heatmap of successes out of 40.
+        im = ax.imshow(grid, cmap="Blues", vmin=0, vmax=40, aspect="auto")
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                ax.text(j, i, str(v), ha="center", va="center", color="white" if v > 26 else "black", fontsize=9)
+        ax.set_xticks(xs, n_ticks)
+        ax.set_yticks(range(len(WORDINGS)), ["original ●", *(f"{w} ●" for w in TAUGHT), *(f"{w} ○" for w in UNSEEN)])
+        ax.axhline(4.5, color="black", linewidth=0.8)
+        ax.set_xlabel("Training demos per item (N); each column is a separate model")
+        ax.set_title("Successes out of 40 per wording (4 trained items x 10 episodes)")
+        fig.colorbar(im, ax=ax, fraction=0.04)
+
+    legend = "● in the fine-tuning data   ○ not in the fine-tuning data"
+    fig, ax = plt.subplots(figsize=(7, 4.4))
+    draw_success(ax)
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    fig.text(0.99, 0.01, legend, ha="right", fontsize=9)
     fig.savefig(args.results / "success_vs_n.png", dpi=150)
     plt.close(fig)
 
-    # Figure 2: wording x N heatmap.
-    grid = [[count(test[n], lambda r, w=w: r["item"] in TRAINED_ITEMS and r["wording"] == w)[0] for n in NS]
-            for w in WORDINGS]
     fig, ax = plt.subplots(figsize=(7, 4.6))
-    im = ax.imshow(grid, cmap="Blues", vmin=0, vmax=40, aspect="auto")
-    for i, row in enumerate(grid):
-        for j, v in enumerate(row):
-            ax.text(j, i, str(v), ha="center", va="center", color="white" if v > 26 else "black", fontsize=9)
-    ax.set_xticks(xs, ["0\n(no fine-tune)", *(str(n) for n in NS[1:])])
-    ax.set_yticks(range(len(WORDINGS)), ["original", *(f"{w} ●" for w in TAUGHT), *(f"{w} ○" for w in UNSEEN)])
-    ax.axhline(4.5, color="black", linewidth=0.8)
-    ax.set_xlabel("Training demos per item (N); each column is a separate model")
-    ax.set_title("Successes out of 40 per wording (4 trained items x 10 episodes)")
-    fig.colorbar(im, ax=ax, fraction=0.04)
+    draw_wordings(fig, ax)
     fig.tight_layout(rect=(0, 0.04, 1, 1))
-    fig.text(0.99, 0.01, "● taught   ○ unseen (test only)", ha="right", fontsize=9)
+    fig.text(0.99, 0.01, legend, ha="right", fontsize=9)
     fig.savefig(args.results / "wording_by_n.png", dpi=150)
+    plt.close(fig)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 4.8), gridspec_kw={"width_ratios": [1, 1.05]})
+    draw_success(ax1)
+    draw_wordings(fig, ax2)
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    fig.text(0.99, 0.01, legend, ha="right", fontsize=9)
+    fig.savefig(args.results / "overview.png", dpi=150)
     plt.close(fig)
 
     # Figure 3: loss and validation curves.
@@ -258,7 +282,7 @@ def main() -> None:
     fig.savefig(args.results / "training.png", dpi=150)
     plt.close(fig)
 
-    print(f"Wrote {args.results}/tables.md, success_vs_n.png, wording_by_n.png, training.png")
+    print(f"Wrote {args.results}/tables.md, success_vs_n.png, wording_by_n.png, overview.png, training.png")
 
 
 if __name__ == "__main__":
