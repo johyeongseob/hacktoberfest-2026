@@ -164,8 +164,11 @@ def main() -> None:
                 "-c:v", "libx264", "-pix_fmt", "yuv420p", str(mp4)]
     subprocess.run(command, check=True)
     # Animated WebP for the docs: loops, plays inline on GitHub and DEV.
+    # The 4x4 grid at 20 fps and quality 70 came out at 5.3 MB, which DEV showed only as a
+    # small thumbnail; 10 fps and quality 60 keep it near the 2-3 MB of the Week 1 videos.
+    webp_opts = ["-vf", "fps=10", "-q:v", "60"] if len(tiles) > 8 else ["-q:v", "70"]
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4), "-c:v", "libwebp_anim",
-                    "-loop", "0", "-q:v", "70", str(webp)], check=True)
+                    "-loop", "0", *webp_opts, str(webp)], check=True)
     successes = sum(row["success"] for row, _ in tiles)
     print(f"{mp4}\n{webp}  ({successes}/{len(tiles)} success, {length:.1f} s, "
           f"{webp.stat().st_size / 1e6:.1f} MB)")

@@ -2,8 +2,10 @@
 
 Hacktoberfest 2026 DEV Challenge, Week 2 (theme: Side Hustle).
 
-Status: experiment and results done (2026-10-18). The model card and the DEV
-post are next.
+Status: experiment and results done (2026-10-18). The six fine-tuned
+checkpoints and a model card are public on the Hugging Face Hub:
+[johyeongseob725/smolvla-libero-picnic-wordings](https://huggingface.co/johyeongseob725/smolvla-libero-picnic-wordings). The DEV post is
+next.
 
 <p align="center">
   <img src="assets/taught_C_unseen_F_n0_vs_n1.webp" alt="Four picnic items, before and after fine-tuning with one demo per item, for a taught and an unseen phrasing">
@@ -241,9 +243,9 @@ processes ran), against 1.15 s on the Week 1 laptop CPU.
 | M0 | Rent a GPU, install LeRobot 0.6.1 with CUDA, run a smoke test there (EGL rendering) | Done: butter, original wording, success in 144 steps |
 | M1 | Fix wordings E to H; build the N-demo subsets and five-instruction relabeling; pin the `lerobot/libero` revision | Done: [data/wordings.json](data/wordings.json), [data/subsets.json](data/subsets.json), [train_relabel.py](train_relabel.py) |
 | M2 | Measure N = 0 on the GPU (the full test set) | Done |
-| M3 | Fine-tune N = 1, 3, 5, 10, 20, 40 in one run; pick each checkpoint on the validation states | Done: chosen checkpoints in a private Hugging Face repo |
+| M3 | Fine-tune N = 1, 3, 5, 10, 20, 40 in one run; pick each checkpoint on the validation states | Done: chosen checkpoints uploaded to a Hugging Face repo |
 | M4 | Test the chosen checkpoints; draw the figures and the result videos | Done: [Results](#results) |
-| M5 | Publish the chosen checkpoints on the Hugging Face Hub with a model card | To do |
+| M5 | Publish the chosen checkpoints on the Hugging Face Hub with a model card | Done: [model page](https://huggingface.co/johyeongseob725/smolvla-libero-picnic-wordings) ([model_card.md](model_card.md)) |
 | M6 | DEV post | To do: `devchallenge`, `hf26challenge` |
 
 Not done: extra training seeds for N = 1 and 5.
@@ -274,8 +276,9 @@ python tools/make_grid.py forget --item butter --other ketchup --init 6
 ```
 
 [tools/make_grid.py](tools/make_grid.py) is the Week 1 grid tool adapted to Week 2. It
-writes MP4 files to `outputs/grids/` and animated WebP files (quality 70,
-20 fps, full resolution) to [assets/](assets/).
+writes MP4 files to `outputs/grids/` and animated WebP files (full
+resolution; quality 70 at 20 fps, or quality 60 at 10 fps for the 4x4 grid
+to keep it under 3 MB) to [assets/](assets/).
 
 Scenes in the videos (LIBERO initial states):
 
