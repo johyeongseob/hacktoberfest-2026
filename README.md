@@ -14,9 +14,11 @@ A month-long exploration of open-weight AI, VLA, and Physical AI.
 hacktoberfest-2026/
 ├── dev-challenge/          # Hacktoberfest DEV Challenge entries
 │   ├── weekend-challenge/  # Shared Workbench Reset Assistant (local open-weight VLM)
-│   └── week-1/             # Picnic Packing with SmolVLA (paraphrased instructions in LIBERO)
+│   ├── week-1/             # Picnic Packing with SmolVLA (paraphrased instructions in LIBERO)
+│   └── week-2/             # Teaching the Picnic Robot My Words (SmolVLA fine-tune on a rented GPU)
 ├── global-hack-week/       # Global Hack Week: Hacktoberfest challenge write-ups
-│   └── challenges/         # One page per challenge (Codespaces, repo management, Copilot)
+│   ├── 01-registration.md  # Registration challenges
+│   └── github/             # GitHub challenges (Codespaces, repo management, Copilot)
 ├── devrelay/               # DevRelay usage notes and reviewed agent session transcripts
 └── models/                 # Shared local model weights; excluded from Git
 ```
