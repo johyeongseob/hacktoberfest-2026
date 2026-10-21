@@ -13,7 +13,7 @@ Outputs, under EVAL_ROOT (default /workspace/outputs/week2/eval):
     <run>-test/           test results of the chosen checkpoint
 
 Example (in its own tmux window, for run n1-s1000):
-    python watch_eval.py --run n1-s1000
+    python eval/watch_eval.py --run n1-s1000
 """
 
 import argparse

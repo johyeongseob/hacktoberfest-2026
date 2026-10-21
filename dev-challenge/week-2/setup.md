@@ -134,7 +134,7 @@ checkpoint, the SmolVLM2 backbone, and the LIBERO assets (about 3.3 GB).
 
 ```
 cd /workspace/hacktoberfest-2026/dev-challenge/week-2
-python rollout.py --policy-path lerobot/smolvla_libero --task-id 6 --wordings original --episodes 1 --output-dir /workspace/outputs/week2/smoke
+python eval/rollout.py --policy-path lerobot/smolvla_libero --task-id 6 --wordings original --episodes 1 --output-dir /workspace/outputs/week2/smoke
 ```
 
 Expected: success in about 145 steps (145 on the laptop CPU; the GPU may
@@ -150,7 +150,7 @@ with mixed wordings.
 
 ```
 cd /workspace/hacktoberfest-2026/dev-challenge/week-2
-STEPS=200 OUT_ROOT=/workspace/outputs/week2/probe bash run_train.sh 1
+STEPS=200 OUT_ROOT=/workspace/outputs/week2/probe bash train/run_train.sh 1
 ```
 
 In a second SSH session, watch memory while it runs:
@@ -256,7 +256,7 @@ checkpoint of each run (the step in `<run>-val.json`, not
 
 ```
 cd /workspace/hacktoberfest-2026/dev-challenge/week-2
-python upload_chosen.py --repo johyeongseob725/smolvla-libero-picnic-wordings --runs n1-s1000 n3-s1000 n5-s1000 n10-s1000 n20-s1000 n40-s1000
+python hub/upload_chosen.py --repo johyeongseob725/smolvla-libero-picnic-wordings --runs n1-s1000 n3-s1000 n5-s1000 n10-s1000 n20-s1000 n40-s1000
 ```
 
 Leave out runs that did not finish. (After the write-up, the repository was
@@ -266,7 +266,7 @@ is N = 5 and `s1000` is the training seed 1000, not a step.
 Later, any of them runs on the laptop CPU, for example:
 
 ```
-python rollout.py --policy-path johyeongseob725/smolvla-libero-picnic-wordings/n5-s1000 --task-id 6 --wordings C --episodes 1 --device cpu
+python eval/rollout.py --policy-path johyeongseob725/smolvla-libero-picnic-wordings/n5-s1000 --task-id 6 --wordings C --episodes 1 --device cpu
 ```
 
 ## 11. Before terminating the pod

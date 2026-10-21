@@ -8,7 +8,7 @@ private if it does not exist; this script never makes it public.
 Needs a write token (`hf auth login`).
 
 Example:
-    python upload_chosen.py --repo HF_USER/smolvla-libero-picnic-wordings --runs n1-s1000 n5-s1000 n40-s1000
+    python hub/upload_chosen.py --repo HF_USER/smolvla-libero-picnic-wordings --runs n1-s1000 n5-s1000 n40-s1000
 """
 
 import argparse

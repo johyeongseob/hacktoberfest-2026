@@ -9,8 +9,8 @@ Based on the Week 1 loop (week-1/paraphrases/picnic_rollout.py). Changes:
   so an episode's result does not depend on what ran before it
 
 Examples:
-    python rollout.py --policy-path lerobot/smolvla_libero --task-id 6 --wordings original A B C D E F G H
-    python rollout.py --policy-path outputs/n5/checkpoints/001000/pretrained_model --task-id 6 \
+    python eval/rollout.py --policy-path lerobot/smolvla_libero --task-id 6 --wordings original A B C D E F G H
+    python eval/rollout.py --policy-path outputs/n5/checkpoints/001000/pretrained_model --task-id 6 \
         --wordings A B C D --init-state 10 --episodes 5 --output-dir outputs/n5-val-001000
 """
 
@@ -49,7 +49,7 @@ ITEMS = [
     "chocolate pudding",
     "orange juice",
 ]
-WORDINGS_FILE = Path(__file__).resolve().parent / "data" / "wordings.json"
+WORDINGS_FILE = Path(__file__).resolve().parents[1] / "data" / "wordings.json"
 
 
 def parse_args() -> argparse.Namespace:

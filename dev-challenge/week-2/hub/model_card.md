@@ -46,12 +46,19 @@ four trained items (160, 160, 40 episodes), other items with the original
 sentence (60 episodes). `s1000` is the training seed, not a step. Per-item
 results and 95% intervals: [tables.md](https://github.com/johyeongseob/hacktoberfest-2026/blob/main/dev-challenge/week-2/results/tables.md).
 
-| | Wording (`{item}`: alphabet soup, cream cheese, butter, orange juice) |
+| | Wording |
 | --- | --- |
 | original ● | pick up the {item} and place it in the basket |
-| A-D ● | grab the {item} and put it in the basket / {item} in the basket / pack the {item} for our picnic / could you put the {item} in the picnic basket? |
-| E-H ○ | toss the {item} into the basket / the basket still needs the {item} / can you get the {item} into the basket for me? / move the {item} over to the basket |
+| A ● | grab the {item} and put it in the basket |
+| B ● | {item} in the basket |
+| C ● | pack the {item} for our picnic |
+| D ● | could you put the {item} in the picnic basket? |
+| E ○ | toss the {item} into the basket |
+| F ○ | the basket still needs the {item} |
+| G ○ | can you get the {item} into the basket for me? |
+| H ○ | move the {item} over to the basket |
 
+`{item}` is alphabet soup, cream cheese, butter, or orange juice.
 ● in the fine-tuning data, ○ test only (fixed before training).
 
 ## Use
@@ -59,7 +66,7 @@ results and 95% intervals: [tables.md](https://github.com/johyeongseob/hacktober
 ```
 git clone https://github.com/johyeongseob/hacktoberfest-2026.git
 cd hacktoberfest-2026/dev-challenge/week-2
-python rollout.py --policy-path johyeongseob725/smolvla-libero-picnic-wordings/n1-s1000 --task-id 6 --wordings C --episodes 1 --device cpu
+python eval/rollout.py --policy-path johyeongseob725/smolvla-libero-picnic-wordings/n1-s1000 --task-id 6 --wordings C --episodes 1 --device cpu
 ```
 
 Butter (`--task-id 6`) with "pack the butter for our picnic" (`--wordings C`),

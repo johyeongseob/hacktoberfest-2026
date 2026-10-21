@@ -12,8 +12,8 @@ into OUTPUT_DIR/results.jsonl and a per-wording OUTPUT_DIR/summary.txt
 written; after a failure, rerunning the same command redoes all jobs.
 
 Examples:
-    python run_eval.py --policy-path lerobot/smolvla_libero --set test --output-dir outputs/eval/n0-test
-    python run_eval.py --policy-path outputs/train/n5/checkpoints/001000/pretrained_model \
+    python eval/run_eval.py --policy-path lerobot/smolvla_libero --set test --output-dir outputs/eval/n0-test
+    python eval/run_eval.py --policy-path outputs/train/n5/checkpoints/001000/pretrained_model \
         --set val --output-dir outputs/eval/n5-val-001000 --no-video
 """
 

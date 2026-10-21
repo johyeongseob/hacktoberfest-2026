@@ -38,18 +38,18 @@ start() {
   tmux send-keys -t "$SESSION:$name" "source $VENV && cd $HERE && $cmd" Enter
 }
 
-start n0 "python run_eval.py --policy-path lerobot/smolvla_libero --set test --output-dir $EVAL_ROOT/n0-test"
+start n0 "python eval/run_eval.py --policy-path lerobot/smolvla_libero --set test --output-dir $EVAL_ROOT/n0-test"
 
 train_cmd=""
 for n in $RUNS; do
-  train_cmd+="${train_cmd:+ && }bash run_train.sh $n $SEED"
+  train_cmd+="${train_cmd:+ && }bash train/run_train.sh $n $SEED"
 done
 start train "$train_cmd"
 
 summaries="$EVAL_ROOT/n0-test/summary.txt"
 for n in $RUNS; do
   run="n$n-s$SEED"
-  start "n$n" "python watch_eval.py --run $run 2>&1 | tee $EVAL_ROOT/watch-$run.log"
+  start "n$n" "python eval/watch_eval.py --run $run 2>&1 | tee $EVAL_ROOT/watch-$run.log"
   summaries+=" $EVAL_ROOT/$run-test/summary.txt"
 done
 

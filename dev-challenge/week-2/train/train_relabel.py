@@ -10,7 +10,7 @@ The replacement happens in the main process (on the batch returned by the
 data loader), so it works with any number of data loader workers.
 
 Example:
-    python train_relabel.py --policy.path=lerobot/smolvla_libero ... --seed=1000
+    python train/train_relabel.py --policy.path=lerobot/smolvla_libero ... --seed=1000
 """
 
 import json
@@ -20,7 +20,7 @@ from pathlib import Path
 
 import lerobot.scripts.lerobot_train as lerobot_train
 
-DATA_DIR = Path(__file__).resolve().parent / "data"
+DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 WORDINGS = json.loads((DATA_DIR / "wordings.json").read_text())
 ITEMS = list(json.loads((DATA_DIR / "subsets.json").read_text())["items"])
 TEMPLATES = [WORDINGS["original"], *WORDINGS["taught"].values()]

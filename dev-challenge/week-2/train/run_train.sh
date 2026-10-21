@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Fine-tune smolvla_libero on the first N demos per item of the four Week 1
 # items, with the five-wording relabeling (train_relabel.py).
-#   bash run_train.sh N [SEED]
-# e.g. bash run_train.sh 5        -> OUT_ROOT/n5-s1000
-#      bash run_train.sh 5 1001   -> OUT_ROOT/n5-s1001
+#   bash train/run_train.sh N [SEED]
+# e.g. bash train/run_train.sh 5        -> OUT_ROOT/n5-s1000
+#      bash train/run_train.sh 5 1001   -> OUT_ROOT/n5-s1001
 # STEPS (default 3000) is the same for every N. A checkpoint is saved every
 # SAVE_FREQ (default 1000) steps, and the loss is logged every 10 steps.
 # watch_eval.py scores each checkpoint on the validation set while training
@@ -11,11 +11,11 @@
 # The learning rate is lower than the smolvla_libero recipe (1e-4) because this
 # is a short fine-tune on a few demos.
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 source /workspace/venvs/hf26-week2/bin/activate
 set -euo pipefail
 
-N=${1:?usage: bash run_train.sh N [SEED]}
+N=${1:?usage: bash train/run_train.sh N [SEED]}
 SEED=${2:-1000}
 STEPS=${STEPS:-3000}
 SAVE_FREQ=${SAVE_FREQ:-1000}
@@ -38,7 +38,7 @@ print(sorted(e for item in items for e in item['subsets']['$N']))
 echo "N=$N seed=$SEED steps=$STEPS lr=$LR batch=$BATCH episodes=$EPISODES"
 
 mkdir -p "$OUT_ROOT"
-python train_relabel.py \
+python train/train_relabel.py \
   --policy.path=lerobot/smolvla_libero \
   --policy.push_to_hub=false \
   --policy.optimizer_lr="$LR" \

@@ -2,9 +2,9 @@
 
 Hacktoberfest 2026 DEV Challenge, Week 2 (theme: Side Hustle).
 
-Status: done. DEV post: [For the Price of a Coffee, My Picnic Robot Learned
-How I Talk](https://dev.to/johyeongseob/for-the-price-of-a-coffee-my-picnic-robot-learned-how-i-talk-11n9) (2026-10-19). The six fine-tuned checkpoints and a model
-card are public on the Hugging Face Hub:
+DEV post: [For the Price of a Coffee, My Picnic Robot Learned
+How I Talk](https://dev.to/johyeongseob/for-the-price-of-a-coffee-my-picnic-robot-learned-how-i-talk-11n9). The six fine-tuned checkpoints and a model card are public on
+the Hugging Face Hub:
 [johyeongseob725/smolvla-libero-picnic-wordings](https://huggingface.co/johyeongseob725/smolvla-libero-picnic-wordings).
 
 <p align="center">
@@ -64,6 +64,20 @@ both, ● marks what was in the fine-tuning data (the original sentence and
 wordings A to D) and ○ what was not (wordings E to H and, on the left, the
 six other items).
 
+| | Wording |
+| --- | --- |
+| original ● | pick up the {item} and place it in the basket |
+| A ● | grab the {item} and put it in the basket |
+| B ● | {item} in the basket |
+| C ● | pack the {item} for our picnic |
+| D ● | could you put the {item} in the picnic basket? |
+| E ○ | toss the {item} into the basket |
+| F ○ | the basket still needs the {item} |
+| G ○ | can you get the {item} into the basket for me? |
+| H ○ | move the {item} over to the basket |
+
+● in the fine-tuning data, ○ test only.
+
 | Demos per item (N) | Taught A-D | Unseen E-H | Original | Other 6 items |
 | --- | --- | --- | --- | --- |
 | 0 | 50/160 (31%) [25-39] | 46/160 (29%) [22-36] | 40/40 (100%) [91-100] | 52/60 (87%) [76-93] |
@@ -84,23 +98,11 @@ also gets quicker: successful episodes took 8.2 s (taught) and 9.8 s
 (unseen) before fine-tuning and 7 to 8 s after, close to the original
 wording.
 
-| | Wording |
-| --- | --- |
-| original ● | pick up the {item} and place it in the basket |
-| A ● | grab the {item} and put it in the basket |
-| B ● | {item} in the basket |
-| C ● | pack the {item} for our picnic |
-| D ● | could you put the {item} in the picnic basket? |
-| E ○ | toss the {item} into the basket |
-| F ○ | the basket still needs the {item} |
-| G ○ | can you get the {item} into the basket for me? |
-| H ○ | move the {item} over to the basket |
-
-● in the fine-tuning data, ○ test only. In the right chart, the two that almost never
-worked before, B (3/40) and C (1/40), jumped to 29 and 31 with one demo per
-item. Among the unseen ones, F, which names no action for the robot,
-stays the hardest (22 to 31 of 40), and G ends the highest (36/40),
-perhaps because it is a polite question like D.
+In the right chart, the two wordings that almost never worked before, B
+(3/40) and C (1/40), jumped to 29 and 31 with one demo per item. Among the
+unseen ones, F, which names no action for the robot, stays the hardest (22
+to 31 of 40), and G ends the highest (36/40), perhaps because it is a
+polite question like D.
 
 ### More demos did not help with new phrasings
 
@@ -148,8 +150,9 @@ demos of the other items is the obvious fix to try next.
 
 The loss keeps falling for all 3000 steps, but validation success (taught
 wordings, initial states 10 to 14) is nearly flat from step 1000 on for
-N = 3 and above, and no run ended lower than it was at step 1000. N = 1 has the lowest loss and
-the lowest validation score: it memorized its four demos. With the GPU to
+N = 3 and above, and no run ended lower than it was at step 1000. N = 1 has
+the lowest loss and the lowest validation score: it memorized its four
+demos. With the GPU to
 itself, 1000 steps take about 9 minutes (about $0.30), so for N = 3 and
 above, 1000 steps would likely have been enough.
 
@@ -196,7 +199,7 @@ processes ran), against 1.15 s on the Week 1 laptop CPU.
   separate fine-tune from `smolvla_libero`, and the subsets are nested
   (1 within 3 within 5, and so on up to 40). Each demo is trained with five
   instructions: the original and wordings A to D. Training on all ten items
-  is left for Week 3 if needed.
+  is left for later.
   - **Runs:** N = 1, 3, 5, 10, 20, 40, all in one go, one training seed
     each. Extra seeds for N = 1 and 5 (error bars) were planned but not
     run. Run names such as `n5-s1000` mean N = 5 with training seed 1000;
@@ -241,14 +244,12 @@ processes ran), against 1.15 s on the Week 1 laptop CPU.
 | Step | Work | Status |
 | --- | --- | --- |
 | M0 | Rent a GPU, install LeRobot 0.6.1 with CUDA, run a smoke test there (EGL rendering) | Done: butter, original wording, success in 144 steps |
-| M1 | Fix wordings E to H; build the N-demo subsets and five-instruction relabeling; pin the `lerobot/libero` revision | Done: [data/wordings.json](data/wordings.json), [data/subsets.json](data/subsets.json), [train_relabel.py](train_relabel.py) |
+| M1 | Fix wordings E to H; build the N-demo subsets and five-instruction relabeling; pin the `lerobot/libero` revision | Done: [data/wordings.json](data/wordings.json), [data/subsets.json](data/subsets.json), [train/train_relabel.py](train/train_relabel.py) |
 | M2 | Measure N = 0 on the GPU (the full test set) | Done |
 | M3 | Fine-tune N = 1, 3, 5, 10, 20, 40 in one run; pick each checkpoint on the validation states | Done: chosen checkpoints uploaded to a Hugging Face repo |
 | M4 | Test the chosen checkpoints; draw the figures and the result videos | Done: [Results](#results) |
-| M5 | Publish the chosen checkpoints on the Hugging Face Hub with a model card | Done: [model page](https://huggingface.co/johyeongseob725/smolvla-libero-picnic-wordings) ([model_card.md](model_card.md)) |
+| M5 | Publish the chosen checkpoints on the Hugging Face Hub with a model card | Done: [model page](https://huggingface.co/johyeongseob725/smolvla-libero-picnic-wordings) ([hub/model_card.md](hub/model_card.md)) |
 | M6 | DEV post | Done: [published](https://dev.to/johyeongseob/for-the-price-of-a-coffee-my-picnic-robot-learned-how-i-talk-11n9) with `devchallenge`, `hf26challenge` |
-
-Not done: extra training seeds for N = 1 and 5.
 
 ## Stack
 
@@ -256,34 +257,24 @@ Not done: extra training seeds for N = 1 and 5.
 | --- | --- |
 | VLA model | `lerobot/smolvla_libero`, fine-tuned per N |
 | Training data | `lerobot/libero`, LIBERO-Object episodes (MP4 video) |
-| Runner | LeRobot 0.6.1. Training: [run_train.sh](run_train.sh) runs [train_relabel.py](train_relabel.py), `lerobot-train` with the five-wording relabeling. Evaluation: [run_eval.py](run_eval.py) runs [rollout.py](rollout.py) (the Week 1 loop with the checkpoint, initial state, and wordings as arguments) in parallel; [watch_eval.py](watch_eval.py) validates each checkpoint during training and tests the best. [run_all.sh](run_all.sh) starts all of it in one tmux session |
+| Runner | LeRobot 0.6.1. Training: [train/run_train.sh](train/run_train.sh) runs [train/train_relabel.py](train/train_relabel.py), `lerobot-train` with the five-wording relabeling. Evaluation: [eval/run_eval.py](eval/run_eval.py) runs [eval/rollout.py](eval/rollout.py) (the Week 1 loop with the checkpoint, initial state, and wordings as arguments) in parallel; [eval/watch_eval.py](eval/watch_eval.py) validates each checkpoint during training and tests the best. [run_all.sh](run_all.sh) starts all of it in one tmux session |
 | Benchmark | LIBERO-Object, same items and protocol as Week 1 |
 | Hardware | One RunPod pod with 1x A100 SXM 80 GB (`NVIDIA A100-SXM4-80GB`), 16 vCPU; setup in [setup.md](setup.md) |
 | Demo subsets | [data/subsets.json](data/subsets.json), built by [data/make_subsets.py](data/make_subsets.py) from `lerobot/libero` revision `a1aaacb` |
 
 ## Files and reproduction
 
-Setup and the GPU run are in [setup.md](setup.md). The pod's evaluation
-results and training logs were copied to `outputs/` (step 9 there), which
-stays out of Git because of its size (2,940 test videos). The results above
-were made on the laptop from those outputs:
+| Folder | Contents |
+| --- | --- |
+| [data/](data/) | Wordings, demo subsets, and the script that builds the subsets |
+| [train/](train/) | Fine-tuning: `run_train.sh` and the relabeling `train_relabel.py` |
+| [eval/](eval/) | Rollouts: `rollout.py`, the parallel runner `run_eval.py`, and `watch_eval.py` |
+| [hub/](hub/) | Hugging Face upload `upload_chosen.py` and the model card |
+| [tools/](tools/) | Tables, charts, and video grids made on the laptop |
+| [results/](results/), [assets/](assets/) | Generated tables, charts, and videos |
 
-```
-python tools/analyze.py               # results/tables.md and the charts
-python tools/make_grid.py items       # first video
-python tools/make_grid.py trend --item "orange juice" --wording E --init 8 --ns 1 10 20 40
-python tools/make_grid.py forget --item butter --other ketchup --init 6
-```
+[run_all.sh](run_all.sh) starts the whole run. The scripts were moved into
+these folders after the GPU run, which used the same scripts from the
+`week-2` folder itself.
 
-[tools/make_grid.py](tools/make_grid.py) is the Week 1 grid tool adapted to Week 2. It
-writes MP4 files to `outputs/grids/` and animated WebP files (full
-resolution; quality 70 at 20 fps, or quality 60 at 10 fps for the 4x4 grid
-to keep it under 3 MB) to [assets/](assets/).
-
-Scenes in the videos (LIBERO initial states):
-
-| Video | Scenes | How they were chosen |
-| --- | --- | --- |
-| Four items, taught and unseen | Taught "pack the {item} for our picnic": 7 for all four items. Unseen "the basket still needs the {item}": alphabet soup 8, cream cheese 0, butter 5, orange juice 6 | Scenes where N = 0 fails and every fine-tuned model (N = 1 to 40) succeeds. For the taught wording, scene 7 is the only one that meets this for all four items; for the unseen wording, one such scene per item |
-| Orange juice, N = 1 to 40 | 8 | With "toss the orange juice into the basket", N = 1 to 10 succeed and N = 20 and 40 fail |
-| Butter and ketchup | 6 for both | Original wording; butter succeeds at every N, ketchup only at N = 0 |
+Setup and the GPU run are in [setup.md](setup.md). 
