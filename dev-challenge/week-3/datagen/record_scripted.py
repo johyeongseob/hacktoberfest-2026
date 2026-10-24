@@ -10,18 +10,18 @@ lerobot/libero does, so the Week 2 training code can read it:
 - action: the 7-D OSC_POSE action that was executed
 - task: the LIBERO-Object sentence of the item being picked in that step
 Only episodes where every item ends in the basket are kept. Each chain is
-tried from initial states --init-state, +1, ... until one succeeds or
---max-tries runs out (N = 1: the first success).
+tried from successive training initial states until one succeeds or
+--max-tries runs out (N = 1: the first success). Chain i starts at state
+10 + 7i (mod 40, within 10 to 49), so different chains see different tables.
 
 Usage (from dev-challenge/week-3):
     python datagen/record_scripted.py --task-id 1 --chains "butter|cream cheese" --root outputs/datasets/check
-    python datagen/record_scripted.py --task-id 1 --random-chains 6 --lengths 2 3 4 --root outputs/datasets/scene1
+    python datagen/record_scripted.py --task-id 1 --plan data/chain_plan.json --root outputs/datasets/scene1
 """
 
 import argparse
 import json
 import os
-import random
 from pathlib import Path
 
 import numpy as np
@@ -55,11 +55,16 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--task-id", type=int, required=True, help="LIBERO-Object scene (task ID 0-9)")
     parser.add_argument("--chains", nargs="*", default=[], help='Items in order, joined by "|"')
-    parser.add_argument("--random-chains", type=int, default=0, help="Add this many random chains per length")
-    parser.add_argument("--lengths", type=int, nargs="+", default=[2, 3, 4])
-    parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--init-state", type=int, default=10, help="First initial state (10 and up: training)")
-    parser.add_argument("--max-tries", type=int, default=5)
+    parser.add_argument("--plan", type=Path, default=None, help="data/chain_plan.json: adds this scene's chains")
+    parser.add_argument("--split", default="train", choices=["train", "test"])
+    parser.add_argument(
+        "--batch", type=int, default=None,
+        help="Only the batch-th group of 4 orders per length (0: orders 1-4, 1: 5-8, ...), to grow a data set",
+    )
+    parser.add_argument("--part", default="0/1", help="i/n: record only every n-th selected chain (parallel runs)")
+    parser.add_argument("--max-tries", type=int, default=10)
+    # Pick settings: scripted_pick.py's defaults, and TALL_ITEM_SETTINGS for
+    # the tall bottles (chosen with datagen/sweep_grasp.sh).
     parser.add_argument("--root", type=Path, required=True, help="New dataset folder")
     args = parser.parse_args()
 
@@ -73,10 +78,8 @@ def main() -> None:
     in_scene = [item for item in ITEMS if object_name(item) in env.env.object_states_dict]
 
     chains = [chain.split("|") for chain in args.chains]
-    rng = random.Random(f"{args.seed}-{args.task_id}")
-    for length in args.lengths if args.random_chains else []:
-        for _ in range(args.random_chains):
-            chains.append(rng.sample(in_scene, length))
+    if args.plan is not None:
+        chains += json.loads(args.plan.read_text())["scenes"][str(args.task_id)][args.split]
     for chain in chains:
         missing = [item for item in chain if item not in in_scene]
         if missing:
@@ -87,17 +90,30 @@ def main() -> None:
     )
     init_states = suite.get_task_init_states(args.task_id)
     log = []
-    for chain in chains:
-        for k in range(args.init_state, args.init_state + args.max_tries):
+    # Rank of each chain among the plan's chains of its length, for --batch.
+    # The chain index i also picks the initial states, so a chain recorded in
+    # a smaller plan is recorded the same way from a larger plan that extends it.
+    rank = [sum(len(c) == len(chain) for c in chains[:i]) for i, chain in enumerate(chains)]
+    selected = [i for i in range(len(chains)) if args.batch is None or rank[i] // 4 == args.batch]
+    part, parts = map(int, args.part.split("/"))
+    for n, i in enumerate(selected):
+        chain = chains[i]
+        if n % parts != part:
+            continue
+        for t in range(args.max_tries):
+            k = 10 + (7 * i + t) % 40  # training states 10 to 49 only
             frames = []
-            result = run_episode(env, init_states[k], chain, recorder=lambda o, a, l: frames.append(to_frame(o, a, l)))
+            result = run_episode(
+                env, init_states[k], chain, recorder=lambda o, a, l: frames.append(to_frame(o, a, l)),
+                per_item=True,
+            )
             if result["success"]:
                 for frame in frames:
                     dataset.add_frame(frame)
                 dataset.save_episode()
                 break
         entry = {"task_id": args.task_id, "items": chain, "init_state": k, "success": result["success"],
-                 "tries": k - args.init_state + 1, "frames": len(frames) if result["success"] else 0}
+                 "tries": t + 1, "frames": len(frames) if result["success"] else 0}
         log.append(entry)
         print(json.dumps(entry), flush=True)
     dataset.finalize()

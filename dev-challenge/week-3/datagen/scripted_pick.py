@@ -87,7 +87,10 @@ class Scripted:
             self.step(np.zeros(3), gripper)
 
 
-def pick_and_place(robot: Scripted, item: str, travel_z: float, release_height: float = 0.12) -> None:
+def pick_and_place(
+    robot: Scripted, item: str, travel_z: float, release_height: float = 0.12, center_object: bool = False,
+    spot=(0.0, 0.0),
+) -> None:
     pos = lambda name: robot.obs[f"{name}_pos"].copy()
     robot.label = step_sentence(item)
     target = pos(object_name(item))
@@ -101,8 +104,17 @@ def pick_and_place(robot: Scripted, item: str, travel_z: float, release_height: 
     robot.hold(CLOSE, 15)
     robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], CLOSE)
     basket = pos("basket_1")
+    basket[:2] += spot  # where in the basket this item goes
+    target_z = basket[2] + release_height
+    if center_object:
+        # Tall bottles are held near the top and hang below and off-center:
+        # bring the item, not the gripper, over the middle of the basket, and
+        # lower until the item (not the gripper) is release_height above it.
+        hang = robot.eef() - pos(object_name(item))
+        basket[:2] += hang[:2]
+        target_z += hang[2]
     robot.move_to([basket[0], basket[1], travel_z], CLOSE, tol=0.01)
-    robot.move_to([basket[0], basket[1], basket[2] + release_height], CLOSE, tol=0.01)
+    robot.move_to([basket[0], basket[1], target_z], CLOSE, tol=0.01)
     robot.hold(OPEN, 15)
     robot.move_to([basket[0], basket[1], travel_z], OPEN)
 
@@ -121,7 +133,22 @@ ITEMS = [
 ]
 
 
-def run_episode(env, init_state, items, video_path=None, recorder=None, yaw=0.0, release_height=0.12) -> dict:
+# Tall bottles hang below the gripper and pushed the basket away at the
+# usual heights. datagen/sweep_grasp.sh (2026-10-24, 30 episodes per item):
+# ketchup 8 -> 25, salad dressing 11 -> 15 with these settings, while the
+# other items did as well or better with the defaults.
+TALL_ITEM_SETTINGS = {"center_object": True, "travel_height": 0.35, "release_height": 0.10}
+TALL_ITEMS = {"ketchup", "salad dressing"}
+# Items dropped at the basket's center landed on the one before and stayed
+# above LIBERO's "in the basket" region; each item in a chain gets its own
+# spot (the region is a 12 x 12 cm box around the basket center).
+SPOTS = [(-0.03, -0.03), (0.03, 0.03), (-0.03, 0.03), (0.03, -0.03)]
+
+
+def run_episode(
+    env, init_state, items, video_path=None, recorder=None, yaw=0.0, release_height=0.12, center_object=False,
+    travel_height=0.25, per_item=False,
+) -> dict:
     """Put items in the basket in order from one initial state; return what held."""
     env.reset()
     env.set_init_state(init_state)
@@ -132,8 +159,15 @@ def run_episode(env, init_state, items, video_path=None, recorder=None, yaw=0.0,
     robot.home_quat = T.quat_multiply(T.axisangle2quat(np.array([0.0, 0.0, yaw])), robot.obs["robot0_eef_quat"])
     inside = lambda item: bool(env.env._eval_predicate(["in", object_name(item), BASKET]))
     done_at = {}
-    for item in items:
-        pick_and_place(robot, item, robot.obs["basket_1_pos"][2] + 0.25, release_height)
+    for index, item in enumerate(items):
+        # per_item: the tall bottles get TALL_ITEM_SETTINGS, everything else the arguments.
+        settings = dict(center_object=center_object, travel_height=travel_height, release_height=release_height)
+        if per_item and item in TALL_ITEMS:
+            settings = TALL_ITEM_SETTINGS
+        pick_and_place(
+            robot, item, robot.obs["basket_1_pos"][2] + settings["travel_height"], settings["release_height"],
+            settings["center_object"], spot=SPOTS[index % len(SPOTS)] if len(items) > 1 else (0.0, 0.0),
+        )
         done_at[item] = robot.steps if inside(item) else None
     robot.label = None  # the closing wait is not part of any step
     robot.hold(OPEN, 10)
@@ -160,6 +194,8 @@ def main() -> None:
     parser.add_argument("--episodes", type=int, default=1, help="Initial states init-state, init-state+1, ...")
     parser.add_argument("--yaw", type=float, default=0.0, help="Gripper turn about the vertical, radians")
     parser.add_argument("--release-height", type=float, default=0.12, help="Gripper height over the basket when opening")
+    parser.add_argument("--center-object", action="store_true", help="Place by the item's position, not the gripper's")
+    parser.add_argument("--travel-height", type=float, default=0.25, help="Gripper height over the basket when moving")
     parser.add_argument("--no-video", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/scripted"))
     args = parser.parse_args()
@@ -187,7 +223,11 @@ def main() -> None:
                 video = None if args.no_video else args.output_dir / f"task{args.task_id}_{tag}_init{k}.mp4"
                 result = {
                     "task_id": args.task_id, "init_state": k, "yaw": args.yaw, "release_height": args.release_height,
-                    **run_episode(env, init_states[k], group, video, yaw=args.yaw, release_height=args.release_height),
+                    "center_object": args.center_object, "travel_height": args.travel_height,
+                    **run_episode(
+                        env, init_states[k], group, video, yaw=args.yaw, release_height=args.release_height,
+                        center_object=args.center_object, travel_height=args.travel_height,
+                    ),
                 }
                 f.write(json.dumps(result) + "\n")
                 f.flush()
