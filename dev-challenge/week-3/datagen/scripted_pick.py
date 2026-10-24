@@ -32,7 +32,13 @@ from robosuite.utils import transform_utils as T
 BASKET = "basket_1_contain_region"
 MAX_DELTA_M = 0.05  # OSC_POSE: an action of 1.0 moves the target 5 cm
 MAX_DELTA_RAD = 0.5  # and turns it 0.5 rad
+ACTION_LIMIT = 0.9375  # the largest action in the LIBERO demos (lerobot/libero stats)
 OPEN, CLOSE = -1.0, 1.0
+
+
+def step_sentence(item: str) -> str:
+    # The LIBERO-Object training sentence for one item.
+    return f"pick up the {item} and place it in the basket"
 
 
 def object_name(item: str) -> str:
@@ -40,21 +46,26 @@ def object_name(item: str) -> str:
 
 
 class Scripted:
-    def __init__(self, env, frames: list):
-        self.env, self.frames = env, frames
+    def __init__(self, env, frames: list, recorder=None):
+        # recorder(obs, action, label) is called before every action once a
+        # label is set, so a dataset sees the same observation the action used.
+        self.env, self.frames, self.recorder = env, frames, recorder
+        self.label = None
         self.obs = None
         self.steps = 0
         self.home_quat = None  # gripper orientation to hold (set after the first step)
 
     def step(self, delta_xyz, gripper):
         action = np.zeros(7)
-        action[:3] = np.clip(np.asarray(delta_xyz) / MAX_DELTA_M, -1.0, 1.0)
+        action[:3] = np.clip(np.asarray(delta_xyz) / MAX_DELTA_M, -ACTION_LIMIT, ACTION_LIMIT)
         if self.home_quat is not None:
             # Hold the starting orientation; without this the gripper slowly
             # turns and misses the next item.
             error = T.quat2axisangle(T.quat_multiply(self.home_quat, T.quat_inverse(self.obs["robot0_eef_quat"])))
-            action[3:6] = np.clip(error / MAX_DELTA_RAD, -1.0, 1.0)
+            action[3:6] = np.clip(error / MAX_DELTA_RAD, -ACTION_LIMIT, ACTION_LIMIT)
         action[6] = gripper
+        if self.recorder is not None and self.label is not None:
+            self.recorder(self.obs, action.copy(), self.label)
         self.obs, _, _, _ = self.env.step(action)
         self.frames.append(self.obs["agentview_image"][::-1, ::-1])  # LIBERO renders upside down
         self.steps += 1
@@ -76,8 +87,9 @@ class Scripted:
             self.step(np.zeros(3), gripper)
 
 
-def pick_and_place(robot: Scripted, item: str, travel_z: float) -> None:
+def pick_and_place(robot: Scripted, item: str, travel_z: float, release_height: float = 0.12) -> None:
     pos = lambda name: robot.obs[f"{name}_pos"].copy()
+    robot.label = step_sentence(item)
     target = pos(object_name(item))
     above = target + np.array([0, 0, 0.10])
     robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], OPEN)
@@ -90,7 +102,7 @@ def pick_and_place(robot: Scripted, item: str, travel_z: float) -> None:
     robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], CLOSE)
     basket = pos("basket_1")
     robot.move_to([basket[0], basket[1], travel_z], CLOSE, tol=0.01)
-    robot.move_to([basket[0], basket[1], basket[2] + 0.12], CLOSE, tol=0.01)
+    robot.move_to([basket[0], basket[1], basket[2] + release_height], CLOSE, tol=0.01)
     robot.hold(OPEN, 15)
     robot.move_to([basket[0], basket[1], travel_z], OPEN)
 
@@ -109,19 +121,21 @@ ITEMS = [
 ]
 
 
-def run_episode(env, init_state, items, video_path=None) -> dict:
+def run_episode(env, init_state, items, video_path=None, recorder=None, yaw=0.0, release_height=0.12) -> dict:
     """Put items in the basket in order from one initial state; return what held."""
     env.reset()
     env.set_init_state(init_state)
     frames = []
-    robot = Scripted(env, frames)
+    robot = Scripted(env, frames, recorder)
     robot.hold(OPEN, 10)  # let objects settle, as LeRobot does after a reset
-    robot.home_quat = robot.obs["robot0_eef_quat"].copy()
+    # Hold the starting orientation, turned by yaw (radians) about the vertical.
+    robot.home_quat = T.quat_multiply(T.axisangle2quat(np.array([0.0, 0.0, yaw])), robot.obs["robot0_eef_quat"])
     inside = lambda item: bool(env.env._eval_predicate(["in", object_name(item), BASKET]))
     done_at = {}
     for item in items:
-        pick_and_place(robot, item, travel_z=robot.obs["basket_1_pos"][2] + 0.25)
+        pick_and_place(robot, item, robot.obs["basket_1_pos"][2] + 0.25, release_height)
         done_at[item] = robot.steps if inside(item) else None
+    robot.label = None  # the closing wait is not part of any step
     robot.hold(OPEN, 10)
     at_end = {item: inside(item) for item in items}
     if video_path is not None:
@@ -144,6 +158,8 @@ def main() -> None:
     parser.add_argument("--each", action="store_true", help="Every item in its own episode")
     parser.add_argument("--init-state", type=int, default=10, help="First initial state (10 and up: training)")
     parser.add_argument("--episodes", type=int, default=1, help="Initial states init-state, init-state+1, ...")
+    parser.add_argument("--yaw", type=float, default=0.0, help="Gripper turn about the vertical, radians")
+    parser.add_argument("--release-height", type=float, default=0.12, help="Gripper height over the basket when opening")
     parser.add_argument("--no-video", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/scripted"))
     args = parser.parse_args()
@@ -169,7 +185,10 @@ def main() -> None:
             tag = "-".join(item.replace(" ", "") for item in group)
             for k in range(args.init_state, args.init_state + args.episodes):
                 video = None if args.no_video else args.output_dir / f"task{args.task_id}_{tag}_init{k}.mp4"
-                result = {"task_id": args.task_id, "init_state": k, **run_episode(env, init_states[k], group, video)}
+                result = {
+                    "task_id": args.task_id, "init_state": k, "yaw": args.yaw, "release_height": args.release_height,
+                    **run_episode(env, init_states[k], group, video, yaw=args.yaw, release_height=args.release_height),
+                }
                 f.write(json.dumps(result) + "\n")
                 f.flush()
                 print(json.dumps(result), flush=True)
