@@ -87,22 +87,35 @@ class Scripted:
             self.step(np.zeros(3), gripper)
 
 
+# How the gripper moves. "slow" made the first recordings (about 300 steps per
+# item, twice the human LIBERO-Object demos' 146; tools/compare_demos.py).
+# "fast" (the default since then) follows the human pace: a stronger pull
+# toward each waypoint, looser tolerances on the way, one diagonal move
+# instead of up-then-across, and shorter waits for the gripper.
+PACES = {
+    "slow": dict(gain=1.0, tol=0.01, fine_tol=0.005, close_wait=15, open_wait=15, diagonal=False, above=0.10),
+    "fast": dict(gain=3.0, tol=0.02, fine_tol=0.006, close_wait=8, open_wait=6, diagonal=True, above=0.06),
+}
+
+
 def pick_and_place(
     robot: Scripted, item: str, travel_z: float, release_height: float = 0.12, center_object: bool = False,
-    spot=(0.0, 0.0),
+    spot=(0.0, 0.0), pace: str = "fast",
 ) -> None:
+    p = PACES[pace]
     pos = lambda name: robot.obs[f"{name}_pos"].copy()
     robot.label = step_sentence(item)
     target = pos(object_name(item))
-    above = target + np.array([0, 0, 0.10])
-    robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], OPEN)
-    robot.move_to([above[0], above[1], travel_z], OPEN)
-    robot.move_to(above, OPEN, tol=0.005)
+    above = target + np.array([0, 0, p["above"]])
+    if not p["diagonal"]:
+        robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], OPEN)
+    robot.move_to([above[0], above[1], travel_z], OPEN, tol=p["tol"], gain=p["gain"])
+    robot.move_to(above, OPEN, tol=p["fine_tol"], gain=p["gain"])
     target = pos(object_name(item))  # re-read: objects can shift slightly
     # Aim at the object center: 1 cm higher stopped some grasps above small boxes.
-    robot.move_to(target, OPEN, tol=0.005)
-    robot.hold(CLOSE, 15)
-    robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], CLOSE)
+    robot.move_to(target, OPEN, tol=p["fine_tol"], gain=p["gain"])
+    robot.hold(CLOSE, p["close_wait"])
+    robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], CLOSE, tol=p["tol"], gain=p["gain"])
     basket = pos("basket_1")
     basket[:2] += spot  # where in the basket this item goes
     target_z = basket[2] + release_height
@@ -113,10 +126,10 @@ def pick_and_place(
         hang = robot.eef() - pos(object_name(item))
         basket[:2] += hang[:2]
         target_z += hang[2]
-    robot.move_to([basket[0], basket[1], travel_z], CLOSE, tol=0.01)
-    robot.move_to([basket[0], basket[1], target_z], CLOSE, tol=0.01)
-    robot.hold(OPEN, 15)
-    robot.move_to([basket[0], basket[1], travel_z], OPEN)
+    robot.move_to([basket[0], basket[1], travel_z], CLOSE, tol=p["tol"], gain=p["gain"])
+    robot.move_to([basket[0], basket[1], target_z], CLOSE, tol=0.01, gain=p["gain"])
+    robot.hold(OPEN, p["open_wait"])
+    robot.move_to([basket[0], basket[1], travel_z], OPEN, tol=p["tol"], gain=p["gain"])
 
 
 ITEMS = [
@@ -147,7 +160,7 @@ SPOTS = [(-0.03, -0.03), (0.03, 0.03), (-0.03, 0.03), (0.03, -0.03)]
 
 def run_episode(
     env, init_state, items, video_path=None, recorder=None, yaw=0.0, release_height=0.12, center_object=False,
-    travel_height=0.25, per_item=False,
+    travel_height=0.25, per_item=False, pace="fast",
 ) -> dict:
     """Put items in the basket in order from one initial state; return what held."""
     env.reset()
@@ -167,6 +180,7 @@ def run_episode(
         pick_and_place(
             robot, item, robot.obs["basket_1_pos"][2] + settings["travel_height"], settings["release_height"],
             settings["center_object"], spot=SPOTS[index % len(SPOTS)] if len(items) > 1 else (0.0, 0.0),
+            pace=pace,
         )
         done_at[item] = robot.steps if inside(item) else None
     robot.label = None  # the closing wait is not part of any step
@@ -196,6 +210,8 @@ def main() -> None:
     parser.add_argument("--release-height", type=float, default=0.12, help="Gripper height over the basket when opening")
     parser.add_argument("--center-object", action="store_true", help="Place by the item's position, not the gripper's")
     parser.add_argument("--travel-height", type=float, default=0.25, help="Gripper height over the basket when moving")
+    parser.add_argument("--pace", choices=list(PACES), default="fast")
+    parser.add_argument("--per-item", action="store_true", help="Tall bottles get TALL_ITEM_SETTINGS (as recorded)")
     parser.add_argument("--no-video", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/scripted"))
     args = parser.parse_args()
@@ -224,9 +240,11 @@ def main() -> None:
                 result = {
                     "task_id": args.task_id, "init_state": k, "yaw": args.yaw, "release_height": args.release_height,
                     "center_object": args.center_object, "travel_height": args.travel_height,
+                    "pace": args.pace, "per_item": args.per_item,
                     **run_episode(
                         env, init_states[k], group, video, yaw=args.yaw, release_height=args.release_height,
                         center_object=args.center_object, travel_height=args.travel_height,
+                        per_item=args.per_item, pace=args.pace,
                     ),
                 }
                 f.write(json.dumps(result) + "\n")

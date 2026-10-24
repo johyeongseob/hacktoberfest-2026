@@ -105,7 +105,7 @@ def main() -> None:
             frames = []
             result = run_episode(
                 env, init_states[k], chain, recorder=lambda o, a, l: frames.append(to_frame(o, a, l)),
-                per_item=True,
+                per_item=True, pace="fast",
             )
             if result["success"]:
                 for frame in frames:

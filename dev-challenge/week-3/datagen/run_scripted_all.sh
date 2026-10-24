@@ -17,6 +17,9 @@ INIT=${INIT:-10}
 EPISODES=${EPISODES:-5}
 PARALLEL=${PARALLEL:-4}
 OUT=${OUT:-outputs/scripted-all}
+# Extra scripted_pick.py options; --per-item gives the tall bottles their
+# settings, as the recordings do (the first run, 2026-10-24, used none).
+EXTRA=${EXTRA:---per-item}
 
 mkdir -p "$OUT"
 for scene in $SCENES; do
@@ -24,7 +27,7 @@ for scene in $SCENES; do
   while [ "$(jobs -rp | wc -l)" -ge "$PARALLEL" ]; do wait -n; done
   echo "scene $scene"
   python datagen/scripted_pick.py --task-id "$scene" --each --init-state "$INIT" --episodes "$EPISODES" \
-    --no-video --output-dir "$OUT/scene$scene" > "$OUT/scene$scene.log" 2>&1 &
+    $EXTRA --no-video --output-dir "$OUT/scene$scene" > "$OUT/scene$scene.log" 2>&1 &
 done
 wait
 python - "$OUT" <<'EOF'
