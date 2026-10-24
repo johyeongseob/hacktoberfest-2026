@@ -66,13 +66,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--policy-path", default="lerobot/smolvla_libero")
     parser.add_argument("--task-id", type=int, required=True, help="LIBERO-Object scene (task ID 0-9)")
     parser.add_argument(
-        "--items", nargs="+", required=True, help="Items in the order named (steps mode also takes one)"
+        "--items", nargs="+", default=None, help="Items in the order named (steps mode also takes one)"
     )
+    parser.add_argument("--plan", type=Path, default=None, help="data/chain_plan.json: run this scene's chains")
+    parser.add_argument("--split", default="test", choices=["train", "test"])
+    parser.add_argument("--lengths", type=int, nargs="+", default=[2, 3, 4], help="Chain lengths to take from --plan")
     parser.add_argument("--mode", choices=["both", "steps"], default="both")
     parser.add_argument("--each", action="store_true", help="Steps mode: ask for every item on its own")
     parser.add_argument("--init-state", type=int, default=0, help="First initial state")
     parser.add_argument("--episodes", type=int, default=1)
-    parser.add_argument("--max-steps", type=int, default=None, help="Default: 260 per item")
+    parser.add_argument("--max-steps", type=int, default=None, help="Default: 260 per item of each chain")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--n-action-steps", type=int, default=10)
     parser.add_argument("--no-video", action="store_true")
@@ -112,6 +115,7 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
     instruction = sentence(items) if args.mode == "both" else " / ".join(map(step_sentence, items))
     print(f"Instruction: {instruction!r}")
     tag = args.mode + "_" + "-".join(item.replace(" ", "") for item in items)
+    max_steps = args.max_steps or 260 * len(items)
     results = []
     for episode in range(args.episodes):
         init_state = args.init_state + episode
@@ -121,6 +125,9 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
         libero_env.init_state_id = init_state
         observation, _ = env.reset(seed=seed, options={NEW_ROLLOUT_OPTION: True})
         domain = libero_env._env.env  # the LIBERO problem, which evaluates BDDL predicates
+        # robosuite ends an episode at its horizon (1,000 steps by default);
+        # four items may take longer.
+        domain.horizon = max(domain.horizon, max_steps + 10)
         missing = [item for item in items if object_name(item) not in domain.object_states_dict]
         if missing:
             raise SystemExit(f"Not in scene {args.task_id}: {missing}")
@@ -134,7 +141,7 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
         success = False
         step = 0
         episode_start = time.perf_counter()
-        while step < args.max_steps:
+        while step < max_steps:
             batch = preprocess_observation(add_batch_dim(observation))
             batch["task"] = [instruction_now]
             batch = preprocessor(env_preprocessor(batch))
@@ -188,7 +195,7 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
             "items_in_basket_at_end": [item for item, now in inside.items() if now],
             "first_in_step": first_in,
             "steps": step,
-            "max_steps": args.max_steps,
+            "max_steps": max_steps,
             "episode_s": round(episode_s, 2),
             "inference_calls": len(inference_times),
             "inference_mean_s": round(sum(inference_times) / len(inference_times), 3),
@@ -207,18 +214,26 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
 
 def main() -> None:
     args = parse_args()
-    unknown = [item for item in args.items if item not in ITEMS]
-    fewest = 2 if args.mode == "both" else 1
-    if unknown or len(args.items) < fewest or len(set(args.items)) != len(args.items):
-        raise SystemExit(f"Give {fewest} or more different items from {ITEMS}; got {args.items}")
     if args.each and args.mode != "steps":
         raise SystemExit("--each needs --mode steps")
-    if args.max_steps is None:
-        args.max_steps = 260 * (1 if args.each else len(args.items))
+    # --each: every item is its own one-item episode (steps mode), in one process.
+    if args.plan is not None:
+        scene_plan = json.loads(args.plan.read_text())["scenes"][str(args.task_id)][args.split]
+        groups = [chain for chain in scene_plan if len(chain) in args.lengths]
+    elif args.items is None:
+        raise SystemExit("Give --items or --plan")
+    else:
+        groups = [[item] for item in args.items] if args.each else [args.items]
+    fewest = 2 if args.mode == "both" else 1
+    for items in groups:
+        unknown = [item for item in items if item not in ITEMS]
+        if unknown or len(items) < fewest or len(set(items)) != len(items):
+            raise SystemExit(f"Give {fewest} or more different items from {ITEMS}; got {items}")
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     set_seed(BASE_SEED + args.init_state)
-    env_cfg = LiberoEnvConfig(task=SUITE, task_ids=[args.task_id], episode_length=args.max_steps)
+    longest = args.max_steps or 260 * max(len(items) for items in groups)
+    env_cfg = LiberoEnvConfig(task=SUITE, task_ids=[args.task_id], episode_length=longest)
     vec_env = make_env(env_cfg, n_envs=1, use_async_envs=False)[SUITE][args.task_id]
     env = vec_env.envs[0]  # one episode at a time, without vector autoreset
     libero_env = env.unwrapped  # LiberoEnv attributes sit behind LeRobot's wrapper
@@ -240,8 +255,6 @@ def main() -> None:
     )
     env_preprocessor, env_postprocessor = make_env_pre_post_processors(env_cfg=env_cfg, policy_cfg=policy_cfg)
     print(f"Scene: task {args.task_id} ({libero_env.task_description})")
-    # --each: every item is its own one-item episode (steps mode), in one process.
-    groups = [[item] for item in args.items] if args.each else [args.items]
     results = []
     for items in groups:
         results += run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postprocessor,
