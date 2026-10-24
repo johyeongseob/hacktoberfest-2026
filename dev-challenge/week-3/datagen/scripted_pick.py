@@ -10,12 +10,16 @@ made this way can become training data.
 Usage (from dev-challenge/week-3):
     python datagen/scripted_pick.py --task-id 1 --items butter
     python datagen/scripted_pick.py --task-id 1 --items butter "cream cheese" --init-state 10
+    python datagen/scripted_pick.py --task-id 1 --each --episodes 5 --no-video   # every item alone
 
-Writes a 20 fps video (agent camera) and prints, per item, whether LIBERO's
-goal predicate (In <item>_1 basket_1_contain_region) holds at the end.
+Appends one JSON line per episode to OUTPUT_DIR/results.jsonl: whether
+LIBERO's goal predicate (In <item>_1 basket_1_contain_region) holds for each
+item right after its own step and at the end. Videos (agent camera, 20 fps)
+unless --no-video.
 """
 
 import argparse
+import json
 import os
 from pathlib import Path
 
@@ -91,39 +95,84 @@ def pick_and_place(robot: Scripted, item: str, travel_z: float) -> None:
     robot.move_to([basket[0], basket[1], travel_z], OPEN)
 
 
+ITEMS = [
+    "alphabet soup",
+    "cream cheese",
+    "salad dressing",
+    "bbq sauce",
+    "ketchup",
+    "tomato sauce",
+    "butter",
+    "milk",
+    "chocolate pudding",
+    "orange juice",
+]
+
+
+def run_episode(env, init_state, items, video_path=None) -> dict:
+    """Put items in the basket in order from one initial state; return what held."""
+    env.reset()
+    env.set_init_state(init_state)
+    frames = []
+    robot = Scripted(env, frames)
+    robot.hold(OPEN, 10)  # let objects settle, as LeRobot does after a reset
+    robot.home_quat = robot.obs["robot0_eef_quat"].copy()
+    inside = lambda item: bool(env.env._eval_predicate(["in", object_name(item), BASKET]))
+    done_at = {}
+    for item in items:
+        pick_and_place(robot, item, travel_z=robot.obs["basket_1_pos"][2] + 0.25)
+        done_at[item] = robot.steps if inside(item) else None
+    robot.hold(OPEN, 10)
+    at_end = {item: inside(item) for item in items}
+    if video_path is not None:
+        video_path.parent.mkdir(parents=True, exist_ok=True)
+        imageio.mimsave(video_path, frames, fps=20, macro_block_size=8)
+    return {
+        "items": items,
+        "success": all(at_end.values()),
+        "in_basket_at_end": at_end,
+        "in_basket_after_own_step": done_at,
+        "steps": robot.steps,
+        "video": str(video_path) if video_path else None,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--task-id", type=int, required=True, help="LIBERO-Object scene (task ID 0-9)")
-    parser.add_argument("--items", nargs="+", required=True)
-    parser.add_argument("--init-state", type=int, default=10, help="10 and up: training states")
+    parser.add_argument("--items", nargs="+", default=None, help="Default: every item in the scene")
+    parser.add_argument("--each", action="store_true", help="Every item in its own episode")
+    parser.add_argument("--init-state", type=int, default=10, help="First initial state (10 and up: training)")
+    parser.add_argument("--episodes", type=int, default=1, help="Initial states init-state, init-state+1, ...")
+    parser.add_argument("--no-video", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/scripted"))
     args = parser.parse_args()
 
     suite = benchmark.get_benchmark_dict()["libero_object"]()
     task = suite.get_task(args.task_id)
     bddl = os.path.join(get_libero_path("bddl_files"), task.problem_folder, task.bddl_file)
-    env = OffScreenRenderEnv(bddl_file_name=bddl, camera_heights=256, camera_widths=256)
+    size = 64 if args.no_video else 256  # small renders when nothing is saved
+    env = OffScreenRenderEnv(bddl_file_name=bddl, camera_heights=size, camera_widths=size)
     env.seed(0)
     env.reset()
-    env.set_init_state(suite.get_task_init_states(args.task_id)[args.init_state])
-    domain = env.env
+    in_scene = [item for item in ITEMS if object_name(item) in env.env.object_states_dict]
+    items = args.items or in_scene
+    missing = [item for item in items if item not in in_scene]
+    if missing:
+        raise SystemExit(f"Not in scene {args.task_id}: {missing}; the scene has {in_scene}")
+    groups = [[item] for item in items] if args.each else [items]
+    init_states = suite.get_task_init_states(args.task_id)
 
-    frames = []
-    robot = Scripted(env, frames)
-    robot.hold(OPEN, 10)  # let objects settle, as LeRobot does after a reset
-    robot.home_quat = robot.obs["robot0_eef_quat"].copy()
-    for item in args.items:
-        if f"{object_name(item)}_pos" not in robot.obs:
-            raise SystemExit(f"{item} is not in scene {args.task_id}")
-        pick_and_place(robot, item, travel_z=robot.obs["basket_1_pos"][2] + 0.25)
-    robot.hold(OPEN, 10)
-
-    inside = {item: bool(domain._eval_predicate(["in", object_name(item), BASKET])) for item in args.items}
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    tag = "-".join(item.replace(" ", "") for item in args.items)
-    video = args.output_dir / f"task{args.task_id}_{tag}_init{args.init_state}.mp4"
-    imageio.mimsave(video, frames, fps=20, macro_block_size=8)
-    print(f"steps: {robot.steps}  in basket: {inside}  success: {all(inside.values())}  video: {video}")
+    with open(args.output_dir / "results.jsonl", "a") as f:
+        for group in groups:
+            tag = "-".join(item.replace(" ", "") for item in group)
+            for k in range(args.init_state, args.init_state + args.episodes):
+                video = None if args.no_video else args.output_dir / f"task{args.task_id}_{tag}_init{k}.mp4"
+                result = {"task_id": args.task_id, "init_state": k, **run_episode(env, init_states[k], group, video)}
+                f.write(json.dumps(result) + "\n")
+                f.flush()
+                print(json.dumps(result), flush=True)
     env.close()
 
 

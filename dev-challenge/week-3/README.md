@@ -32,32 +32,35 @@ LIBERO-10 already has two-item basket tasks with full two-item demos, and
 
 These run first, as the reference for what full two-item demos give.
 
+## Found so far
+
+- **One sentence for two items fails.** "put both the cream cheese and the
+  butter in the basket" in the cream cheese scene: 0/3; the cream cheese
+  goes in every time, the butter never.
+- **Step-by-step instructions fail too.** Switching to "pick up the butter
+  ..." after the cream cheese is in: 0/3. Butter first: 0/3, the butter
+  never goes in.
+- **The model packs the scene, not the sentence.** Asked for each of the
+  six items in each of the ten LIBERO-Object scenes (training state 10,
+  one episode each): the scene's own item 8/10, any other item 1/50; the
+  one success did not repeat (0/10 on states 11 to 20).
+- **A scripted demo can do it.** Using the object positions the simulator
+  knows, a few lines of control put one, two, and three items in the
+  basket in the cream cheese scene ([datagen/scripted_pick.py](datagen/scripted_pick.py)).
+
+So the robot cannot collect its own successes yet (2%). Week 3 starts from
+scripted demos instead, then lets the fine-tuned robot collect its own.
+
 ## Plan
 
-| Step | Work | Date |
-| --- | --- | --- |
-| M0 | Run the three LIBERO-10 two-item tasks with `smolvla_libero` (test states 0 to 9) | 10/22 |
-| M1 | Chain items in one LIBERO-Object scene without a reset; list which picnic items share a scene (up to four?); measure success of step 2, 3, and 4 | 10/22-23 |
-| M2 | LLM planner (Ollama): sentence to steps, items not in the scene reported; check and retry after each step | 10/23 |
-| M3 | Test chains of two to four items: direct sentence vs planner vs planner + retry | 10/23-24 |
-| M4 | On a rented GPU: collect successful later steps (2 to 4) on training states, fine-tune, test chains of two to four items in trained and held-out orders | 10/24 |
-| M5 | Results, videos, DEV post | 10/25 by 15:59 |
-
-M0 to M3 run on the laptop and are the result that ships even if M4 does
-not finish.
-
-### Fine-tuning for long chains
-
-- **Start states for later steps:** step k starts with k-1 items already in
-  the basket. Besides real chained runs, these states can be made in the
-  simulator by placing the earlier items in the basket and letting physics
-  settle, so data for steps 3 and 4 does not depend on the robot first
-  succeeding k-1 times in a row.
-- **Data:** only steps the simulator marks as successful, each labeled with
-  its own step instruction (plus Week 2 style rewordings), item orders
-  balanced, and some original single-item demos mixed in against
-  forgetting.
-- **Splits:** test states 0 to 9 are never used for collection; some item
-  orders are held out for testing only.
-- **Rounds:** if time allows, collect again with the fine-tuned model and
-  train once more.
+| Step | Work | Where | Status |
+| --- | --- | --- | --- |
+| M0 | LIBERO-10 two-item tasks with `smolvla_libero` (reference) | Laptop | Tried, one episode each |
+| M1 | Chains in one LIBERO-Object scene: one sentence and step by step; every item in every scene | Laptop, GPU | Done (above) |
+| B1 | Scripted pick of every item in every scene on training states; fix what fails | GPU pod | |
+| B2 | Save scripted episodes in the `lerobot/libero` format; replay one to check | Laptop, then pod | |
+| B3 | Generate chains of two to four items in mixed orders, step labels; hold some orders out | GPU pod | |
+| B4 | Fine-tune `smolvla_libero` on them plus one original demo per item (N = 1) | GPU pod | |
+| B5 | Test states 0 to 9: other items alone, chains of two to four (trained and held-out orders), original items | GPU pod | |
+| C | Fine-tuned robot collects its own successes; train again | GPU pod | If time allows |
+| M5 | Results, videos, DEV post (a first version by 10/25 15:59 KST) | | |
