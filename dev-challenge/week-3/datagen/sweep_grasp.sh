@@ -24,6 +24,7 @@ mkdir -p "$OUT"
 for yaw in 0 1.5708; do
   for release in 0.12 0.20; do
     setting="yaw${yaw}_release${release}"
+    mkdir -p "$OUT/$setting"  # the logs below go here before Python creates anything
     for item in "ketchup" "salad dressing"; do
       for scene in ${SCENES[$item]}; do
         while [ "$(jobs -rp | wc -l)" -ge "$PARALLEL" ]; do wait -n; done
