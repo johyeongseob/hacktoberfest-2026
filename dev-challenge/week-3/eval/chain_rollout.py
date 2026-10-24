@@ -14,7 +14,8 @@ Based on the Week 2 loop (week-2/eval/rollout.py). Changes:
   task given by --task-id, and every item must be in that scene
 - the episode does not stop when the scene's own target item is in the
   basket; it stops when all items are in the basket at once, or at
-  --max-steps (default 260 per item: 520 for two, the LIBERO-10 limit)
+  --max-steps (default --steps-per-item, 260, per item: 520 for two, the
+  LIBERO-10 limit)
 - each step checks every item with LIBERO's own goal predicate
   (In <item>_1 basket_1_contain_region) and records the first step it held
 
@@ -75,7 +76,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--each", action="store_true", help="Steps mode: ask for every item on its own")
     parser.add_argument("--init-state", type=int, default=0, help="First initial state")
     parser.add_argument("--episodes", type=int, default=1)
-    parser.add_argument("--max-steps", type=int, default=None, help="Default: 260 per item of each chain")
+    parser.add_argument("--max-steps", type=int, default=None, help="Default: --steps-per-item per item of each chain")
+    parser.add_argument("--steps-per-item", type=int, default=260)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--n-action-steps", type=int, default=10)
     parser.add_argument("--no-video", action="store_true")
@@ -115,7 +117,7 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
     instruction = sentence(items) if args.mode == "both" else " / ".join(map(step_sentence, items))
     print(f"Instruction: {instruction!r}")
     tag = args.mode + "_" + "-".join(item.replace(" ", "") for item in items)
-    max_steps = args.max_steps or 260 * len(items)
+    max_steps = args.max_steps or args.steps_per_item * len(items)
     results = []
     for episode in range(args.episodes):
         init_state = args.init_state + episode
@@ -232,7 +234,7 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     set_seed(BASE_SEED + args.init_state)
-    longest = args.max_steps or 260 * max(len(items) for items in groups)
+    longest = args.max_steps or args.steps_per_item * max(len(items) for items in groups)
     env_cfg = LiberoEnvConfig(task=SUITE, task_ids=[args.task_id], episode_length=longest)
     vec_env = make_env(env_cfg, n_envs=1, use_async_envs=False)[SUITE][args.task_id]
     env = vec_env.envs[0]  # one episode at a time, without vector autoreset
