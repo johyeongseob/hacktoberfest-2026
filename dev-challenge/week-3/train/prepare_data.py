@@ -8,6 +8,10 @@ lerobot/libero (pinned revision, as in Week 2) is copied in as well. The
 copies are written with the same features as the scripted recordings, then
 everything is merged into one LeRobot dataset.
 
+--originals-per-item N copies the first N demos of each item instead of one
+(all of them with a large N, about 45 per item): co-training with the data
+smolvla_libero learned from, to keep its human-like motion and its own items.
+
 Usage (on the pod, from dev-challenge/week-3):
     python train/prepare_data.py --chains /workspace/outputs/week3/datasets/scripted-chains \
         --out /workspace/outputs/week3/train-data/chains-120
@@ -36,26 +40,26 @@ ITEMS = [
 ]
 
 
-def first_demo_per_item() -> dict[str, int]:
-    # Episode index of the first LIBERO-Object demo of each item, found as in
-    # week-2/data/make_subsets.py: task of each episode from the small data
-    # parquet files (no videos).
+def demos_per_item(count: int) -> dict[str, list[int]]:
+    # Episode indices of the first `count` LIBERO-Object demos of each item,
+    # found as in week-2/data/make_subsets.py: task of each episode from the
+    # small data parquet files (no videos).
     root = Path(snapshot_download(
         REPO_ID, repo_type="dataset", revision=REVISION,
         allow_patterns=["meta/tasks.parquet", "data/*/*.parquet"],
     ))
     tasks = {r["task_index"]: r["__index_level_0__"] for r in pq.read_table(root / "meta/tasks.parquet").to_pylist()}
-    first = {}
+    episodes = {item: set() for item in ITEMS}
     for path in sorted(root.glob("data/*/*.parquet")):
         table = pq.read_table(path, columns=["episode_index", "task_index"])
         for episode, task in zip(table.column("episode_index").to_pylist(), table.column("task_index").to_pylist()):
             for item in ITEMS:
                 if tasks[task] == OBJECT_SENTENCE.format(item):
-                    first[item] = min(first.get(item, episode), episode)
-    missing = set(ITEMS) - set(first)
+                    episodes[item].add(episode)
+    missing = [item for item, found in episodes.items() if not found]
     if missing:
         raise SystemExit(f"No LIBERO-Object demo found for {missing}")
-    return first
+    return {item: sorted(found)[:count] for item, found in episodes.items()}
 
 
 def to_uint8_hwc(image) -> np.ndarray:
@@ -66,11 +70,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--chains", type=Path, nargs="+", required=True, help="Merged scripted chain data sets")
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--originals-per-item", type=int, default=1, help="LIBERO-Object demos per item to copy")
     args = parser.parse_args()
 
-    first = first_demo_per_item()
-    print("original demos:", first)
-    source = LeRobotDataset(REPO_ID, revision=REVISION, episodes=sorted(first.values()))
+    chosen = demos_per_item(args.originals_per_item)
+    print("original demos per item:", {item: len(found) for item, found in chosen.items()})
+    source = LeRobotDataset(REPO_ID, revision=REVISION, episodes=sorted(e for found in chosen.values() for e in found))
     originals_root = args.out.parent / f"{args.out.name}-originals"
     if originals_root.exists():
         shutil.rmtree(originals_root)
