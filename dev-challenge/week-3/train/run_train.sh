@@ -2,7 +2,8 @@
 # Fine-tune lerobot/smolvla_libero on a Week 3 training set (scripted chains
 # plus one original demo per item, from train/prepare_data.py). Same recipe
 # as Week 2 (week-2/train/run_train.sh): whole model, batch 32, learning rate
-# 2.5e-5 with 200 warmup steps and cosine decay, checkpoints every 1000 steps.
+# 2.5e-5 with 200 warmup steps and cosine decay, a checkpoint every 1000
+# steps (about ten per run) for a success-versus-step curve.
 # The step instructions are stored in the data, so no relabeling here.
 #   DATA=/workspace/outputs/week3/train-data/chains-120 RUN=chains-120 bash train/run_train.sh
 

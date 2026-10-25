@@ -71,7 +71,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--plan", type=Path, default=None, help="data/chain_plan.json: run this scene's chains")
     parser.add_argument("--split", default="test", choices=["train", "test"])
-    parser.add_argument("--lengths", type=int, nargs="+", default=[2, 3, 4], help="Chain lengths to take from --plan")
+    parser.add_argument("--lengths", type=int, nargs="+", default=[2], help="Chain lengths to take from --plan")
     parser.add_argument("--mode", choices=["both", "steps"], default="both")
     parser.add_argument("--each", action="store_true", help="Steps mode: ask for every item on its own")
     parser.add_argument("--init-state", type=int, default=0, help="First initial state")

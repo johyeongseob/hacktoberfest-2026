@@ -8,6 +8,7 @@ before any data is made, to data/chain_plan.json.
 
 Usage (from dev-challenge/week-3):
     python data/make_chain_plan.py
+    python data/make_chain_plan.py --singles 3 --out data/single_plan.json
 """
 
 import argparse
@@ -53,6 +54,18 @@ def extend(args) -> None:
     print(f"{args.out}: {n} training orders (extends {args.extend.name}), test orders unchanged")
 
 
+def singles(args) -> None:
+    # Every item of every scene on its own, --singles times: the chains come
+    # from fixed scenes, so a scene's first item could be guessed from the
+    # table alone; single picks of all six items make the instruction matter.
+    # Copies of an item get different initial states in record_scripted.py.
+    plan = {"singles": args.singles, "lengths": [1], "scenes": {}}
+    for scene, items in SCENE_ITEMS.items():
+        plan["scenes"][str(scene)] = {"train": [[item] for item in items for _ in range(args.singles)], "test": []}
+    args.out.write_text(json.dumps(plan, indent=1) + "\n")
+    print(f"{args.out}: {args.singles} single picks of each of the 60 scene items")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--train", type=int, default=4, help="Training orders per scene and length")
@@ -64,8 +77,15 @@ def main() -> None:
         "--extend", type=Path, default=None,
         help="Keep this plan's training and test orders and add training orders up to --train per length",
     )
+    parser.add_argument(
+        "--singles", type=int, default=None,
+        help="Instead: single picks of every scene item, this many times each (data/single_plan.json)",
+    )
     args = parser.parse_args()
 
+    if args.singles is not None:
+        singles(args)
+        return
     if args.extend is not None:
         extend(args)
         return

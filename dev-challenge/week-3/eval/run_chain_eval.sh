@@ -4,7 +4,7 @@
 # all ten scenes in parallel.
 #   POLICY=/workspace/outputs/week3/train/chains-120/checkpoints/003000/pretrained_model \
 #   SPLIT=test INIT=0 EPISODES=10 OUT=/workspace/outputs/week3/eval/chains-120-test bash eval/run_chain_eval.sh
-# Validation (choose a checkpoint): SPLIT=train LENGTHS=2 INIT=45 EPISODES=1.
+# Validation (choose a checkpoint): SPLIT=train INIT=45 EPISODES=1.
 # Writes OUT/scene<N>/results.jsonl, a log per scene, and a summary per chain length.
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -14,7 +14,7 @@ set -euo pipefail
 POLICY=${POLICY:-lerobot/smolvla_libero}
 PLAN=${PLAN:-data/chain_plan.json}
 SPLIT=${SPLIT:-test}
-LENGTHS=${LENGTHS:-"2 3 4"}
+LENGTHS=${LENGTHS:-2}  # the task is two items
 INIT=${INIT:-0}
 EPISODES=${EPISODES:-1}
 # Step limit per item; the human demos take about 146 steps per item.

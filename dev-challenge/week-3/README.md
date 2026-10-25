@@ -53,14 +53,18 @@ scripted demos instead, then lets the fine-tuned robot collect its own.
 
 ## Plan
 
+The task is two items: the first item, then the second. Chains of three
+and four items stay in the training data but are not tested.
+
 | Step | Work | Where | Status |
 | --- | --- | --- | --- |
 | M0 | LIBERO-10 two-item tasks with `smolvla_libero` (reference) | Laptop | Tried, one episode each |
 | M1 | Chains in one LIBERO-Object scene: one sentence and step by step; every item in every scene | Laptop, GPU | Done (above) |
 | B1 | Scripted pick of every item in every scene on training states; fix what fails | GPU pod | |
 | B2 | Save scripted episodes in the `lerobot/libero` format; replay one to check | Laptop, then pod | |
-| B3 | Generate chains of two to four items in mixed orders, step labels; hold some orders out | GPU pod | |
+| B3 | Generate chains of two to four items in mixed orders, step labels; hold some orders out | GPU pod | Done (169 of 240 recorded) |
+| B3b | Single picks of all six items in every scene, so the instruction decides the item | GPU pod | |
 | B4 | Fine-tune `smolvla_libero` on them plus one original demo per item (N = 1) | GPU pod | |
-| B5 | Test states 0 to 9: other items alone, chains of two to four (trained and held-out orders), original items | GPU pod | |
+| B5 | Test states 0 to 9: other items alone, two-item chains (trained and held-out orders), original items | GPU pod | |
 | C | Fine-tuned robot collects its own successes; train again | GPU pod | If time allows |
 | M5 | Results, videos, DEV post (a first version by 10/25 15:59 KST) | | |
