@@ -90,7 +90,7 @@ The data side is lazy in the good way. The robot side is not there yet, and I wo
 | Demos | Scripted pick-and-place from simulator object poses, human pace, failed attempts discarded |
 | Fine-tuning | Whole model (vision encoder frozen), batch 32, lr 2.5e-5, 9,000 steps, about 75 minutes |
 | Evaluation | Every item in every scene (60 episodes), two-item chains (80 episodes), failure kinds from the lift height of every object |
-| Hardware | 1x A100 80 GB on RunPod ($1.82/h) |
+| Hardware | 1x A100 80 GB on RunPod |
 
 The request splitter is the smallest part:
 
@@ -153,7 +153,15 @@ A "steady" version ends a move once the gripper stops getting closer. After retr
 
 **2. Normalization statistics were not the culprit.** LeRobot replaces a checkpoint's state and action statistics with the new dataset's when fine-tuning. Keeping the original statistics barely mattered here (own item 2/10 either way at 3,000 steps), but I keep them anyway.
 
-**3. Co-training with the original demos.** *(result pending)*
+**3. Mixing the original demos back in did not help.** To fight the forgetting, I retrained on all 457 original LIBERO-Object demos together with the scripted single picks and about 170 two-item chains (about one third human frames). Two items in order came out at 1, 3, and 1 of 80 at 3k, 6k, and 9k steps (items in the basket: 24, 33, and 34 of 160, against 26 without them), and the scene's own item stayed low (2/10 at 3k). Within the noise of 80 episodes, no gain: more of the old data did not bring the old skill back, and it did not add grounding either.
+
+## My Agent Session
+
+I built this with Claude Code over a week. The session below is a curated slice: the diagnosis, the scripted demos, the hidden pauses, the grounding check, and the one two-item success.
+
+{% agent_session 1198 %}
+
+> **Note:** I worked with the agent in Korean. This is a condensed English translation of the key moments, not a verbatim transcript.
 
 ---
 
