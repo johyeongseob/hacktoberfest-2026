@@ -61,6 +61,7 @@ def main() -> None:
         "--batch", type=int, default=None,
         help="Only the batch-th group of 4 orders per length (0: orders 1-4, 1: 5-8, ...), to grow a data set",
     )
+    parser.add_argument("--lengths", type=int, nargs="+", default=None, help="Only chains of these lengths")
     parser.add_argument("--part", default="0/1", help="i/n: record only every n-th selected chain (parallel runs)")
     parser.add_argument("--max-tries", type=int, default=10)
     parser.add_argument("--pace", choices=list(PACES), default="fast", help="scripted_pick.py PACES")
@@ -95,7 +96,10 @@ def main() -> None:
     # The chain index i also picks the initial states, so a chain recorded in
     # a smaller plan is recorded the same way from a larger plan that extends it.
     rank = [sum(len(c) == len(chain) for c in chains[:i]) for i, chain in enumerate(chains)]
-    selected = [i for i in range(len(chains)) if args.batch is None or rank[i] // 4 == args.batch]
+    selected = [
+        i for i in range(len(chains))
+        if (args.batch is None or rank[i] // 4 == args.batch) and (args.lengths is None or len(chains[i]) in args.lengths)
+    ]
     part, parts = map(int, args.part.split("/"))
     for n, i in enumerate(selected):
         chain = chains[i]

@@ -18,6 +18,7 @@ MAX_TRIES=${MAX_TRIES:-10}
 PARTS=${PARTS:-2}
 PLAN=${PLAN:-data/chain_plan.json}
 BATCH=${BATCH:-}
+LENGTHS=${LENGTHS:-}  # e.g. 2: only the plan's two-item chains
 PACE=${PACE:-fast}  # scripted_pick.py PACES; "steady" drops the pauses
 OUT=${OUT:-outputs/datasets}
 
@@ -27,7 +28,7 @@ for scene in $SCENES; do
     while [ "$(jobs -rp | wc -l)" -ge "$PARALLEL" ]; do wait -n; done
     name="scene$scene-part$part"
     echo "$name"
-    python datagen/record_scripted.py --task-id "$scene" --plan "$PLAN" --split train ${BATCH:+--batch "$BATCH"} \
+    python datagen/record_scripted.py --task-id "$scene" --plan "$PLAN" --split train ${BATCH:+--batch "$BATCH"} ${LENGTHS:+--lengths $LENGTHS} \
       --part "$part/$PARTS" --max-tries "$MAX_TRIES" --pace "$PACE" --root "$OUT/$name" > "$OUT/$name.log" 2>&1 &
   done
 done

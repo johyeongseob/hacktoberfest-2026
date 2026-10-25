@@ -71,8 +71,15 @@ def main() -> None:
     parser.add_argument("--chains", type=Path, nargs="+", required=True, help="Merged scripted chain data sets")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--originals-per-item", type=int, default=1, help="LIBERO-Object demos per item to copy")
+    parser.add_argument(
+        "--reuse-originals", type=Path, default=None,
+        help="An <out>-originals folder from an earlier run: merge it instead of copying the demos again",
+    )
     args = parser.parse_args()
 
+    if args.reuse_originals is not None:
+        merge([*args.chains, args.reuse_originals], args.out)
+        return
     chosen = demos_per_item(args.originals_per_item)
     print("original demos per item:", {item: len(found) for item, found in chosen.items()})
     source = LeRobotDataset(REPO_ID, revision=REVISION, episodes=sorted(e for found in chosen.values() for e in found))
@@ -98,14 +105,16 @@ def main() -> None:
         })
     originals.save_episode()
     originals.finalize()
+    merge([*args.chains, originals_root], args.out)
 
-    roots = [*args.chains, originals_root]
+
+def merge(roots: list[Path], out: Path) -> None:
     aggregate_datasets(
         repo_ids=[f"local/{root.name}" for root in roots], roots=roots,
-        aggr_repo_id=f"local/{args.out.name}", aggr_root=args.out,
+        aggr_repo_id=f"local/{out.name}", aggr_root=out,
     )
-    merged = LeRobotDataset(f"local/{args.out.name}", root=args.out)
-    print(f"{args.out}: {merged.num_episodes} episodes, {merged.num_frames} frames, {len(merged.meta.tasks)} tasks")
+    merged = LeRobotDataset(f"local/{out.name}", root=out)
+    print(f"{out}: {merged.num_episodes} episodes, {merged.num_frames} frames, {len(merged.meta.tasks)} tasks")
 
 
 if __name__ == "__main__":
