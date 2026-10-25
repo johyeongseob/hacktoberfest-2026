@@ -73,12 +73,25 @@ class Scripted:
     def eef(self):
         return self.obs["robot0_eef_pos"]
 
-    def move_to(self, target, gripper, tol=0.01, max_steps=120, gain=1.0):
+    def move_to(self, target, gripper, tol=0.01, max_steps=120, gain=1.0, stall_steps=None):
         # Proportional move of the gripper to target (world frame).
+        # stall_steps: also stop once the gripper has not come 1 mm closer in
+        # that many steps. A target it cannot reach (the fingers on the table
+        # below an item's center, an item already in the basket) otherwise
+        # costs all max_steps with tiny actions, which the recordings showed
+        # as 5-second pauses that no human demo has.
+        best, since_best = np.inf, 0
         for _ in range(max_steps):
             error = np.asarray(target) - self.eef()
-            if np.linalg.norm(error) < tol:
+            distance = np.linalg.norm(error)
+            if distance < tol:
                 return True
+            if distance < best - 0.001:
+                best, since_best = distance, 0
+            else:
+                since_best += 1
+                if stall_steps is not None and since_best >= stall_steps:
+                    return False
             self.step(gain * error, gripper)
         return False
 
@@ -92,9 +105,15 @@ class Scripted:
 # "fast" (the default since then) follows the human pace: a stronger pull
 # toward each waypoint, looser tolerances on the way, one diagonal move
 # instead of up-then-across, and shorter waits for the gripper.
+# "steady" is "fast" without the pauses: a move that stops getting closer
+# (stall, in steps) ends there instead of creeping on to its step limit.
 PACES = {
-    "slow": dict(gain=1.0, tol=0.01, fine_tol=0.005, close_wait=15, open_wait=15, diagonal=False, above=0.10),
-    "fast": dict(gain=3.0, tol=0.02, fine_tol=0.006, close_wait=8, open_wait=6, diagonal=True, above=0.06),
+    "slow": dict(gain=1.0, tol=0.01, fine_tol=0.005, close_wait=15, open_wait=15, diagonal=False, above=0.10,
+                 stall=None),
+    "fast": dict(gain=3.0, tol=0.02, fine_tol=0.006, close_wait=8, open_wait=6, diagonal=True, above=0.06,
+                 stall=None),
+    "steady": dict(gain=3.0, tol=0.02, fine_tol=0.006, close_wait=8, open_wait=6, diagonal=True, above=0.06,
+                   stall=5),
 }
 
 
@@ -108,14 +127,16 @@ def pick_and_place(
     target = pos(object_name(item))
     above = target + np.array([0, 0, p["above"]])
     if not p["diagonal"]:
-        robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], OPEN)
-    robot.move_to([above[0], above[1], travel_z], OPEN, tol=p["tol"], gain=p["gain"])
-    robot.move_to(above, OPEN, tol=p["fine_tol"], gain=p["gain"])
+        robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], OPEN, stall_steps=p["stall"])
+    robot.move_to([above[0], above[1], travel_z], OPEN, tol=p["tol"], gain=p["gain"], stall_steps=p["stall"])
+    robot.move_to(above, OPEN, tol=p["fine_tol"], gain=p["gain"], stall_steps=p["stall"])
     target = pos(object_name(item))  # re-read: objects can shift slightly
     # Aim at the object center: 1 cm higher stopped some grasps above small boxes.
-    robot.move_to(target, OPEN, tol=p["fine_tol"], gain=p["gain"])
+    robot.move_to(target, OPEN, tol=p["fine_tol"], gain=p["gain"], stall_steps=p["stall"])
     robot.hold(CLOSE, p["close_wait"])
-    robot.move_to([robot.eef()[0], robot.eef()[1], travel_z], CLOSE, tol=p["tol"], gain=p["gain"])
+    robot.move_to(
+        [robot.eef()[0], robot.eef()[1], travel_z], CLOSE, tol=p["tol"], gain=p["gain"], stall_steps=p["stall"]
+    )
     basket = pos("basket_1")
     basket[:2] += spot  # where in the basket this item goes
     target_z = basket[2] + release_height
@@ -126,10 +147,10 @@ def pick_and_place(
         hang = robot.eef() - pos(object_name(item))
         basket[:2] += hang[:2]
         target_z += hang[2]
-    robot.move_to([basket[0], basket[1], travel_z], CLOSE, tol=p["tol"], gain=p["gain"])
-    robot.move_to([basket[0], basket[1], target_z], CLOSE, tol=0.01, gain=p["gain"])
+    robot.move_to([basket[0], basket[1], travel_z], CLOSE, tol=p["tol"], gain=p["gain"], stall_steps=p["stall"])
+    robot.move_to([basket[0], basket[1], target_z], CLOSE, tol=0.01, gain=p["gain"], stall_steps=p["stall"])
     robot.hold(OPEN, p["open_wait"])
-    robot.move_to([basket[0], basket[1], travel_z], OPEN, tol=p["tol"], gain=p["gain"])
+    robot.move_to([basket[0], basket[1], travel_z], OPEN, tol=p["tol"], gain=p["gain"], stall_steps=p["stall"])
 
 
 ITEMS = [

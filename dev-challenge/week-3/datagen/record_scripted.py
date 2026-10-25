@@ -29,7 +29,7 @@ from lerobot.datasets.lerobot_dataset import LeRobotDataset
 from libero.libero import benchmark, get_libero_path
 from libero.libero.envs import OffScreenRenderEnv
 from robosuite.utils import transform_utils as T
-from scripted_pick import ITEMS, object_name, run_episode
+from scripted_pick import ITEMS, PACES, object_name, run_episode
 
 FPS = 10  # lerobot/libero's fps field; one frame per control step, as there
 FEATURES = {
@@ -63,6 +63,7 @@ def main() -> None:
     )
     parser.add_argument("--part", default="0/1", help="i/n: record only every n-th selected chain (parallel runs)")
     parser.add_argument("--max-tries", type=int, default=10)
+    parser.add_argument("--pace", choices=list(PACES), default="fast", help="scripted_pick.py PACES")
     # Pick settings: scripted_pick.py's defaults, and TALL_ITEM_SETTINGS for
     # the tall bottles (chosen with datagen/sweep_grasp.sh).
     parser.add_argument("--root", type=Path, required=True, help="New dataset folder")
@@ -105,7 +106,7 @@ def main() -> None:
             frames = []
             result = run_episode(
                 env, init_states[k], chain, recorder=lambda o, a, l: frames.append(to_frame(o, a, l)),
-                per_item=True, pace="fast",
+                per_item=True, pace=args.pace,
             )
             if result["success"]:
                 for frame in frames:
