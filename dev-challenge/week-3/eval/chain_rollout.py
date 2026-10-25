@@ -18,10 +18,14 @@ Based on the Week 2 loop (week-2/eval/rollout.py). Changes:
   LIBERO-10 limit)
 - each step checks every item with LIBERO's own goal predicate
   (In <item>_1 basket_1_contain_region) and records the first step it held
+- every item on the table is followed too: how high it was lifted and
+  whether it ended in the basket, so a failure shows whether the robot
+  went for another item or missed the one it was asked for
 
 Examples (from dev-challenge/week-3):
     python eval/chain_rollout.py --task-id 1 --items "cream cheese" butter --episodes 1 --device cpu
     python eval/chain_rollout.py --mode steps --task-id 1 --items butter "cream cheese" --init-state 10 --episodes 3
+    python eval/chain_rollout.py --mode steps --task-id 1 --request "grab the butter and the cream cheese"
 """
 
 import argparse
@@ -39,6 +43,7 @@ from lerobot.policies import make_policy, make_pre_post_processors
 from lerobot.utils.constants import ACTION
 from lerobot.utils.io_utils import write_video
 from lerobot.utils.random_utils import set_seed
+from split_request import split_request
 
 SUITE = "libero_object"
 BASE_SEED = 1000
@@ -69,6 +74,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--items", nargs="+", default=None, help="Items in the order named (steps mode also takes one)"
     )
+    parser.add_argument("--request", default=None, help='One lazy sentence, split into --items by eval/split_request.py')
     parser.add_argument("--plan", type=Path, default=None, help="data/chain_plan.json: run this scene's chains")
     parser.add_argument("--split", default="test", choices=["train", "test"])
     parser.add_argument("--lengths", type=int, nargs="+", default=[2], help="Chain lengths to take from --plan")
@@ -136,6 +142,10 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
 
         frames = [libero_env.render()]
         first_in = {item: None for item in items}
+        on_table = [item for item in ITEMS if object_name(item) in domain.object_states_dict]
+        height = lambda item: float(domain.object_states_dict[object_name(item)].get_geom_state()["pos"][2])
+        start_height = {item: height(item) for item in on_table}
+        lifted = {item: 0.0 for item in on_table}
         current = 0  # steps mode: index of the item being asked for
         switches = []  # steps mode: (step, item) whenever the instruction changes
         instruction_now = instruction if args.mode == "both" else step_sentence(items[0])
@@ -163,6 +173,8 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
             frames.append(libero_env.render())
             step += 1
             inside = {item: bool(domain._eval_predicate(["in", object_name(item), BASKET])) for item in items}
+            for item in on_table:
+                lifted[item] = max(lifted[item], height(item) - start_height[item])
             for item, now in inside.items():
                 if now and first_in[item] is None:
                     first_in[item] = step
@@ -196,6 +208,11 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
             "success": success,
             "items_in_basket_at_end": [item for item, now in inside.items() if now],
             "first_in_step": first_in,
+            # Every item on the table: highest lift (m) and the ones in the basket at the end.
+            "lifted_m": {item: round(rise, 3) for item, rise in lifted.items()},
+            "any_in_basket_at_end": [
+                item for item in on_table if domain._eval_predicate(["in", object_name(item), BASKET])
+            ],
             "steps": step,
             "max_steps": max_steps,
             "episode_s": round(episode_s, 2),
@@ -218,6 +235,11 @@ def main() -> None:
     args = parse_args()
     if args.each and args.mode != "steps":
         raise SystemExit("--each needs --mode steps")
+    if args.request is not None:
+        if args.items is not None:
+            raise SystemExit("Give --items or --request, not both")
+        args.items = split_request(args.request)
+        print(f"Request: {args.request!r} -> items {args.items}")
     # --each: every item is its own one-item episode (steps mode), in one process.
     if args.plan is not None:
         scene_plan = json.loads(args.plan.read_text())["scenes"][str(args.task_id)][args.split]

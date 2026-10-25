@@ -34,6 +34,11 @@ EOF
 source /workspace/venvs/hf26-week3/bin/activate
 ```
 
+The environment lives on the volume, but the `apt` packages live on the
+container disk, which starts empty after a Stop and Start or a pod
+migration. Run the first two lines again then; without `libegl1`,
+`import mujoco` fails with `'NoneType' object has no attribute 'eglQueryString'`.
+
 The thread limits matter: the pod reports the host's CPUs, and without them
 each process starts hundreds of threads (Week 2 step 5).
 
