@@ -1,0 +1,421 @@
+stats,steps,scene,scene_item,asked_item,own_item,success
+published,0,0,alphabet soup,alphabet soup,True,True
+published,0,0,alphabet soup,butter,False,False
+published,0,0,alphabet soup,cream cheese,False,False
+published,0,0,alphabet soup,milk,False,False
+published,0,0,alphabet soup,salad dressing,False,False
+published,0,0,alphabet soup,tomato sauce,False,False
+published,0,1,cream cheese,alphabet soup,False,False
+published,0,1,cream cheese,butter,False,False
+published,0,1,cream cheese,cream cheese,True,True
+published,0,1,cream cheese,milk,False,False
+published,0,1,cream cheese,orange juice,False,False
+published,0,1,cream cheese,tomato sauce,False,False
+published,0,2,salad dressing,alphabet soup,False,False
+published,0,2,salad dressing,cream cheese,False,False
+published,0,2,salad dressing,ketchup,False,False
+published,0,2,salad dressing,milk,False,False
+published,0,2,salad dressing,salad dressing,True,True
+published,0,2,salad dressing,tomato sauce,False,False
+published,0,3,bbq sauce,alphabet soup,False,False
+published,0,3,bbq sauce,bbq sauce,True,True
+published,0,3,bbq sauce,chocolate pudding,False,False
+published,0,3,bbq sauce,cream cheese,False,False
+published,0,3,bbq sauce,ketchup,False,False
+published,0,3,bbq sauce,salad dressing,False,False
+published,0,4,ketchup,alphabet soup,False,False
+published,0,4,ketchup,bbq sauce,False,False
+published,0,4,ketchup,cream cheese,False,False
+published,0,4,ketchup,ketchup,True,True
+published,0,4,ketchup,milk,False,False
+published,0,4,ketchup,salad dressing,False,False
+published,0,5,tomato sauce,bbq sauce,False,False
+published,0,5,tomato sauce,butter,False,False
+published,0,5,tomato sauce,chocolate pudding,False,False
+published,0,5,tomato sauce,milk,False,False
+published,0,5,tomato sauce,orange juice,False,False
+published,0,5,tomato sauce,tomato sauce,True,True
+published,0,6,butter,bbq sauce,False,False
+published,0,6,butter,butter,True,True
+published,0,6,butter,chocolate pudding,False,False
+published,0,6,butter,ketchup,False,False
+published,0,6,butter,orange juice,False,False
+published,0,6,butter,tomato sauce,False,False
+published,0,7,milk,butter,False,False
+published,0,7,milk,chocolate pudding,False,False
+published,0,7,milk,cream cheese,False,True
+published,0,7,milk,milk,True,True
+published,0,7,milk,orange juice,False,False
+published,0,7,milk,tomato sauce,False,False
+published,0,8,chocolate pudding,alphabet soup,False,False
+published,0,8,chocolate pudding,bbq sauce,False,False
+published,0,8,chocolate pudding,chocolate pudding,True,True
+published,0,8,chocolate pudding,ketchup,False,False
+published,0,8,chocolate pudding,orange juice,False,False
+published,0,8,chocolate pudding,salad dressing,False,False
+published,0,9,orange juice,bbq sauce,False,False
+published,0,9,orange juice,butter,False,False
+published,0,9,orange juice,chocolate pudding,False,False
+published,0,9,orange juice,ketchup,False,False
+published,0,9,orange juice,orange juice,True,True
+published,0,9,orange juice,salad dressing,False,False
+dataset-stats,1000,0,alphabet soup,alphabet soup,True,False
+dataset-stats,1000,0,alphabet soup,butter,False,False
+dataset-stats,1000,0,alphabet soup,cream cheese,False,False
+dataset-stats,1000,0,alphabet soup,milk,False,False
+dataset-stats,1000,0,alphabet soup,salad dressing,False,False
+dataset-stats,1000,0,alphabet soup,tomato sauce,False,False
+dataset-stats,1000,1,cream cheese,alphabet soup,False,False
+dataset-stats,1000,1,cream cheese,butter,False,False
+dataset-stats,1000,1,cream cheese,cream cheese,True,False
+dataset-stats,1000,1,cream cheese,milk,False,False
+dataset-stats,1000,1,cream cheese,orange juice,False,False
+dataset-stats,1000,1,cream cheese,tomato sauce,False,False
+dataset-stats,1000,2,salad dressing,alphabet soup,False,False
+dataset-stats,1000,2,salad dressing,cream cheese,False,False
+dataset-stats,1000,2,salad dressing,ketchup,False,False
+dataset-stats,1000,2,salad dressing,milk,False,False
+dataset-stats,1000,2,salad dressing,salad dressing,True,False
+dataset-stats,1000,2,salad dressing,tomato sauce,False,False
+dataset-stats,1000,3,bbq sauce,alphabet soup,False,False
+dataset-stats,1000,3,bbq sauce,bbq sauce,True,False
+dataset-stats,1000,3,bbq sauce,chocolate pudding,False,True
+dataset-stats,1000,3,bbq sauce,cream cheese,False,False
+dataset-stats,1000,3,bbq sauce,ketchup,False,False
+dataset-stats,1000,3,bbq sauce,salad dressing,False,False
+dataset-stats,1000,4,ketchup,alphabet soup,False,False
+dataset-stats,1000,4,ketchup,bbq sauce,False,False
+dataset-stats,1000,4,ketchup,cream cheese,False,False
+dataset-stats,1000,4,ketchup,ketchup,True,False
+dataset-stats,1000,4,ketchup,milk,False,False
+dataset-stats,1000,4,ketchup,salad dressing,False,False
+dataset-stats,1000,5,tomato sauce,bbq sauce,False,False
+dataset-stats,1000,5,tomato sauce,butter,False,False
+dataset-stats,1000,5,tomato sauce,chocolate pudding,False,False
+dataset-stats,1000,5,tomato sauce,milk,False,False
+dataset-stats,1000,5,tomato sauce,orange juice,False,False
+dataset-stats,1000,5,tomato sauce,tomato sauce,True,False
+dataset-stats,1000,6,butter,bbq sauce,False,False
+dataset-stats,1000,6,butter,butter,True,False
+dataset-stats,1000,6,butter,chocolate pudding,False,False
+dataset-stats,1000,6,butter,ketchup,False,False
+dataset-stats,1000,6,butter,orange juice,False,False
+dataset-stats,1000,6,butter,tomato sauce,False,False
+dataset-stats,1000,7,milk,butter,False,False
+dataset-stats,1000,7,milk,chocolate pudding,False,False
+dataset-stats,1000,7,milk,cream cheese,False,True
+dataset-stats,1000,7,milk,milk,True,False
+dataset-stats,1000,7,milk,orange juice,False,False
+dataset-stats,1000,7,milk,tomato sauce,False,False
+dataset-stats,1000,8,chocolate pudding,alphabet soup,False,False
+dataset-stats,1000,8,chocolate pudding,bbq sauce,False,False
+dataset-stats,1000,8,chocolate pudding,chocolate pudding,True,False
+dataset-stats,1000,8,chocolate pudding,ketchup,False,False
+dataset-stats,1000,8,chocolate pudding,orange juice,False,False
+dataset-stats,1000,8,chocolate pudding,salad dressing,False,False
+dataset-stats,1000,9,orange juice,bbq sauce,False,False
+dataset-stats,1000,9,orange juice,butter,False,False
+dataset-stats,1000,9,orange juice,chocolate pudding,False,False
+dataset-stats,1000,9,orange juice,ketchup,False,False
+dataset-stats,1000,9,orange juice,orange juice,True,False
+dataset-stats,1000,9,orange juice,salad dressing,False,False
+pretrained-stats,1000,0,alphabet soup,alphabet soup,True,False
+pretrained-stats,1000,0,alphabet soup,butter,False,False
+pretrained-stats,1000,0,alphabet soup,cream cheese,False,False
+pretrained-stats,1000,0,alphabet soup,milk,False,False
+pretrained-stats,1000,0,alphabet soup,salad dressing,False,False
+pretrained-stats,1000,0,alphabet soup,tomato sauce,False,False
+pretrained-stats,1000,1,cream cheese,alphabet soup,False,False
+pretrained-stats,1000,1,cream cheese,butter,False,False
+pretrained-stats,1000,1,cream cheese,cream cheese,True,True
+pretrained-stats,1000,1,cream cheese,milk,False,False
+pretrained-stats,1000,1,cream cheese,orange juice,False,False
+pretrained-stats,1000,1,cream cheese,tomato sauce,False,False
+pretrained-stats,1000,2,salad dressing,alphabet soup,False,False
+pretrained-stats,1000,2,salad dressing,cream cheese,False,False
+pretrained-stats,1000,2,salad dressing,ketchup,False,False
+pretrained-stats,1000,2,salad dressing,milk,False,False
+pretrained-stats,1000,2,salad dressing,salad dressing,True,False
+pretrained-stats,1000,2,salad dressing,tomato sauce,False,False
+pretrained-stats,1000,3,bbq sauce,alphabet soup,False,False
+pretrained-stats,1000,3,bbq sauce,bbq sauce,True,False
+pretrained-stats,1000,3,bbq sauce,chocolate pudding,False,False
+pretrained-stats,1000,3,bbq sauce,cream cheese,False,False
+pretrained-stats,1000,3,bbq sauce,ketchup,False,False
+pretrained-stats,1000,3,bbq sauce,salad dressing,False,False
+pretrained-stats,1000,4,ketchup,alphabet soup,False,False
+pretrained-stats,1000,4,ketchup,bbq sauce,False,True
+pretrained-stats,1000,4,ketchup,cream cheese,False,False
+pretrained-stats,1000,4,ketchup,ketchup,True,False
+pretrained-stats,1000,4,ketchup,milk,False,False
+pretrained-stats,1000,4,ketchup,salad dressing,False,False
+pretrained-stats,1000,5,tomato sauce,bbq sauce,False,False
+pretrained-stats,1000,5,tomato sauce,butter,False,False
+pretrained-stats,1000,5,tomato sauce,chocolate pudding,False,False
+pretrained-stats,1000,5,tomato sauce,milk,False,False
+pretrained-stats,1000,5,tomato sauce,orange juice,False,False
+pretrained-stats,1000,5,tomato sauce,tomato sauce,True,False
+pretrained-stats,1000,6,butter,bbq sauce,False,False
+pretrained-stats,1000,6,butter,butter,True,True
+pretrained-stats,1000,6,butter,chocolate pudding,False,False
+pretrained-stats,1000,6,butter,ketchup,False,False
+pretrained-stats,1000,6,butter,orange juice,False,False
+pretrained-stats,1000,6,butter,tomato sauce,False,False
+pretrained-stats,1000,7,milk,butter,False,False
+pretrained-stats,1000,7,milk,chocolate pudding,False,False
+pretrained-stats,1000,7,milk,cream cheese,False,True
+pretrained-stats,1000,7,milk,milk,True,False
+pretrained-stats,1000,7,milk,orange juice,False,False
+pretrained-stats,1000,7,milk,tomato sauce,False,False
+pretrained-stats,1000,8,chocolate pudding,alphabet soup,False,False
+pretrained-stats,1000,8,chocolate pudding,bbq sauce,False,False
+pretrained-stats,1000,8,chocolate pudding,chocolate pudding,True,False
+pretrained-stats,1000,8,chocolate pudding,ketchup,False,False
+pretrained-stats,1000,8,chocolate pudding,orange juice,False,False
+pretrained-stats,1000,8,chocolate pudding,salad dressing,False,False
+pretrained-stats,1000,9,orange juice,bbq sauce,False,False
+pretrained-stats,1000,9,orange juice,butter,False,False
+pretrained-stats,1000,9,orange juice,chocolate pudding,False,False
+pretrained-stats,1000,9,orange juice,ketchup,False,False
+pretrained-stats,1000,9,orange juice,orange juice,True,True
+pretrained-stats,1000,9,orange juice,salad dressing,False,False
+dataset-stats,2000,0,alphabet soup,alphabet soup,True,False
+dataset-stats,2000,0,alphabet soup,butter,False,False
+dataset-stats,2000,0,alphabet soup,cream cheese,False,False
+dataset-stats,2000,0,alphabet soup,milk,False,False
+dataset-stats,2000,0,alphabet soup,salad dressing,False,False
+dataset-stats,2000,0,alphabet soup,tomato sauce,False,False
+dataset-stats,2000,1,cream cheese,alphabet soup,False,False
+dataset-stats,2000,1,cream cheese,butter,False,False
+dataset-stats,2000,1,cream cheese,cream cheese,True,True
+dataset-stats,2000,1,cream cheese,milk,False,False
+dataset-stats,2000,1,cream cheese,orange juice,False,False
+dataset-stats,2000,1,cream cheese,tomato sauce,False,False
+dataset-stats,2000,2,salad dressing,alphabet soup,False,False
+dataset-stats,2000,2,salad dressing,cream cheese,False,True
+dataset-stats,2000,2,salad dressing,ketchup,False,False
+dataset-stats,2000,2,salad dressing,milk,False,False
+dataset-stats,2000,2,salad dressing,salad dressing,True,False
+dataset-stats,2000,2,salad dressing,tomato sauce,False,False
+dataset-stats,2000,3,bbq sauce,alphabet soup,False,False
+dataset-stats,2000,3,bbq sauce,bbq sauce,True,False
+dataset-stats,2000,3,bbq sauce,chocolate pudding,False,True
+dataset-stats,2000,3,bbq sauce,cream cheese,False,False
+dataset-stats,2000,3,bbq sauce,ketchup,False,False
+dataset-stats,2000,3,bbq sauce,salad dressing,False,False
+dataset-stats,2000,4,ketchup,alphabet soup,False,False
+dataset-stats,2000,4,ketchup,bbq sauce,False,False
+dataset-stats,2000,4,ketchup,cream cheese,False,False
+dataset-stats,2000,4,ketchup,ketchup,True,False
+dataset-stats,2000,4,ketchup,milk,False,False
+dataset-stats,2000,4,ketchup,salad dressing,False,False
+dataset-stats,2000,5,tomato sauce,bbq sauce,False,False
+dataset-stats,2000,5,tomato sauce,butter,False,False
+dataset-stats,2000,5,tomato sauce,chocolate pudding,False,False
+dataset-stats,2000,5,tomato sauce,milk,False,False
+dataset-stats,2000,5,tomato sauce,orange juice,False,False
+dataset-stats,2000,5,tomato sauce,tomato sauce,True,False
+dataset-stats,2000,6,butter,bbq sauce,False,False
+dataset-stats,2000,6,butter,butter,True,True
+dataset-stats,2000,6,butter,chocolate pudding,False,False
+dataset-stats,2000,6,butter,ketchup,False,False
+dataset-stats,2000,6,butter,orange juice,False,False
+dataset-stats,2000,6,butter,tomato sauce,False,True
+dataset-stats,2000,7,milk,butter,False,True
+dataset-stats,2000,7,milk,chocolate pudding,False,False
+dataset-stats,2000,7,milk,cream cheese,False,False
+dataset-stats,2000,7,milk,milk,True,False
+dataset-stats,2000,7,milk,orange juice,False,False
+dataset-stats,2000,7,milk,tomato sauce,False,False
+dataset-stats,2000,8,chocolate pudding,alphabet soup,False,False
+dataset-stats,2000,8,chocolate pudding,bbq sauce,False,False
+dataset-stats,2000,8,chocolate pudding,chocolate pudding,True,True
+dataset-stats,2000,8,chocolate pudding,ketchup,False,False
+dataset-stats,2000,8,chocolate pudding,orange juice,False,False
+dataset-stats,2000,8,chocolate pudding,salad dressing,False,False
+dataset-stats,2000,9,orange juice,bbq sauce,False,False
+dataset-stats,2000,9,orange juice,butter,False,True
+dataset-stats,2000,9,orange juice,chocolate pudding,False,False
+dataset-stats,2000,9,orange juice,ketchup,False,False
+dataset-stats,2000,9,orange juice,orange juice,True,False
+dataset-stats,2000,9,orange juice,salad dressing,False,False
+pretrained-stats,2000,0,alphabet soup,alphabet soup,True,True
+pretrained-stats,2000,0,alphabet soup,butter,False,False
+pretrained-stats,2000,0,alphabet soup,cream cheese,False,False
+pretrained-stats,2000,0,alphabet soup,milk,False,False
+pretrained-stats,2000,0,alphabet soup,salad dressing,False,False
+pretrained-stats,2000,0,alphabet soup,tomato sauce,False,False
+pretrained-stats,2000,1,cream cheese,alphabet soup,False,False
+pretrained-stats,2000,1,cream cheese,butter,False,False
+pretrained-stats,2000,1,cream cheese,cream cheese,True,False
+pretrained-stats,2000,1,cream cheese,milk,False,False
+pretrained-stats,2000,1,cream cheese,orange juice,False,False
+pretrained-stats,2000,1,cream cheese,tomato sauce,False,True
+pretrained-stats,2000,2,salad dressing,alphabet soup,False,False
+pretrained-stats,2000,2,salad dressing,cream cheese,False,False
+pretrained-stats,2000,2,salad dressing,ketchup,False,False
+pretrained-stats,2000,2,salad dressing,milk,False,False
+pretrained-stats,2000,2,salad dressing,salad dressing,True,False
+pretrained-stats,2000,2,salad dressing,tomato sauce,False,False
+pretrained-stats,2000,3,bbq sauce,alphabet soup,False,False
+pretrained-stats,2000,3,bbq sauce,bbq sauce,True,False
+pretrained-stats,2000,3,bbq sauce,chocolate pudding,False,True
+pretrained-stats,2000,3,bbq sauce,cream cheese,False,False
+pretrained-stats,2000,3,bbq sauce,ketchup,False,False
+pretrained-stats,2000,3,bbq sauce,salad dressing,False,False
+pretrained-stats,2000,4,ketchup,alphabet soup,False,False
+pretrained-stats,2000,4,ketchup,bbq sauce,False,False
+pretrained-stats,2000,4,ketchup,cream cheese,False,False
+pretrained-stats,2000,4,ketchup,ketchup,True,False
+pretrained-stats,2000,4,ketchup,milk,False,False
+pretrained-stats,2000,4,ketchup,salad dressing,False,False
+pretrained-stats,2000,5,tomato sauce,bbq sauce,False,False
+pretrained-stats,2000,5,tomato sauce,butter,False,False
+pretrained-stats,2000,5,tomato sauce,chocolate pudding,False,False
+pretrained-stats,2000,5,tomato sauce,milk,False,False
+pretrained-stats,2000,5,tomato sauce,orange juice,False,False
+pretrained-stats,2000,5,tomato sauce,tomato sauce,True,False
+pretrained-stats,2000,6,butter,bbq sauce,False,False
+pretrained-stats,2000,6,butter,butter,True,False
+pretrained-stats,2000,6,butter,chocolate pudding,False,False
+pretrained-stats,2000,6,butter,ketchup,False,False
+pretrained-stats,2000,6,butter,orange juice,False,False
+pretrained-stats,2000,6,butter,tomato sauce,False,False
+pretrained-stats,2000,7,milk,butter,False,False
+pretrained-stats,2000,7,milk,chocolate pudding,False,False
+pretrained-stats,2000,7,milk,cream cheese,False,False
+pretrained-stats,2000,7,milk,milk,True,False
+pretrained-stats,2000,7,milk,orange juice,False,False
+pretrained-stats,2000,7,milk,tomato sauce,False,False
+pretrained-stats,2000,8,chocolate pudding,alphabet soup,False,False
+pretrained-stats,2000,8,chocolate pudding,bbq sauce,False,False
+pretrained-stats,2000,8,chocolate pudding,chocolate pudding,True,True
+pretrained-stats,2000,8,chocolate pudding,ketchup,False,False
+pretrained-stats,2000,8,chocolate pudding,orange juice,False,False
+pretrained-stats,2000,8,chocolate pudding,salad dressing,False,False
+pretrained-stats,2000,9,orange juice,bbq sauce,False,False
+pretrained-stats,2000,9,orange juice,butter,False,True
+pretrained-stats,2000,9,orange juice,chocolate pudding,False,False
+pretrained-stats,2000,9,orange juice,ketchup,False,False
+pretrained-stats,2000,9,orange juice,orange juice,True,False
+pretrained-stats,2000,9,orange juice,salad dressing,False,False
+dataset-stats,3000,0,alphabet soup,alphabet soup,True,False
+dataset-stats,3000,0,alphabet soup,butter,False,False
+dataset-stats,3000,0,alphabet soup,cream cheese,False,False
+dataset-stats,3000,0,alphabet soup,milk,False,False
+dataset-stats,3000,0,alphabet soup,salad dressing,False,False
+dataset-stats,3000,0,alphabet soup,tomato sauce,False,False
+dataset-stats,3000,1,cream cheese,alphabet soup,False,False
+dataset-stats,3000,1,cream cheese,butter,False,False
+dataset-stats,3000,1,cream cheese,cream cheese,True,True
+dataset-stats,3000,1,cream cheese,milk,False,False
+dataset-stats,3000,1,cream cheese,orange juice,False,False
+dataset-stats,3000,1,cream cheese,tomato sauce,False,False
+dataset-stats,3000,2,salad dressing,alphabet soup,False,False
+dataset-stats,3000,2,salad dressing,cream cheese,False,False
+dataset-stats,3000,2,salad dressing,ketchup,False,False
+dataset-stats,3000,2,salad dressing,milk,False,False
+dataset-stats,3000,2,salad dressing,salad dressing,True,False
+dataset-stats,3000,2,salad dressing,tomato sauce,False,False
+dataset-stats,3000,3,bbq sauce,alphabet soup,False,False
+dataset-stats,3000,3,bbq sauce,bbq sauce,True,False
+dataset-stats,3000,3,bbq sauce,chocolate pudding,False,True
+dataset-stats,3000,3,bbq sauce,cream cheese,False,False
+dataset-stats,3000,3,bbq sauce,ketchup,False,False
+dataset-stats,3000,3,bbq sauce,salad dressing,False,False
+dataset-stats,3000,4,ketchup,alphabet soup,False,False
+dataset-stats,3000,4,ketchup,bbq sauce,False,True
+dataset-stats,3000,4,ketchup,cream cheese,False,False
+dataset-stats,3000,4,ketchup,ketchup,True,False
+dataset-stats,3000,4,ketchup,milk,False,False
+dataset-stats,3000,4,ketchup,salad dressing,False,False
+dataset-stats,3000,5,tomato sauce,bbq sauce,False,False
+dataset-stats,3000,5,tomato sauce,butter,False,False
+dataset-stats,3000,5,tomato sauce,chocolate pudding,False,False
+dataset-stats,3000,5,tomato sauce,milk,False,False
+dataset-stats,3000,5,tomato sauce,orange juice,False,False
+dataset-stats,3000,5,tomato sauce,tomato sauce,True,False
+dataset-stats,3000,6,butter,bbq sauce,False,False
+dataset-stats,3000,6,butter,butter,True,False
+dataset-stats,3000,6,butter,chocolate pudding,False,False
+dataset-stats,3000,6,butter,ketchup,False,False
+dataset-stats,3000,6,butter,orange juice,False,False
+dataset-stats,3000,6,butter,tomato sauce,False,False
+dataset-stats,3000,7,milk,butter,False,False
+dataset-stats,3000,7,milk,chocolate pudding,False,False
+dataset-stats,3000,7,milk,cream cheese,False,True
+dataset-stats,3000,7,milk,milk,True,False
+dataset-stats,3000,7,milk,orange juice,False,False
+dataset-stats,3000,7,milk,tomato sauce,False,True
+dataset-stats,3000,8,chocolate pudding,alphabet soup,False,False
+dataset-stats,3000,8,chocolate pudding,bbq sauce,False,False
+dataset-stats,3000,8,chocolate pudding,chocolate pudding,True,True
+dataset-stats,3000,8,chocolate pudding,ketchup,False,False
+dataset-stats,3000,8,chocolate pudding,orange juice,False,False
+dataset-stats,3000,8,chocolate pudding,salad dressing,False,False
+dataset-stats,3000,9,orange juice,bbq sauce,False,False
+dataset-stats,3000,9,orange juice,butter,False,False
+dataset-stats,3000,9,orange juice,chocolate pudding,False,False
+dataset-stats,3000,9,orange juice,ketchup,False,False
+dataset-stats,3000,9,orange juice,orange juice,True,False
+dataset-stats,3000,9,orange juice,salad dressing,False,False
+pretrained-stats,3000,0,alphabet soup,alphabet soup,True,False
+pretrained-stats,3000,0,alphabet soup,butter,False,False
+pretrained-stats,3000,0,alphabet soup,cream cheese,False,False
+pretrained-stats,3000,0,alphabet soup,milk,False,False
+pretrained-stats,3000,0,alphabet soup,salad dressing,False,False
+pretrained-stats,3000,0,alphabet soup,tomato sauce,False,False
+pretrained-stats,3000,1,cream cheese,alphabet soup,False,False
+pretrained-stats,3000,1,cream cheese,butter,False,False
+pretrained-stats,3000,1,cream cheese,cream cheese,True,False
+pretrained-stats,3000,1,cream cheese,milk,False,False
+pretrained-stats,3000,1,cream cheese,orange juice,False,False
+pretrained-stats,3000,1,cream cheese,tomato sauce,False,False
+pretrained-stats,3000,2,salad dressing,alphabet soup,False,False
+pretrained-stats,3000,2,salad dressing,cream cheese,False,False
+pretrained-stats,3000,2,salad dressing,ketchup,False,False
+pretrained-stats,3000,2,salad dressing,milk,False,False
+pretrained-stats,3000,2,salad dressing,salad dressing,True,False
+pretrained-stats,3000,2,salad dressing,tomato sauce,False,False
+pretrained-stats,3000,3,bbq sauce,alphabet soup,False,False
+pretrained-stats,3000,3,bbq sauce,bbq sauce,True,False
+pretrained-stats,3000,3,bbq sauce,chocolate pudding,False,True
+pretrained-stats,3000,3,bbq sauce,cream cheese,False,False
+pretrained-stats,3000,3,bbq sauce,ketchup,False,False
+pretrained-stats,3000,3,bbq sauce,salad dressing,False,False
+pretrained-stats,3000,4,ketchup,alphabet soup,False,False
+pretrained-stats,3000,4,ketchup,bbq sauce,False,False
+pretrained-stats,3000,4,ketchup,cream cheese,False,False
+pretrained-stats,3000,4,ketchup,ketchup,True,False
+pretrained-stats,3000,4,ketchup,milk,False,False
+pretrained-stats,3000,4,ketchup,salad dressing,False,False
+pretrained-stats,3000,5,tomato sauce,bbq sauce,False,False
+pretrained-stats,3000,5,tomato sauce,butter,False,False
+pretrained-stats,3000,5,tomato sauce,chocolate pudding,False,False
+pretrained-stats,3000,5,tomato sauce,milk,False,False
+pretrained-stats,3000,5,tomato sauce,orange juice,False,False
+pretrained-stats,3000,5,tomato sauce,tomato sauce,True,False
+pretrained-stats,3000,6,butter,bbq sauce,False,False
+pretrained-stats,3000,6,butter,butter,True,True
+pretrained-stats,3000,6,butter,chocolate pudding,False,False
+pretrained-stats,3000,6,butter,ketchup,False,False
+pretrained-stats,3000,6,butter,orange juice,False,False
+pretrained-stats,3000,6,butter,tomato sauce,False,False
+pretrained-stats,3000,7,milk,butter,False,False
+pretrained-stats,3000,7,milk,chocolate pudding,False,False
+pretrained-stats,3000,7,milk,cream cheese,False,False
+pretrained-stats,3000,7,milk,milk,True,False
+pretrained-stats,3000,7,milk,orange juice,False,False
+pretrained-stats,3000,7,milk,tomato sauce,False,False
+pretrained-stats,3000,8,chocolate pudding,alphabet soup,False,False
+pretrained-stats,3000,8,chocolate pudding,bbq sauce,False,False
+pretrained-stats,3000,8,chocolate pudding,chocolate pudding,True,True
+pretrained-stats,3000,8,chocolate pudding,ketchup,False,False
+pretrained-stats,3000,8,chocolate pudding,orange juice,False,False
+pretrained-stats,3000,8,chocolate pudding,salad dressing,False,False
+pretrained-stats,3000,9,orange juice,bbq sauce,False,False
+pretrained-stats,3000,9,orange juice,butter,False,True
+pretrained-stats,3000,9,orange juice,chocolate pudding,False,False
+pretrained-stats,3000,9,orange juice,ketchup,False,False
+pretrained-stats,3000,9,orange juice,orange juice,True,False
+pretrained-stats,3000,9,orange juice,salad dressing,False,False
