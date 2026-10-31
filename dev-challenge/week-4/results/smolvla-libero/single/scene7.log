@@ -1,0 +1,35 @@
+[robosuite WARNING] No private macro file found! (__init__.py:7)
+WARNING:robosuite_logs:No private macro file found!
+[robosuite WARNING] It is recommended to use a private macro file (__init__.py:8)
+WARNING:robosuite_logs:It is recommended to use a private macro file
+[robosuite WARNING] To setup, run: python /workspace/venvs/hf26-week3/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (__init__.py:9)
+WARNING:robosuite_logs:To setup, run: python /workspace/venvs/hf26-week3/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py
+Creating LIBERO envs | suites=['libero_object'] | n_envs(per task)=1 | init_states=True
+Restricting to task_ids=[7]
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Built vec env | suite=libero_object | task_id=7 | n_envs=1
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  36%|███▋      | 178/489 [00:00<00:00, 1773.28it/s]Loading weights:  97%|█████████▋| 475/489 [00:00<00:00, 2471.35it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2383.28it/s]
+Reducing the number of VLM layers to 16 ...
+Scene: task 7 (pick up the milk and place it in the basket)
+Instruction: 'pick up the butter and place it in the basket'
+Local assets not found. Downloading from HuggingFace Hub...
+Assets already downloaded at /root/.cache/libero/assets
+{"policy": "lerobot/smolvla_libero", "task_id": 7, "items": ["butter"], "mode": "steps", "instruction": "pick up the butter and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"butter": null}, "lifted_m": {"cream cheese": 0.0, "tomato sauce": 0.0, "butter": 0.0, "milk": 0.233, "chocolate pudding": 0.0, "orange juice": 0.0}, "any_in_basket_at_end": ["milk"], "steps": 300, "max_steps": 300, "episode_s": 31.1, "inference_calls": 30, "inference_mean_s": 0.668, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene7/videos/task7_steps_butter/init0.mp4"}
+pick up the butter and place it in the basket: 0/1 all items in the basket
+Instruction: 'pick up the chocolate pudding and place it in the basket'
+{"policy": "lerobot/smolvla_libero", "task_id": 7, "items": ["chocolate pudding"], "mode": "steps", "instruction": "pick up the chocolate pudding and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"chocolate pudding": null}, "lifted_m": {"cream cheese": 0.0, "tomato sauce": 0.0, "butter": 0.0, "milk": 0.231, "chocolate pudding": 0.0, "orange juice": 0.0}, "any_in_basket_at_end": [], "steps": 300, "max_steps": 300, "episode_s": 26.89, "inference_calls": 30, "inference_mean_s": 0.526, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene7/videos/task7_steps_chocolatepudding/init0.mp4"}
+pick up the chocolate pudding and place it in the basket: 0/1 all items in the basket
+Instruction: 'pick up the cream cheese and place it in the basket'
+{"policy": "lerobot/smolvla_libero", "task_id": 7, "items": ["cream cheese"], "mode": "steps", "instruction": "pick up the cream cheese and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"cream cheese": null}, "lifted_m": {"cream cheese": 0.0, "tomato sauce": 0.0, "butter": 0.0, "milk": 0.003, "chocolate pudding": 0.0, "orange juice": 0.0}, "any_in_basket_at_end": [], "steps": 300, "max_steps": 300, "episode_s": 25.67, "inference_calls": 30, "inference_mean_s": 0.495, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene7/videos/task7_steps_creamcheese/init0.mp4"}
+pick up the cream cheese and place it in the basket: 0/1 all items in the basket
+Instruction: 'pick up the milk and place it in the basket'
+{"policy": "lerobot/smolvla_libero", "task_id": 7, "items": ["milk"], "mode": "steps", "instruction": "pick up the milk and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": true, "items_in_basket_at_end": ["milk"], "first_in_step": {"milk": 127}, "lifted_m": {"cream cheese": 0.0, "tomato sauce": 0.0, "butter": 0.0, "milk": 0.22, "chocolate pudding": 0.0, "orange juice": 0.0}, "any_in_basket_at_end": ["milk"], "steps": 127, "max_steps": 300, "episode_s": 10.82, "inference_calls": 13, "inference_mean_s": 0.492, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene7/videos/task7_steps_milk/init0.mp4"}
+pick up the milk and place it in the basket: 1/1 all items in the basket
+Instruction: 'pick up the orange juice and place it in the basket'
+{"policy": "lerobot/smolvla_libero", "task_id": 7, "items": ["orange juice"], "mode": "steps", "instruction": "pick up the orange juice and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"orange juice": null}, "lifted_m": {"cream cheese": 0.0, "tomato sauce": 0.0, "butter": 0.0, "milk": 0.005, "chocolate pudding": 0.0, "orange juice": 0.0}, "any_in_basket_at_end": [], "steps": 300, "max_steps": 300, "episode_s": 25.84, "inference_calls": 30, "inference_mean_s": 0.509, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene7/videos/task7_steps_orangejuice/init0.mp4"}
+pick up the orange juice and place it in the basket: 0/1 all items in the basket
+Instruction: 'pick up the tomato sauce and place it in the basket'
+{"policy": "lerobot/smolvla_libero", "task_id": 7, "items": ["tomato sauce"], "mode": "steps", "instruction": "pick up the tomato sauce and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"tomato sauce": null}, "lifted_m": {"cream cheese": 0.0, "tomato sauce": 0.0, "butter": 0.0, "milk": 0.006, "chocolate pudding": 0.0, "orange juice": 0.0}, "any_in_basket_at_end": [], "steps": 300, "max_steps": 300, "episode_s": 25.49, "inference_calls": 30, "inference_mean_s": 0.512, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene7/videos/task7_steps_tomatosauce/init0.mp4"}
+pick up the tomato sauce and place it in the basket: 0/1 all items in the basket

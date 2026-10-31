@@ -1,0 +1,1709 @@
+{
+ "pairs": true,
+ "lengths": [
+  1,
+  2
+ ],
+ "scenes": {
+  "0": {
+   "train": [
+    [
+     "alphabet soup"
+    ],
+    [
+     "butter"
+    ],
+    [
+     "cream cheese"
+    ],
+    [
+     "milk"
+    ],
+    [
+     "salad dressing"
+    ],
+    [
+     "tomato sauce"
+    ],
+    [
+     "alphabet soup",
+     "cream cheese"
+    ],
+    [
+     "alphabet soup",
+     "milk"
+    ],
+    [
+     "alphabet soup",
+     "salad dressing"
+    ],
+    [
+     "alphabet soup",
+     "tomato sauce"
+    ],
+    [
+     "butter",
+     "alphabet soup"
+    ],
+    [
+     "butter",
+     "milk"
+    ],
+    [
+     "butter",
+     "salad dressing"
+    ],
+    [
+     "butter",
+     "tomato sauce"
+    ],
+    [
+     "cream cheese",
+     "alphabet soup"
+    ],
+    [
+     "cream cheese",
+     "butter"
+    ],
+    [
+     "cream cheese",
+     "salad dressing"
+    ],
+    [
+     "cream cheese",
+     "tomato sauce"
+    ],
+    [
+     "milk",
+     "alphabet soup"
+    ],
+    [
+     "milk",
+     "butter"
+    ],
+    [
+     "milk",
+     "cream cheese"
+    ],
+    [
+     "milk",
+     "tomato sauce"
+    ],
+    [
+     "salad dressing",
+     "alphabet soup"
+    ],
+    [
+     "salad dressing",
+     "butter"
+    ],
+    [
+     "salad dressing",
+     "cream cheese"
+    ],
+    [
+     "salad dressing",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "butter"
+    ],
+    [
+     "tomato sauce",
+     "cream cheese"
+    ],
+    [
+     "tomato sauce",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "salad dressing"
+    ]
+   ],
+   "test": [
+    [
+     "alphabet soup",
+     "butter"
+    ],
+    [
+     "butter",
+     "cream cheese"
+    ],
+    [
+     "cream cheese",
+     "milk"
+    ],
+    [
+     "milk",
+     "salad dressing"
+    ],
+    [
+     "salad dressing",
+     "tomato sauce"
+    ],
+    [
+     "tomato sauce",
+     "alphabet soup"
+    ]
+   ],
+   "test_seen": [
+    [
+     "butter",
+     "alphabet soup"
+    ],
+    [
+     "cream cheese",
+     "butter"
+    ],
+    [
+     "milk",
+     "cream cheese"
+    ],
+    [
+     "salad dressing",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "salad dressing"
+    ],
+    [
+     "alphabet soup",
+     "tomato sauce"
+    ]
+   ]
+  },
+  "1": {
+   "train": [
+    [
+     "alphabet soup"
+    ],
+    [
+     "butter"
+    ],
+    [
+     "cream cheese"
+    ],
+    [
+     "milk"
+    ],
+    [
+     "orange juice"
+    ],
+    [
+     "tomato sauce"
+    ],
+    [
+     "alphabet soup",
+     "cream cheese"
+    ],
+    [
+     "alphabet soup",
+     "milk"
+    ],
+    [
+     "alphabet soup",
+     "orange juice"
+    ],
+    [
+     "alphabet soup",
+     "tomato sauce"
+    ],
+    [
+     "butter",
+     "alphabet soup"
+    ],
+    [
+     "butter",
+     "milk"
+    ],
+    [
+     "butter",
+     "orange juice"
+    ],
+    [
+     "butter",
+     "tomato sauce"
+    ],
+    [
+     "cream cheese",
+     "alphabet soup"
+    ],
+    [
+     "cream cheese",
+     "butter"
+    ],
+    [
+     "cream cheese",
+     "orange juice"
+    ],
+    [
+     "cream cheese",
+     "tomato sauce"
+    ],
+    [
+     "milk",
+     "alphabet soup"
+    ],
+    [
+     "milk",
+     "butter"
+    ],
+    [
+     "milk",
+     "cream cheese"
+    ],
+    [
+     "milk",
+     "tomato sauce"
+    ],
+    [
+     "orange juice",
+     "alphabet soup"
+    ],
+    [
+     "orange juice",
+     "butter"
+    ],
+    [
+     "orange juice",
+     "cream cheese"
+    ],
+    [
+     "orange juice",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "butter"
+    ],
+    [
+     "tomato sauce",
+     "cream cheese"
+    ],
+    [
+     "tomato sauce",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "orange juice"
+    ]
+   ],
+   "test": [
+    [
+     "alphabet soup",
+     "butter"
+    ],
+    [
+     "butter",
+     "cream cheese"
+    ],
+    [
+     "cream cheese",
+     "milk"
+    ],
+    [
+     "milk",
+     "orange juice"
+    ],
+    [
+     "orange juice",
+     "tomato sauce"
+    ],
+    [
+     "tomato sauce",
+     "alphabet soup"
+    ]
+   ],
+   "test_seen": [
+    [
+     "butter",
+     "alphabet soup"
+    ],
+    [
+     "cream cheese",
+     "butter"
+    ],
+    [
+     "milk",
+     "cream cheese"
+    ],
+    [
+     "orange juice",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "orange juice"
+    ],
+    [
+     "alphabet soup",
+     "tomato sauce"
+    ]
+   ]
+  },
+  "2": {
+   "train": [
+    [
+     "alphabet soup"
+    ],
+    [
+     "cream cheese"
+    ],
+    [
+     "ketchup"
+    ],
+    [
+     "milk"
+    ],
+    [
+     "salad dressing"
+    ],
+    [
+     "tomato sauce"
+    ],
+    [
+     "alphabet soup",
+     "ketchup"
+    ],
+    [
+     "alphabet soup",
+     "milk"
+    ],
+    [
+     "alphabet soup",
+     "salad dressing"
+    ],
+    [
+     "alphabet soup",
+     "tomato sauce"
+    ],
+    [
+     "cream cheese",
+     "alphabet soup"
+    ],
+    [
+     "cream cheese",
+     "milk"
+    ],
+    [
+     "cream cheese",
+     "salad dressing"
+    ],
+    [
+     "cream cheese",
+     "tomato sauce"
+    ],
+    [
+     "ketchup",
+     "alphabet soup"
+    ],
+    [
+     "ketchup",
+     "cream cheese"
+    ],
+    [
+     "ketchup",
+     "salad dressing"
+    ],
+    [
+     "ketchup",
+     "tomato sauce"
+    ],
+    [
+     "milk",
+     "alphabet soup"
+    ],
+    [
+     "milk",
+     "cream cheese"
+    ],
+    [
+     "milk",
+     "ketchup"
+    ],
+    [
+     "milk",
+     "tomato sauce"
+    ],
+    [
+     "salad dressing",
+     "alphabet soup"
+    ],
+    [
+     "salad dressing",
+     "cream cheese"
+    ],
+    [
+     "salad dressing",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "cream cheese"
+    ],
+    [
+     "tomato sauce",
+     "ketchup"
+    ],
+    [
+     "tomato sauce",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "salad dressing"
+    ]
+   ],
+   "test": [
+    [
+     "alphabet soup",
+     "cream cheese"
+    ],
+    [
+     "cream cheese",
+     "ketchup"
+    ],
+    [
+     "ketchup",
+     "milk"
+    ],
+    [
+     "milk",
+     "salad dressing"
+    ],
+    [
+     "salad dressing",
+     "tomato sauce"
+    ],
+    [
+     "tomato sauce",
+     "alphabet soup"
+    ]
+   ],
+   "test_seen": [
+    [
+     "cream cheese",
+     "alphabet soup"
+    ],
+    [
+     "ketchup",
+     "cream cheese"
+    ],
+    [
+     "milk",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "salad dressing"
+    ],
+    [
+     "alphabet soup",
+     "tomato sauce"
+    ]
+   ]
+  },
+  "3": {
+   "train": [
+    [
+     "alphabet soup"
+    ],
+    [
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding"
+    ],
+    [
+     "cream cheese"
+    ],
+    [
+     "ketchup"
+    ],
+    [
+     "salad dressing"
+    ],
+    [
+     "alphabet soup",
+     "chocolate pudding"
+    ],
+    [
+     "alphabet soup",
+     "cream cheese"
+    ],
+    [
+     "alphabet soup",
+     "ketchup"
+    ],
+    [
+     "alphabet soup",
+     "salad dressing"
+    ],
+    [
+     "bbq sauce",
+     "alphabet soup"
+    ],
+    [
+     "bbq sauce",
+     "cream cheese"
+    ],
+    [
+     "bbq sauce",
+     "ketchup"
+    ],
+    [
+     "bbq sauce",
+     "salad dressing"
+    ],
+    [
+     "chocolate pudding",
+     "alphabet soup"
+    ],
+    [
+     "chocolate pudding",
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding",
+     "ketchup"
+    ],
+    [
+     "chocolate pudding",
+     "salad dressing"
+    ],
+    [
+     "cream cheese",
+     "alphabet soup"
+    ],
+    [
+     "cream cheese",
+     "bbq sauce"
+    ],
+    [
+     "cream cheese",
+     "chocolate pudding"
+    ],
+    [
+     "cream cheese",
+     "salad dressing"
+    ],
+    [
+     "ketchup",
+     "alphabet soup"
+    ],
+    [
+     "ketchup",
+     "bbq sauce"
+    ],
+    [
+     "ketchup",
+     "chocolate pudding"
+    ],
+    [
+     "ketchup",
+     "cream cheese"
+    ],
+    [
+     "salad dressing",
+     "bbq sauce"
+    ],
+    [
+     "salad dressing",
+     "chocolate pudding"
+    ],
+    [
+     "salad dressing",
+     "cream cheese"
+    ],
+    [
+     "salad dressing",
+     "ketchup"
+    ]
+   ],
+   "test": [
+    [
+     "alphabet soup",
+     "bbq sauce"
+    ],
+    [
+     "bbq sauce",
+     "chocolate pudding"
+    ],
+    [
+     "chocolate pudding",
+     "cream cheese"
+    ],
+    [
+     "cream cheese",
+     "ketchup"
+    ],
+    [
+     "ketchup",
+     "salad dressing"
+    ],
+    [
+     "salad dressing",
+     "alphabet soup"
+    ]
+   ],
+   "test_seen": [
+    [
+     "bbq sauce",
+     "alphabet soup"
+    ],
+    [
+     "chocolate pudding",
+     "bbq sauce"
+    ],
+    [
+     "cream cheese",
+     "chocolate pudding"
+    ],
+    [
+     "ketchup",
+     "cream cheese"
+    ],
+    [
+     "salad dressing",
+     "ketchup"
+    ],
+    [
+     "alphabet soup",
+     "salad dressing"
+    ]
+   ]
+  },
+  "4": {
+   "train": [
+    [
+     "alphabet soup"
+    ],
+    [
+     "bbq sauce"
+    ],
+    [
+     "cream cheese"
+    ],
+    [
+     "ketchup"
+    ],
+    [
+     "milk"
+    ],
+    [
+     "salad dressing"
+    ],
+    [
+     "alphabet soup",
+     "cream cheese"
+    ],
+    [
+     "alphabet soup",
+     "ketchup"
+    ],
+    [
+     "alphabet soup",
+     "milk"
+    ],
+    [
+     "alphabet soup",
+     "salad dressing"
+    ],
+    [
+     "bbq sauce",
+     "alphabet soup"
+    ],
+    [
+     "bbq sauce",
+     "ketchup"
+    ],
+    [
+     "bbq sauce",
+     "milk"
+    ],
+    [
+     "bbq sauce",
+     "salad dressing"
+    ],
+    [
+     "cream cheese",
+     "alphabet soup"
+    ],
+    [
+     "cream cheese",
+     "bbq sauce"
+    ],
+    [
+     "cream cheese",
+     "milk"
+    ],
+    [
+     "cream cheese",
+     "salad dressing"
+    ],
+    [
+     "ketchup",
+     "alphabet soup"
+    ],
+    [
+     "ketchup",
+     "bbq sauce"
+    ],
+    [
+     "ketchup",
+     "cream cheese"
+    ],
+    [
+     "ketchup",
+     "salad dressing"
+    ],
+    [
+     "milk",
+     "alphabet soup"
+    ],
+    [
+     "milk",
+     "bbq sauce"
+    ],
+    [
+     "milk",
+     "cream cheese"
+    ],
+    [
+     "milk",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "bbq sauce"
+    ],
+    [
+     "salad dressing",
+     "cream cheese"
+    ],
+    [
+     "salad dressing",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "milk"
+    ]
+   ],
+   "test": [
+    [
+     "alphabet soup",
+     "bbq sauce"
+    ],
+    [
+     "bbq sauce",
+     "cream cheese"
+    ],
+    [
+     "cream cheese",
+     "ketchup"
+    ],
+    [
+     "ketchup",
+     "milk"
+    ],
+    [
+     "milk",
+     "salad dressing"
+    ],
+    [
+     "salad dressing",
+     "alphabet soup"
+    ]
+   ],
+   "test_seen": [
+    [
+     "bbq sauce",
+     "alphabet soup"
+    ],
+    [
+     "cream cheese",
+     "bbq sauce"
+    ],
+    [
+     "ketchup",
+     "cream cheese"
+    ],
+    [
+     "milk",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "milk"
+    ],
+    [
+     "alphabet soup",
+     "salad dressing"
+    ]
+   ]
+  },
+  "5": {
+   "train": [
+    [
+     "bbq sauce"
+    ],
+    [
+     "butter"
+    ],
+    [
+     "chocolate pudding"
+    ],
+    [
+     "milk"
+    ],
+    [
+     "orange juice"
+    ],
+    [
+     "tomato sauce"
+    ],
+    [
+     "bbq sauce",
+     "chocolate pudding"
+    ],
+    [
+     "bbq sauce",
+     "milk"
+    ],
+    [
+     "bbq sauce",
+     "orange juice"
+    ],
+    [
+     "bbq sauce",
+     "tomato sauce"
+    ],
+    [
+     "butter",
+     "bbq sauce"
+    ],
+    [
+     "butter",
+     "milk"
+    ],
+    [
+     "butter",
+     "orange juice"
+    ],
+    [
+     "butter",
+     "tomato sauce"
+    ],
+    [
+     "chocolate pudding",
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding",
+     "butter"
+    ],
+    [
+     "chocolate pudding",
+     "orange juice"
+    ],
+    [
+     "chocolate pudding",
+     "tomato sauce"
+    ],
+    [
+     "milk",
+     "bbq sauce"
+    ],
+    [
+     "milk",
+     "butter"
+    ],
+    [
+     "milk",
+     "chocolate pudding"
+    ],
+    [
+     "milk",
+     "tomato sauce"
+    ],
+    [
+     "orange juice",
+     "bbq sauce"
+    ],
+    [
+     "orange juice",
+     "butter"
+    ],
+    [
+     "orange juice",
+     "chocolate pudding"
+    ],
+    [
+     "orange juice",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "butter"
+    ],
+    [
+     "tomato sauce",
+     "chocolate pudding"
+    ],
+    [
+     "tomato sauce",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "orange juice"
+    ]
+   ],
+   "test": [
+    [
+     "bbq sauce",
+     "butter"
+    ],
+    [
+     "butter",
+     "chocolate pudding"
+    ],
+    [
+     "chocolate pudding",
+     "milk"
+    ],
+    [
+     "milk",
+     "orange juice"
+    ],
+    [
+     "orange juice",
+     "tomato sauce"
+    ],
+    [
+     "tomato sauce",
+     "bbq sauce"
+    ]
+   ],
+   "test_seen": [
+    [
+     "butter",
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding",
+     "butter"
+    ],
+    [
+     "milk",
+     "chocolate pudding"
+    ],
+    [
+     "orange juice",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "orange juice"
+    ],
+    [
+     "bbq sauce",
+     "tomato sauce"
+    ]
+   ]
+  },
+  "6": {
+   "train": [
+    [
+     "bbq sauce"
+    ],
+    [
+     "butter"
+    ],
+    [
+     "chocolate pudding"
+    ],
+    [
+     "ketchup"
+    ],
+    [
+     "orange juice"
+    ],
+    [
+     "tomato sauce"
+    ],
+    [
+     "bbq sauce",
+     "chocolate pudding"
+    ],
+    [
+     "bbq sauce",
+     "ketchup"
+    ],
+    [
+     "bbq sauce",
+     "orange juice"
+    ],
+    [
+     "bbq sauce",
+     "tomato sauce"
+    ],
+    [
+     "butter",
+     "bbq sauce"
+    ],
+    [
+     "butter",
+     "ketchup"
+    ],
+    [
+     "butter",
+     "orange juice"
+    ],
+    [
+     "butter",
+     "tomato sauce"
+    ],
+    [
+     "chocolate pudding",
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding",
+     "butter"
+    ],
+    [
+     "chocolate pudding",
+     "orange juice"
+    ],
+    [
+     "chocolate pudding",
+     "tomato sauce"
+    ],
+    [
+     "ketchup",
+     "bbq sauce"
+    ],
+    [
+     "ketchup",
+     "butter"
+    ],
+    [
+     "ketchup",
+     "chocolate pudding"
+    ],
+    [
+     "ketchup",
+     "tomato sauce"
+    ],
+    [
+     "orange juice",
+     "bbq sauce"
+    ],
+    [
+     "orange juice",
+     "butter"
+    ],
+    [
+     "orange juice",
+     "chocolate pudding"
+    ],
+    [
+     "orange juice",
+     "ketchup"
+    ],
+    [
+     "tomato sauce",
+     "butter"
+    ],
+    [
+     "tomato sauce",
+     "chocolate pudding"
+    ],
+    [
+     "tomato sauce",
+     "ketchup"
+    ],
+    [
+     "tomato sauce",
+     "orange juice"
+    ]
+   ],
+   "test": [
+    [
+     "bbq sauce",
+     "butter"
+    ],
+    [
+     "butter",
+     "chocolate pudding"
+    ],
+    [
+     "chocolate pudding",
+     "ketchup"
+    ],
+    [
+     "ketchup",
+     "orange juice"
+    ],
+    [
+     "orange juice",
+     "tomato sauce"
+    ],
+    [
+     "tomato sauce",
+     "bbq sauce"
+    ]
+   ],
+   "test_seen": [
+    [
+     "butter",
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding",
+     "butter"
+    ],
+    [
+     "ketchup",
+     "chocolate pudding"
+    ],
+    [
+     "orange juice",
+     "ketchup"
+    ],
+    [
+     "tomato sauce",
+     "orange juice"
+    ],
+    [
+     "bbq sauce",
+     "tomato sauce"
+    ]
+   ]
+  },
+  "7": {
+   "train": [
+    [
+     "butter"
+    ],
+    [
+     "chocolate pudding"
+    ],
+    [
+     "cream cheese"
+    ],
+    [
+     "milk"
+    ],
+    [
+     "orange juice"
+    ],
+    [
+     "tomato sauce"
+    ],
+    [
+     "butter",
+     "cream cheese"
+    ],
+    [
+     "butter",
+     "milk"
+    ],
+    [
+     "butter",
+     "orange juice"
+    ],
+    [
+     "butter",
+     "tomato sauce"
+    ],
+    [
+     "chocolate pudding",
+     "butter"
+    ],
+    [
+     "chocolate pudding",
+     "milk"
+    ],
+    [
+     "chocolate pudding",
+     "orange juice"
+    ],
+    [
+     "chocolate pudding",
+     "tomato sauce"
+    ],
+    [
+     "cream cheese",
+     "butter"
+    ],
+    [
+     "cream cheese",
+     "chocolate pudding"
+    ],
+    [
+     "cream cheese",
+     "orange juice"
+    ],
+    [
+     "cream cheese",
+     "tomato sauce"
+    ],
+    [
+     "milk",
+     "butter"
+    ],
+    [
+     "milk",
+     "chocolate pudding"
+    ],
+    [
+     "milk",
+     "cream cheese"
+    ],
+    [
+     "milk",
+     "tomato sauce"
+    ],
+    [
+     "orange juice",
+     "butter"
+    ],
+    [
+     "orange juice",
+     "chocolate pudding"
+    ],
+    [
+     "orange juice",
+     "cream cheese"
+    ],
+    [
+     "orange juice",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "chocolate pudding"
+    ],
+    [
+     "tomato sauce",
+     "cream cheese"
+    ],
+    [
+     "tomato sauce",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "orange juice"
+    ]
+   ],
+   "test": [
+    [
+     "butter",
+     "chocolate pudding"
+    ],
+    [
+     "chocolate pudding",
+     "cream cheese"
+    ],
+    [
+     "cream cheese",
+     "milk"
+    ],
+    [
+     "milk",
+     "orange juice"
+    ],
+    [
+     "orange juice",
+     "tomato sauce"
+    ],
+    [
+     "tomato sauce",
+     "butter"
+    ]
+   ],
+   "test_seen": [
+    [
+     "chocolate pudding",
+     "butter"
+    ],
+    [
+     "cream cheese",
+     "chocolate pudding"
+    ],
+    [
+     "milk",
+     "cream cheese"
+    ],
+    [
+     "orange juice",
+     "milk"
+    ],
+    [
+     "tomato sauce",
+     "orange juice"
+    ],
+    [
+     "butter",
+     "tomato sauce"
+    ]
+   ]
+  },
+  "8": {
+   "train": [
+    [
+     "alphabet soup"
+    ],
+    [
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding"
+    ],
+    [
+     "ketchup"
+    ],
+    [
+     "orange juice"
+    ],
+    [
+     "salad dressing"
+    ],
+    [
+     "alphabet soup",
+     "chocolate pudding"
+    ],
+    [
+     "alphabet soup",
+     "ketchup"
+    ],
+    [
+     "alphabet soup",
+     "orange juice"
+    ],
+    [
+     "alphabet soup",
+     "salad dressing"
+    ],
+    [
+     "bbq sauce",
+     "alphabet soup"
+    ],
+    [
+     "bbq sauce",
+     "ketchup"
+    ],
+    [
+     "bbq sauce",
+     "orange juice"
+    ],
+    [
+     "bbq sauce",
+     "salad dressing"
+    ],
+    [
+     "chocolate pudding",
+     "alphabet soup"
+    ],
+    [
+     "chocolate pudding",
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding",
+     "orange juice"
+    ],
+    [
+     "chocolate pudding",
+     "salad dressing"
+    ],
+    [
+     "ketchup",
+     "alphabet soup"
+    ],
+    [
+     "ketchup",
+     "bbq sauce"
+    ],
+    [
+     "ketchup",
+     "chocolate pudding"
+    ],
+    [
+     "ketchup",
+     "salad dressing"
+    ],
+    [
+     "orange juice",
+     "alphabet soup"
+    ],
+    [
+     "orange juice",
+     "bbq sauce"
+    ],
+    [
+     "orange juice",
+     "chocolate pudding"
+    ],
+    [
+     "orange juice",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "bbq sauce"
+    ],
+    [
+     "salad dressing",
+     "chocolate pudding"
+    ],
+    [
+     "salad dressing",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "orange juice"
+    ]
+   ],
+   "test": [
+    [
+     "alphabet soup",
+     "bbq sauce"
+    ],
+    [
+     "bbq sauce",
+     "chocolate pudding"
+    ],
+    [
+     "chocolate pudding",
+     "ketchup"
+    ],
+    [
+     "ketchup",
+     "orange juice"
+    ],
+    [
+     "orange juice",
+     "salad dressing"
+    ],
+    [
+     "salad dressing",
+     "alphabet soup"
+    ]
+   ],
+   "test_seen": [
+    [
+     "bbq sauce",
+     "alphabet soup"
+    ],
+    [
+     "chocolate pudding",
+     "bbq sauce"
+    ],
+    [
+     "ketchup",
+     "chocolate pudding"
+    ],
+    [
+     "orange juice",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "orange juice"
+    ],
+    [
+     "alphabet soup",
+     "salad dressing"
+    ]
+   ]
+  },
+  "9": {
+   "train": [
+    [
+     "bbq sauce"
+    ],
+    [
+     "butter"
+    ],
+    [
+     "chocolate pudding"
+    ],
+    [
+     "ketchup"
+    ],
+    [
+     "orange juice"
+    ],
+    [
+     "salad dressing"
+    ],
+    [
+     "bbq sauce",
+     "chocolate pudding"
+    ],
+    [
+     "bbq sauce",
+     "ketchup"
+    ],
+    [
+     "bbq sauce",
+     "orange juice"
+    ],
+    [
+     "bbq sauce",
+     "salad dressing"
+    ],
+    [
+     "butter",
+     "bbq sauce"
+    ],
+    [
+     "butter",
+     "ketchup"
+    ],
+    [
+     "butter",
+     "orange juice"
+    ],
+    [
+     "butter",
+     "salad dressing"
+    ],
+    [
+     "chocolate pudding",
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding",
+     "butter"
+    ],
+    [
+     "chocolate pudding",
+     "orange juice"
+    ],
+    [
+     "chocolate pudding",
+     "salad dressing"
+    ],
+    [
+     "ketchup",
+     "bbq sauce"
+    ],
+    [
+     "ketchup",
+     "butter"
+    ],
+    [
+     "ketchup",
+     "chocolate pudding"
+    ],
+    [
+     "ketchup",
+     "salad dressing"
+    ],
+    [
+     "orange juice",
+     "bbq sauce"
+    ],
+    [
+     "orange juice",
+     "butter"
+    ],
+    [
+     "orange juice",
+     "chocolate pudding"
+    ],
+    [
+     "orange juice",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "butter"
+    ],
+    [
+     "salad dressing",
+     "chocolate pudding"
+    ],
+    [
+     "salad dressing",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "orange juice"
+    ]
+   ],
+   "test": [
+    [
+     "bbq sauce",
+     "butter"
+    ],
+    [
+     "butter",
+     "chocolate pudding"
+    ],
+    [
+     "chocolate pudding",
+     "ketchup"
+    ],
+    [
+     "ketchup",
+     "orange juice"
+    ],
+    [
+     "orange juice",
+     "salad dressing"
+    ],
+    [
+     "salad dressing",
+     "bbq sauce"
+    ]
+   ],
+   "test_seen": [
+    [
+     "butter",
+     "bbq sauce"
+    ],
+    [
+     "chocolate pudding",
+     "butter"
+    ],
+    [
+     "ketchup",
+     "chocolate pudding"
+    ],
+    [
+     "orange juice",
+     "ketchup"
+    ],
+    [
+     "salad dressing",
+     "orange juice"
+    ],
+    [
+     "bbq sauce",
+     "salad dressing"
+    ]
+   ]
+  }
+ }
+}
