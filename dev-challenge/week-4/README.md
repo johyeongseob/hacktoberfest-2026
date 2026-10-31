@@ -3,7 +3,7 @@
 Hacktoberfest 2026 DEV Challenge, Week 4 (theme: Ghost in the Machine).
 Deadline: 2026-10-31 11:59 PM PDT (2026-11-01 15:59 KST).
 
-Status: step 1 (reproduce): fine-tuning on the 310-episode set.
+Status: step 1 (reproduce) done; step 2 (the asked item marked) in progress.
 
 ## Idea
 
@@ -138,3 +138,30 @@ line per episode, scenes 0 to 9 in order.
 The Week 3 shortcut holds on a layout no run has trained on (Week 3,
 state 46: 10/10, 1/50, 24 of 26 wrong lifts). For this model the trained
 and held-out orders are the same test, since it never saw any of them.
+
+### Fine-tuned on the 310 episodes (no mark)
+
+`smolvla_libero` fine-tuned on the training set above with Week 3's recipe
+(whole model, vision encoder frozen, batch 32, lr 2.5e-5, 9,000 steps,
+checkpoints at 3,000, 6,000 and 9,000; about 75 minutes on one A100), then
+tested at step 9,000 with `POLICY=<run>/checkpoints/009000/pretrained_model`.
+Results: [`results/fine-tuned`](results/fine-tuned).
+
+| Test | Before fine-tuning | Fine-tuned |
+| --- | --- | --- |
+| Scene's own item | 10/10 | 2/10 |
+| Any other item | 0/50 | 3/50 |
+| Wrong lifts that were the scene's own item | 23 of 27 | 10 of 28 |
+| Lifted nothing (other items) | 23 | 18 |
+| Two items, trained orders | 0/60; first item in 10 | 1/60; first item in 6 |
+| Two items, held-out orders | 0/60; first item in 10 | 1/60; first item in 6 |
+
+The shortcut is broken: a wrong pick is now the scene's own item about a
+third of the time (one in five if the five other items were picked at
+random), not 85%. But the asked item is still found 3 times in 50, and the
+scene's own item drops from 10/10 to 2/10. Trained and held-out orders
+score the same, so no order was memorized; picking the right item is the
+bottleneck. This repeats Week 3's second finding with uniform demos and a
+test that holds out layouts and orders. The two two-item successes: scene 7,
+cream cheese then chocolate pudding (trained), and scene 3, ketchup then
+salad dressing (held out). One model call takes 0.47 s on average.
