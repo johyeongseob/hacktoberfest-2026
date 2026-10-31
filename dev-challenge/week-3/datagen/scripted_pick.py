@@ -107,6 +107,9 @@ class Scripted:
 # instead of up-then-across, and shorter waits for the gripper.
 # "steady" is "fast" without the pauses: a move that stops getting closer
 # (stall, in steps) ends there instead of creeping on to its step limit.
+# "steady15" waits 15 steps instead of 5: with 5, a grasp on a tall bottle
+# picked first (salad dressing in scenes 3 and 8, ketchup in scene 9) ended
+# as the fingers touched it, and failed from all 40 training states.
 PACES = {
     "slow": dict(gain=1.0, tol=0.01, fine_tol=0.005, close_wait=15, open_wait=15, diagonal=False, above=0.10,
                  stall=None),
@@ -114,6 +117,8 @@ PACES = {
                  stall=None),
     "steady": dict(gain=3.0, tol=0.02, fine_tol=0.006, close_wait=8, open_wait=6, diagonal=True, above=0.06,
                    stall=5),
+    "steady15": dict(gain=3.0, tol=0.02, fine_tol=0.006, close_wait=8, open_wait=6, diagonal=True, above=0.06,
+                     stall=15),
 }
 
 
