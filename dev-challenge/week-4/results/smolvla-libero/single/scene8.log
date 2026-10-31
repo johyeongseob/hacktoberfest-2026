@@ -1,35 +1,0 @@
-[robosuite WARNING] No private macro file found! (__init__.py:7)
-WARNING:robosuite_logs:No private macro file found!
-[robosuite WARNING] It is recommended to use a private macro file (__init__.py:8)
-WARNING:robosuite_logs:It is recommended to use a private macro file
-[robosuite WARNING] To setup, run: python /workspace/venvs/hf26-week3/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (__init__.py:9)
-WARNING:robosuite_logs:To setup, run: python /workspace/venvs/hf26-week3/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py
-Creating LIBERO envs | suites=['libero_object'] | n_envs(per task)=1 | init_states=True
-Restricting to task_ids=[8]
-[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-Built vec env | suite=libero_object | task_id=8 | n_envs=1
-Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
-`torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  31%|███       | 151/489 [00:00<00:00, 1507.59it/s]Loading weights:  75%|███████▌  | 367/489 [00:00<00:00, 1876.02it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2156.73it/s]
-Reducing the number of VLM layers to 16 ...
-Scene: task 8 (pick up the chocolate pudding and place it in the basket)
-Instruction: 'pick up the alphabet soup and place it in the basket'
-Local assets not found. Downloading from HuggingFace Hub...
-Assets already downloaded at /root/.cache/libero/assets
-{"policy": "lerobot/smolvla_libero", "task_id": 8, "items": ["alphabet soup"], "mode": "steps", "instruction": "pick up the alphabet soup and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"alphabet soup": null}, "lifted_m": {"alphabet soup": 0.0, "salad dressing": 0.0, "bbq sauce": 0.0, "ketchup": 0.0, "chocolate pudding": 0.292, "orange juice": 0.0}, "any_in_basket_at_end": ["chocolate pudding"], "steps": 300, "max_steps": 300, "episode_s": 29.61, "inference_calls": 30, "inference_mean_s": 0.607, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene8/videos/task8_steps_alphabetsoup/init0.mp4"}
-pick up the alphabet soup and place it in the basket: 0/1 all items in the basket
-Instruction: 'pick up the bbq sauce and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 8, "items": ["bbq sauce"], "mode": "steps", "instruction": "pick up the bbq sauce and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"bbq sauce": null}, "lifted_m": {"alphabet soup": 0.0, "salad dressing": 0.0, "bbq sauce": 0.0, "ketchup": 0.0, "chocolate pudding": 0.323, "orange juice": 0.0}, "any_in_basket_at_end": ["chocolate pudding"], "steps": 300, "max_steps": 300, "episode_s": 27.12, "inference_calls": 30, "inference_mean_s": 0.498, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene8/videos/task8_steps_bbqsauce/init0.mp4"}
-pick up the bbq sauce and place it in the basket: 0/1 all items in the basket
-Instruction: 'pick up the chocolate pudding and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 8, "items": ["chocolate pudding"], "mode": "steps", "instruction": "pick up the chocolate pudding and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": true, "items_in_basket_at_end": ["chocolate pudding"], "first_in_step": {"chocolate pudding": 144}, "lifted_m": {"alphabet soup": 0.0, "salad dressing": 0.0, "bbq sauce": 0.0, "ketchup": 0.0, "chocolate pudding": 0.291, "orange juice": 0.0}, "any_in_basket_at_end": ["chocolate pudding"], "steps": 144, "max_steps": 300, "episode_s": 12.35, "inference_calls": 15, "inference_mean_s": 0.483, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene8/videos/task8_steps_chocolatepudding/init0.mp4"}
-pick up the chocolate pudding and place it in the basket: 1/1 all items in the basket
-Instruction: 'pick up the ketchup and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 8, "items": ["ketchup"], "mode": "steps", "instruction": "pick up the ketchup and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"ketchup": null}, "lifted_m": {"alphabet soup": 0.0, "salad dressing": 0.0, "bbq sauce": 0.0, "ketchup": 0.0, "chocolate pudding": 0.014, "orange juice": 0.0}, "any_in_basket_at_end": [], "steps": 300, "max_steps": 300, "episode_s": 24.8, "inference_calls": 30, "inference_mean_s": 0.493, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene8/videos/task8_steps_ketchup/init0.mp4"}
-pick up the ketchup and place it in the basket: 0/1 all items in the basket
-Instruction: 'pick up the orange juice and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 8, "items": ["orange juice"], "mode": "steps", "instruction": "pick up the orange juice and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"orange juice": null}, "lifted_m": {"alphabet soup": 0.0, "salad dressing": 0.0, "bbq sauce": 0.0, "ketchup": 0.0, "chocolate pudding": 0.324, "orange juice": 0.0}, "any_in_basket_at_end": ["chocolate pudding"], "steps": 300, "max_steps": 300, "episode_s": 25.31, "inference_calls": 30, "inference_mean_s": 0.474, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene8/videos/task8_steps_orangejuice/init0.mp4"}
-pick up the orange juice and place it in the basket: 0/1 all items in the basket
-Instruction: 'pick up the salad dressing and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 8, "items": ["salad dressing"], "mode": "steps", "instruction": "pick up the salad dressing and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"salad dressing": null}, "lifted_m": {"alphabet soup": 0.0, "salad dressing": 0.0, "bbq sauce": 0.0, "ketchup": 0.0, "chocolate pudding": 0.3, "orange juice": 0.0}, "any_in_basket_at_end": ["chocolate pudding"], "steps": 300, "max_steps": 300, "episode_s": 24.47, "inference_calls": 30, "inference_mean_s": 0.488, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene8/videos/task8_steps_saladdressing/init0.mp4"}
-pick up the salad dressing and place it in the basket: 0/1 all items in the basket

@@ -124,9 +124,9 @@ SPLIT=test VIDEO=1 OUT=$E/heldout bash eval/run_chain_eval.sh
 
 ### Before fine-tuning (smolvla_libero as published)
 
-[`results/smolvla-libero`](results/smolvla-libero): `single`, `seen`
-(trained orders) and `heldout` (held-out orders), one `results.jsonl` per
-scene.
+[`results/before-fine-tuning`](results/before-fine-tuning): `single.jsonl`,
+`trained.jsonl` (trained orders) and `heldout.jsonl` (held-out orders), one
+line per episode, scenes 0 to 9 in order.
 
 | Test | Result |
 | --- | --- |

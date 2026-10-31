@@ -43,11 +43,14 @@ Run long jobs inside `tmux` so they keep going if the SSH connection drops.
 
 ## Copy the results to the laptop
 
-From WSL on the laptop, in `dev-challenge/week-4`, without videos:
+From WSL on the laptop, in `dev-challenge/week-4`: one file per test, the
+scenes in order (videos stay on the pod).
 
 ```
-rsync -av -e "ssh -p POD_PORT -i ~/.ssh/id_ed25519" --include='*/' --include='*.jsonl' --include='*.log' --exclude='*' \
-  root@POD_IP:/workspace/outputs/week4/eval/base/ results/smolvla-libero/
+E=/workspace/outputs/week4/eval/base; mkdir -p results/before-fine-tuning
+for t in single:single seen:trained heldout:heldout; do
+  ssh -p POD_PORT -i ~/.ssh/id_ed25519 root@POD_IP "cat $E/${t%%:*}/scene{0..9}/results.jsonl" > results/before-fine-tuning/${t##*:}.jsonl
+done
 ```
 
 Stop the pod in the RunPod console when the work is done.

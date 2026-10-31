@@ -1,35 +1,0 @@
-[robosuite WARNING] No private macro file found! (__init__.py:7)
-WARNING:robosuite_logs:No private macro file found!
-[robosuite WARNING] It is recommended to use a private macro file (__init__.py:8)
-WARNING:robosuite_logs:It is recommended to use a private macro file
-[robosuite WARNING] To setup, run: python /workspace/venvs/hf26-week3/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (__init__.py:9)
-WARNING:robosuite_logs:To setup, run: python /workspace/venvs/hf26-week3/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py
-Creating LIBERO envs | suites=['libero_object'] | n_envs(per task)=1 | init_states=True
-Restricting to task_ids=[2]
-[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-Built vec env | suite=libero_object | task_id=2 | n_envs=1
-Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
-`torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 158/489 [00:00<00:00, 1563.22it/s]Loading weights:  64%|██████▍   | 315/489 [00:01<00:01, 172.81it/s] Loading weights:  79%|███████▉  | 386/489 [00:02<00:00, 113.26it/s]Loading weights:  88%|████████▊ | 428/489 [00:03<00:00, 104.63it/s]Loading weights:  93%|█████████▎| 456/489 [00:03<00:00, 95.88it/s] Loading weights:  98%|█████████▊| 477/489 [00:04<00:00, 87.10it/s]Loading weights: 100%|██████████| 489/489 [00:04<00:00, 115.48it/s]
-Reducing the number of VLM layers to 16 ...
-Scene: task 2 (pick up the salad dressing and place it in the basket)
-Instruction: 'pick up the alphabet soup and place it in the basket'
-Local assets not found. Downloading from HuggingFace Hub...
-Assets already downloaded at /root/.cache/libero/assets
-{"policy": "lerobot/smolvla_libero", "task_id": 2, "items": ["alphabet soup"], "mode": "steps", "instruction": "pick up the alphabet soup and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"alphabet soup": null}, "lifted_m": {"alphabet soup": 0.0, "cream cheese": 0.0, "salad dressing": 0.0, "ketchup": 0.0, "tomato sauce": 0.0, "milk": 0.0}, "any_in_basket_at_end": [], "steps": 300, "max_steps": 300, "episode_s": 30.1, "inference_calls": 30, "inference_mean_s": 0.65, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene2/videos/task2_steps_alphabetsoup/init0.mp4"}
-pick up the alphabet soup and place it in the basket: 0/1 all items in the basket
-Instruction: 'pick up the cream cheese and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 2, "items": ["cream cheese"], "mode": "steps", "instruction": "pick up the cream cheese and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"cream cheese": null}, "lifted_m": {"alphabet soup": 0.0, "cream cheese": 0.0, "salad dressing": 0.002, "ketchup": 0.0, "tomato sauce": 0.0, "milk": 0.0}, "any_in_basket_at_end": [], "steps": 300, "max_steps": 300, "episode_s": 27.34, "inference_calls": 30, "inference_mean_s": 0.579, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene2/videos/task2_steps_creamcheese/init0.mp4"}
-pick up the cream cheese and place it in the basket: 0/1 all items in the basket
-Instruction: 'pick up the ketchup and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 2, "items": ["ketchup"], "mode": "steps", "instruction": "pick up the ketchup and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"ketchup": null}, "lifted_m": {"alphabet soup": 0.0, "cream cheese": 0.0, "salad dressing": 0.0, "ketchup": 0.002, "tomato sauce": 0.0, "milk": 0.0}, "any_in_basket_at_end": [], "steps": 300, "max_steps": 300, "episode_s": 25.6, "inference_calls": 30, "inference_mean_s": 0.497, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene2/videos/task2_steps_ketchup/init0.mp4"}
-pick up the ketchup and place it in the basket: 0/1 all items in the basket
-Instruction: 'pick up the milk and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 2, "items": ["milk"], "mode": "steps", "instruction": "pick up the milk and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"milk": null}, "lifted_m": {"alphabet soup": 0.0, "cream cheese": 0.0, "salad dressing": 0.0, "ketchup": 0.223, "tomato sauce": 0.0, "milk": 0.0}, "any_in_basket_at_end": [], "steps": 300, "max_steps": 300, "episode_s": 25.32, "inference_calls": 30, "inference_mean_s": 0.479, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene2/videos/task2_steps_milk/init0.mp4"}
-pick up the milk and place it in the basket: 0/1 all items in the basket
-Instruction: 'pick up the salad dressing and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 2, "items": ["salad dressing"], "mode": "steps", "instruction": "pick up the salad dressing and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": true, "items_in_basket_at_end": ["salad dressing"], "first_in_step": {"salad dressing": 113}, "lifted_m": {"alphabet soup": 0.0, "cream cheese": 0.0, "salad dressing": 0.205, "ketchup": 0.0, "tomato sauce": 0.0, "milk": 0.0}, "any_in_basket_at_end": ["salad dressing"], "steps": 113, "max_steps": 300, "episode_s": 9.32, "inference_calls": 12, "inference_mean_s": 0.458, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene2/videos/task2_steps_saladdressing/init0.mp4"}
-pick up the salad dressing and place it in the basket: 1/1 all items in the basket
-Instruction: 'pick up the tomato sauce and place it in the basket'
-{"policy": "lerobot/smolvla_libero", "task_id": 2, "items": ["tomato sauce"], "mode": "steps", "instruction": "pick up the tomato sauce and place it in the basket", "switches": [], "init_state": 0, "seed": 1000, "success": false, "items_in_basket_at_end": [], "first_in_step": {"tomato sauce": null}, "lifted_m": {"alphabet soup": 0.0, "cream cheese": 0.0, "salad dressing": 0.18, "ketchup": 0.0, "tomato sauce": 0.0, "milk": 0.0}, "any_in_basket_at_end": ["salad dressing"], "steps": 300, "max_steps": 300, "episode_s": 25.28, "inference_calls": 30, "inference_mean_s": 0.48, "device": "cuda", "video": "/workspace/outputs/week4/eval/base/single/scene2/videos/task2_steps_tomatosauce/init0.mp4"}
-pick up the tomato sauce and place it in the basket: 0/1 all items in the basket
