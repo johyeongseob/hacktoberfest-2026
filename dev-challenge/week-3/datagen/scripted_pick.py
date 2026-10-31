@@ -99,6 +99,23 @@ class Scripted:
         for _ in range(n):
             self.step(np.zeros(3), gripper)
 
+    def twist_deg(self):
+        # How far the gripper has turned from the orientation step() holds.
+        error = T.quat2axisangle(T.quat_multiply(self.home_quat, T.quat_inverse(self.obs["robot0_eef_quat"])))
+        return float(np.degrees(np.linalg.norm(error)))
+
+    def realign(self, z, gripper, max_steps=40, tol_deg=2.0):
+        # Come down to height z and wait until the held orientation is back.
+        # After a tall bottle, carried 35 cm over the basket, the gripper
+        # started the next item turned about 17.5 degrees, and its fingers
+        # closed on air (2026-10-31, scenes 8 and 9).
+        target = np.array([self.eef()[0], self.eef()[1], z])
+        for _ in range(max_steps):
+            if self.twist_deg() < tol_deg and abs(self.eef()[2] - z) < 0.01:
+                return True
+            self.step(3.0 * (target - self.eef()), gripper)
+        return False
+
 
 # How the gripper moves. "slow" made the first recordings (about 300 steps per
 # item, twice the human LIBERO-Object demos' 146; tools/compare_demos.py).
@@ -203,6 +220,10 @@ def run_episode(
         settings = dict(center_object=center_object, travel_height=travel_height, release_height=release_height)
         if per_item and item in TALL_ITEMS:
             settings = TALL_ITEM_SETTINGS
+        if per_item and index > 0 and items[index - 1] in TALL_ITEMS:
+            # Straighten up after a tall bottle, already asking for this item.
+            robot.label = step_sentence(item)
+            robot.realign(robot.obs["basket_1_pos"][2] + travel_height, OPEN)
         pick_and_place(
             robot, item, robot.obs["basket_1_pos"][2] + settings["travel_height"], settings["release_height"],
             settings["center_object"], spot=SPOTS[index % len(SPOTS)] if len(items) > 1 else (0.0, 0.0),
