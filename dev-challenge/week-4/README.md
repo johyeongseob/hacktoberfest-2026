@@ -81,6 +81,22 @@ python train/use_base_stats.py /workspace/outputs/week4/train-data/pairs30
 
 Result: 310 episodes, 10 instructions (one per item).
 
+### Samples
+
+Two scripted episodes made the same way, from training initial state 10
+([`samples`](samples)):
+
+| Video | Chain |
+| --- | --- |
+| [`task3_saladdressing_init10.mp4`](samples/task3_saladdressing_init10.mp4) | Scene 3: salad dressing (8 s) |
+| [`task9_ketchup-saladdressing_init10.mp4`](samples/task9_ketchup-saladdressing_init10.mp4) | Scene 9: ketchup, then salad dressing (14.5 s) |
+
+```
+S=/workspace/outputs/week4/samples
+python datagen/scripted_pick.py --task-id 3 --items "salad dressing" --per-item --init-state 10 --output-dir $S
+python datagen/scripted_pick.py --task-id 9 --items ketchup "salad dressing" --per-item --init-state 10 --output-dir $S
+```
+
 ## Test: 180 episodes
 
 Every episode starts from initial state 0, which no training episode uses,
