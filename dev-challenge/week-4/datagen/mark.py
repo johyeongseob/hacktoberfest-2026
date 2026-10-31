@@ -25,14 +25,11 @@ FLIP_COLS = False
 _SIGNS = np.array([[x, y, z] for x in (-1, 1) for y in (-1, 1) for z in (-1, 1)], dtype=float)
 
 
-def _raw(binding):
-    # robosuite wraps mujoco's MjModel and MjData; the raw objects carry every field.
-    return getattr(binding, "_model", None) or getattr(binding, "_data", None) or binding
-
-
 def item_corners(sim, object_name: str) -> np.ndarray:
     """World coordinates of the bounding-box corners of every geom of an object."""
-    m, d = _raw(sim.model), _raw(sim.data)
+    # robosuite wraps mujoco's MjModel and MjData; the raw objects carry every field.
+    m = getattr(sim.model, "_model", sim.model)
+    d = getattr(sim.data, "_data", sim.data)
     bodies = {
         b for b in range(m.nbody)
         if (mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_BODY, b) or "").startswith(object_name)
