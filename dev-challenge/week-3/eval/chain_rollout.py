@@ -76,7 +76,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--request", default=None, help='One lazy sentence, split into --items by eval/split_request.py')
     parser.add_argument("--plan", type=Path, default=None, help="data/chain_plan.json: run this scene's chains")
-    parser.add_argument("--split", default="test", choices=["train", "test"])
+    parser.add_argument("--split", default="test", choices=["train", "test", "test_seen"])
     parser.add_argument("--lengths", type=int, nargs="+", default=[2], help="Chain lengths to take from --plan")
     parser.add_argument("--mode", choices=["both", "steps"], default="both")
     parser.add_argument("--each", action="store_true", help="Steps mode: ask for every item on its own")

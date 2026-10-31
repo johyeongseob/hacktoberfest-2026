@@ -9,6 +9,7 @@ before any data is made, to data/chain_plan.json.
 Usage (from dev-challenge/week-3):
     python data/make_chain_plan.py
     python data/make_chain_plan.py --singles 3 --out data/single_plan.json
+    python data/make_chain_plan.py --pairs --out data/pair_plan.json
 """
 
 import argparse
@@ -66,6 +67,28 @@ def singles(args) -> None:
     print(f"{args.out}: {args.singles} single picks of each of the 60 scene items")
 
 
+def pairs(args) -> None:
+    # Every item on its own and every ordered pair of items, once each, with
+    # six pairs per scene held out. With the scene's items A-F in SCENE_ITEMS
+    # order, the held-out test pairs are the cycle A->B, B->C, ..., F->A, and
+    # the trained pairs tested as a control are the reverse cycle B->A, C->B,
+    # ..., A->F, so every item is asked for first once and second once in each.
+    plan = {"pairs": True, "lengths": [1, 2], "scenes": {}}
+    for scene, items in SCENE_ITEMS.items():
+        cycle = [[items[i], items[(i + 1) % len(items)]] for i in range(len(items))]
+        reverse = [[b, a] for a, b in cycle]
+        ordered = [[a, b] for a in items for b in items if a != b]
+        plan["scenes"][str(scene)] = {
+            "train": [[item] for item in items] + [pair for pair in ordered if pair not in cycle],
+            "test": cycle,
+            "test_seen": reverse,
+        }
+    args.out.write_text(json.dumps(plan, indent=1) + "\n")
+    n = {split: sum(len(e[split]) for e in plan["scenes"].values()) for split in ("train", "test", "test_seen")}
+    print(f"{args.out}: {n['train']} training chains (60 single items, 240 pairs), "
+          f"{n['test']} held-out test pairs, {n['test_seen']} trained test pairs")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--train", type=int, default=4, help="Training orders per scene and length")
@@ -81,8 +104,15 @@ def main() -> None:
         "--singles", type=int, default=None,
         help="Instead: single picks of every scene item, this many times each (data/single_plan.json)",
     )
+    parser.add_argument(
+        "--pairs", action="store_true",
+        help="Instead: every single item and 24 of the 30 ordered pairs per scene for training (data/pair_plan.json)",
+    )
     args = parser.parse_args()
 
+    if args.pairs:
+        pairs(args)
+        return
     if args.singles is not None:
         singles(args)
         return
