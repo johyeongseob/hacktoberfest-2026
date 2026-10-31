@@ -54,6 +54,7 @@ class Scripted:
         self.obs = None
         self.steps = 0
         self.home_quat = None  # gripper orientation to hold (set after the first step)
+        self.home_pos = None  # gripper position at the start, for realign()
 
     def step(self, delta_xyz, gripper):
         action = np.zeros(7)
@@ -104,14 +105,17 @@ class Scripted:
         error = T.quat2axisangle(T.quat_multiply(self.home_quat, T.quat_inverse(self.obs["robot0_eef_quat"])))
         return float(np.degrees(np.linalg.norm(error)))
 
-    def realign(self, z, gripper, max_steps=40, tol_deg=2.0):
-        # Come down to height z and wait until the held orientation is back.
-        # After a tall bottle, carried 35 cm over the basket, the gripper
-        # started the next item turned about 17.5 degrees, and its fingers
-        # closed on air (2026-10-31, scenes 8 and 9).
-        target = np.array([self.eef()[0], self.eef()[1], z])
+    def realign(self, z, gripper, max_steps=60, tol_deg=2.0):
+        # Pull back over the starting position at height z and wait until the
+        # held orientation is back. Reaching a far tall bottle and carrying
+        # it 35 cm over the basket straightens the elbow to its joint limit
+        # (joint 4 at -4 degrees); the arm then gives up orientation for
+        # position, starts the next item turned about 17.5 degrees, and its
+        # fingers close on air (2026-10-31, scenes 8 and 9). Coming back
+        # toward the base bends the elbow again.
+        target = np.array([self.home_pos[0], self.home_pos[1], z])
         for _ in range(max_steps):
-            if self.twist_deg() < tol_deg and abs(self.eef()[2] - z) < 0.01:
+            if self.twist_deg() < tol_deg and np.linalg.norm(target - self.eef()) < 0.02:
                 return True
             self.step(3.0 * (target - self.eef()), gripper)
         return False
@@ -213,6 +217,7 @@ def run_episode(
     robot.hold(OPEN, 10)  # let objects settle, as LeRobot does after a reset
     # Hold the starting orientation, turned by yaw (radians) about the vertical.
     robot.home_quat = T.quat_multiply(T.axisangle2quat(np.array([0.0, 0.0, yaw])), robot.obs["robot0_eef_quat"])
+    robot.home_pos = robot.eef().copy()
     inside = lambda item: bool(env.env._eval_predicate(["in", object_name(item), BASKET]))
     done_at = {}
     for index, item in enumerate(items):
