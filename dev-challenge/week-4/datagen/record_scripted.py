@@ -28,7 +28,8 @@ from lerobot.datasets.lerobot_dataset import LeRobotDataset
 from libero.libero import benchmark, get_libero_path
 from libero.libero.envs import OffScreenRenderEnv
 from robosuite.utils import transform_utils as T
-from scripted_pick import ITEMS, PACES, object_name, run_episode
+from mark import mark
+from scripted_pick import ITEMS, PACES, item_of, object_name, run_episode
 
 FPS = 10  # lerobot/libero's fps field; one frame per control step, as there
 FEATURES = {
@@ -39,7 +40,10 @@ FEATURES = {
 }
 
 
-def to_frame(obs, action, label) -> dict:
+def to_frame(obs, action, label, sim=None) -> dict:
+    # sim: mark the asked item on both cameras (datagen/mark.py) before the turn.
+    if sim is not None:
+        obs = mark(sim, obs, object_name(item_of(label)))
     state = np.concatenate([obs["robot0_eef_pos"], T.quat2axisangle(obs["robot0_eef_quat"]), obs["robot0_gripper_qpos"]])
     return {
         "observation.images.image": np.ascontiguousarray(obs["agentview_image"][::-1, ::-1]),
@@ -58,6 +62,7 @@ def main() -> None:
     parser.add_argument("--part", default="0/1", help="i/n: record only every n-th chain (parallel runs)")
     parser.add_argument("--max-tries", type=int, default=40)
     parser.add_argument("--pace", choices=list(PACES), default="steady", help="scripted_pick.py PACES")
+    parser.add_argument("--mark", action="store_true", help="Box the asked item on both cameras (datagen/mark.py)")
     parser.add_argument("--root", type=Path, required=True, help="New dataset folder")
     args = parser.parse_args()
 
@@ -88,10 +93,9 @@ def main() -> None:
         for t in range(args.max_tries):
             k = 10 + (7 * i + t) % 40  # training states 10 to 49 only
             frames = []
-            result = run_episode(
-                env, init_states[k], chain, recorder=lambda o, a, l: frames.append(to_frame(o, a, l)),
-                per_item=True, pace=args.pace,
-            )
+            # The sim is looked up at every step: a reset can replace it.
+            record = lambda o, a, l: frames.append(to_frame(o, a, l, env.env.sim if args.mark else None))
+            result = run_episode(env, init_states[k], chain, recorder=record, per_item=True, pace=args.pace)
             if result["success"]:
                 for frame in frames:
                     dataset.add_frame(frame)

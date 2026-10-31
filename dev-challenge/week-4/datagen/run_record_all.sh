@@ -2,6 +2,8 @@
 # Record the training chains of data/pair_plan.json for all ten scenes in
 # parallel (PARTS datasets per scene), then merge them into one LeRobot dataset.
 #   bash datagen/run_record_all.sh
+# With the asked item boxed on both cameras (datagen/mark.py):
+#   MARK=1 OUT=/workspace/outputs/week4/pairs30-mark bash datagen/run_record_all.sh
 # Writes OUT/scene<N>-part<i> (with chains.jsonl and a log) and OUT/scripted-chains (merged).
 
 # Run from dev-challenge/week-4 so the relative paths below work.
@@ -16,6 +18,7 @@ MAX_TRIES=${MAX_TRIES:-40}
 PARTS=${PARTS:-3}
 PLAN=${PLAN:-data/pair_plan.json}
 OUT=${OUT:-/workspace/outputs/week4/pairs30}
+MARK=${MARK:-0}
 
 mkdir -p "$OUT"
 for scene in $SCENES; do
@@ -24,7 +27,8 @@ for scene in $SCENES; do
     name="scene$scene-part$part"
     echo "$name"
     python datagen/record_scripted.py --task-id "$scene" --plan "$PLAN" \
-      --part "$part/$PARTS" --max-tries "$MAX_TRIES" --root "$OUT/$name" > "$OUT/$name.log" 2>&1 &
+      --part "$part/$PARTS" --max-tries "$MAX_TRIES" $([ "$MARK" = 1 ] && echo --mark) \
+      --root "$OUT/$name" > "$OUT/$name.log" 2>&1 &
   done
 done
 wait

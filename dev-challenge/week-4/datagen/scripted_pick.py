@@ -27,6 +27,7 @@ import imageio.v2 as imageio
 import numpy as np
 from libero.libero import benchmark, get_libero_path
 from libero.libero.envs import OffScreenRenderEnv
+from mark import draw_box, item_box
 from robosuite.utils import transform_utils as T
 
 BASKET = "basket_1_contain_region"
@@ -45,11 +46,17 @@ def object_name(item: str) -> str:
     return item.replace(" ", "_") + "_1"
 
 
+def item_of(sentence: str) -> str:
+    # The item a step_sentence asks for.
+    return sentence.removeprefix("pick up the ").removesuffix(" and place it in the basket")
+
+
 class Scripted:
-    def __init__(self, env, frames: list, recorder=None):
+    def __init__(self, env, frames: list, recorder=None, mark=False):
         # recorder(obs, action, label) is called before every action once a
         # label is set, so a dataset sees the same observation the action used.
-        self.env, self.frames, self.recorder = env, frames, recorder
+        # mark: the video frames show the asked item's box (datagen/mark.py).
+        self.env, self.frames, self.recorder, self.mark = env, frames, recorder, mark
         self.label = None
         self.obs = None
         self.steps = 0
@@ -68,7 +75,11 @@ class Scripted:
         if self.recorder is not None and self.label is not None:
             self.recorder(self.obs, action.copy(), self.label)
         self.obs, _, _, _ = self.env.step(action)
-        self.frames.append(self.obs["agentview_image"][::-1, ::-1])  # LIBERO renders upside down
+        frame = self.obs["agentview_image"]
+        if self.mark and self.label is not None:
+            box = item_box(self.env.env.sim, object_name(item_of(self.label)), "agentview", *frame.shape[:2])
+            frame = draw_box(frame, box)
+        self.frames.append(frame[::-1, ::-1])  # LIBERO renders upside down
         self.steps += 1
 
     def eef(self):
@@ -190,13 +201,13 @@ SPOTS = [(-0.03, -0.03), (0.03, 0.03), (-0.03, 0.03), (0.03, -0.03)]
 
 def run_episode(
     env, init_state, items, video_path=None, recorder=None, yaw=0.0, release_height=0.12, center_object=False,
-    travel_height=0.25, per_item=False, pace="steady",
+    travel_height=0.25, per_item=False, pace="steady", mark=False,
 ) -> dict:
     """Put items in the basket in order from one initial state; return what held."""
     env.reset()
     env.set_init_state(init_state)
     frames = []
-    robot = Scripted(env, frames, recorder)
+    robot = Scripted(env, frames, recorder, mark)
     robot.hold(OPEN, 10)  # let objects settle, as LeRobot does after a reset
     # Hold the starting orientation, turned by yaw (radians) about the vertical.
     robot.home_quat = T.quat_multiply(T.axisangle2quat(np.array([0.0, 0.0, yaw])), robot.obs["robot0_eef_quat"])
@@ -247,6 +258,7 @@ def main() -> None:
     parser.add_argument("--travel-height", type=float, default=0.25, help="Gripper height over the basket when moving")
     parser.add_argument("--pace", choices=list(PACES), default="steady")
     parser.add_argument("--per-item", action="store_true", help="Tall bottles get TALL_ITEM_SETTINGS (as recorded)")
+    parser.add_argument("--mark", action="store_true", help="Show the asked item's box in the video")
     parser.add_argument("--no-video", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/scripted"))
     args = parser.parse_args()
@@ -275,11 +287,11 @@ def main() -> None:
                 result = {
                     "task_id": args.task_id, "init_state": k, "yaw": args.yaw, "release_height": args.release_height,
                     "center_object": args.center_object, "travel_height": args.travel_height,
-                    "pace": args.pace, "per_item": args.per_item,
+                    "pace": args.pace, "per_item": args.per_item, "mark": args.mark,
                     **run_episode(
                         env, init_states[k], group, video, yaw=args.yaw, release_height=args.release_height,
                         center_object=args.center_object, travel_height=args.travel_height,
-                        per_item=args.per_item, pace=args.pace,
+                        per_item=args.per_item, pace=args.pace, mark=args.mark,
                     ),
                 }
                 f.write(json.dumps(result) + "\n")
