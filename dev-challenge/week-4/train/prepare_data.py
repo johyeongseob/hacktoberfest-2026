@@ -65,8 +65,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--chains", type=Path, nargs="+", required=True, help="Merged scripted chain data sets")
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument(
+        "--originals", type=Path, default=None,
+        help="Human demos already recorded (datagen/record_originals.py, with the box) instead of lerobot/libero's",
+    )
     args = parser.parse_args()
 
+    if args.originals is not None:
+        merge([*args.chains, args.originals], args.out)
+        return
     chosen = demos_per_item(1)
     print("original demos per item:", {item: len(found) for item, found in chosen.items()})
     source = LeRobotDataset(REPO_ID, revision=REVISION, episodes=sorted(e for found in chosen.values() for e in found))
