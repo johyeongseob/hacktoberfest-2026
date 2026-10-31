@@ -128,9 +128,6 @@ class Scripted:
 # instead of up-then-across, and shorter waits for the gripper.
 # "steady" is "fast" without the pauses: a move that stops getting closer
 # (stall, in steps) ends there instead of creeping on to its step limit.
-# "steady15" waits 15 steps instead of 5: with 5, a grasp on a tall bottle
-# picked first (salad dressing in scenes 3 and 8, ketchup in scene 9) ended
-# as the fingers touched it, and failed from all 40 training states.
 PACES = {
     "slow": dict(gain=1.0, tol=0.01, fine_tol=0.005, close_wait=15, open_wait=15, diagonal=False, above=0.10,
                  stall=None),
@@ -138,8 +135,6 @@ PACES = {
                  stall=None),
     "steady": dict(gain=3.0, tol=0.02, fine_tol=0.006, close_wait=8, open_wait=6, diagonal=True, above=0.06,
                    stall=5),
-    "steady15": dict(gain=3.0, tol=0.02, fine_tol=0.006, close_wait=8, open_wait=6, diagonal=True, above=0.06,
-                     stall=15),
 }
 
 
@@ -197,12 +192,13 @@ ITEMS = [
 # usual heights. datagen/sweep_grasp.sh (2026-10-24, 30 episodes per item):
 # ketchup 8 -> 25, salad dressing 11 -> 15 with these settings, while the
 # other items did as well or better with the defaults.
-TALL_ITEM_SETTINGS = {"center_object": True, "travel_height": 0.35, "release_height": 0.10}
-# 0.35 m over the basket straightens the elbow to its joint limit, and the
-# next item after a tall bottle failed from all 40 training states (scenes 8
-# and 9). 0.30 m picked it up in 21 of 24 tries (2026-10-31); the recordings
-# made before keep 0.35, so it is an option (tall_travel_height).
-TALL_TRAVEL_HEIGHT_LOW = 0.30
+# The travel height was 0.35 m until 2026-10-31 (all Week 3 recordings).
+# There the elbow straightens to its joint limit: a tall bottle took about
+# 300 steps instead of about 145, and a tall bottle asked for first (salad
+# dressing in scenes 3 and 8, ketchup in scene 9), or the item after it,
+# failed from all 40 training states. At 0.30 m all 13 such chains of the
+# Week 4 plan worked.
+TALL_ITEM_SETTINGS = {"center_object": True, "travel_height": 0.30, "release_height": 0.10}
 TALL_ITEMS = {"ketchup", "salad dressing"}
 # Items dropped at the basket's center landed on the one before and stayed
 # above LIBERO's "in the basket" region; each item in a chain gets its own
@@ -212,12 +208,9 @@ SPOTS = [(-0.03, -0.03), (0.03, 0.03), (-0.03, 0.03), (0.03, -0.03)]
 
 def run_episode(
     env, init_state, items, video_path=None, recorder=None, yaw=0.0, release_height=0.12, center_object=False,
-    travel_height=0.25, per_item=False, pace="fast", tall_travel_height=None,
+    travel_height=0.25, per_item=False, pace="fast",
 ) -> dict:
     """Put items in the basket in order from one initial state; return what held."""
-    tall_settings = dict(TALL_ITEM_SETTINGS)
-    if tall_travel_height is not None:
-        tall_settings["travel_height"] = tall_travel_height
     env.reset()
     env.set_init_state(init_state)
     frames = []
@@ -232,7 +225,7 @@ def run_episode(
         # per_item: the tall bottles get TALL_ITEM_SETTINGS, everything else the arguments.
         settings = dict(center_object=center_object, travel_height=travel_height, release_height=release_height)
         if per_item and item in TALL_ITEMS:
-            settings = tall_settings
+            settings = TALL_ITEM_SETTINGS
         if per_item and index > 0 and items[index - 1] in TALL_ITEMS:
             # Straighten up after a tall bottle, already asking for this item.
             robot.label = step_sentence(item)
