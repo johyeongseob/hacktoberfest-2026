@@ -67,6 +67,10 @@ def main() -> None:
     parser.add_argument("--pace", choices=list(PACES), default="fast", help="scripted_pick.py PACES")
     # Pick settings: scripted_pick.py's defaults, and TALL_ITEM_SETTINGS for
     # the tall bottles (chosen with datagen/sweep_grasp.sh).
+    parser.add_argument(
+        "--tall-travel-height", type=float, default=None,
+        help="Carry tall bottles this high over the basket instead of 0.35 m (0.30: TALL_TRAVEL_HEIGHT_LOW)",
+    )
     parser.add_argument("--root", type=Path, required=True, help="New dataset folder")
     args = parser.parse_args()
 
@@ -110,7 +114,7 @@ def main() -> None:
             frames = []
             result = run_episode(
                 env, init_states[k], chain, recorder=lambda o, a, l: frames.append(to_frame(o, a, l)),
-                per_item=True, pace=args.pace,
+                per_item=True, pace=args.pace, tall_travel_height=args.tall_travel_height,
             )
             if result["success"]:
                 for frame in frames:

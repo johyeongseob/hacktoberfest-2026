@@ -198,6 +198,11 @@ ITEMS = [
 # ketchup 8 -> 25, salad dressing 11 -> 15 with these settings, while the
 # other items did as well or better with the defaults.
 TALL_ITEM_SETTINGS = {"center_object": True, "travel_height": 0.35, "release_height": 0.10}
+# 0.35 m over the basket straightens the elbow to its joint limit, and the
+# next item after a tall bottle failed from all 40 training states (scenes 8
+# and 9). 0.30 m picked it up in 21 of 24 tries (2026-10-31); the recordings
+# made before keep 0.35, so it is an option (tall_travel_height).
+TALL_TRAVEL_HEIGHT_LOW = 0.30
 TALL_ITEMS = {"ketchup", "salad dressing"}
 # Items dropped at the basket's center landed on the one before and stayed
 # above LIBERO's "in the basket" region; each item in a chain gets its own
@@ -207,9 +212,12 @@ SPOTS = [(-0.03, -0.03), (0.03, 0.03), (-0.03, 0.03), (0.03, -0.03)]
 
 def run_episode(
     env, init_state, items, video_path=None, recorder=None, yaw=0.0, release_height=0.12, center_object=False,
-    travel_height=0.25, per_item=False, pace="fast",
+    travel_height=0.25, per_item=False, pace="fast", tall_travel_height=None,
 ) -> dict:
     """Put items in the basket in order from one initial state; return what held."""
+    tall_settings = dict(TALL_ITEM_SETTINGS)
+    if tall_travel_height is not None:
+        tall_settings["travel_height"] = tall_travel_height
     env.reset()
     env.set_init_state(init_state)
     frames = []
@@ -224,7 +232,7 @@ def run_episode(
         # per_item: the tall bottles get TALL_ITEM_SETTINGS, everything else the arguments.
         settings = dict(center_object=center_object, travel_height=travel_height, release_height=release_height)
         if per_item and item in TALL_ITEMS:
-            settings = TALL_ITEM_SETTINGS
+            settings = tall_settings
         if per_item and index > 0 and items[index - 1] in TALL_ITEMS:
             # Straighten up after a tall bottle, already asking for this item.
             robot.label = step_sentence(item)
