@@ -42,3 +42,19 @@ hacktoberfest-2026/
 | Runtime | WSL with Ubuntu 24.04 LTS |
 | Shell for project commands | Bash in Ubuntu |
 | Python | 3.12.3 |
+
+## License
+
+Copyright 2026 Hyeongseob Jo. The code and writing in this repository are
+licensed under the [Apache License 2.0](LICENSE).
+
+Models, data and simulators used here keep their own licenses:
+
+| Used | License |
+| --- | --- |
+| [LeRobot](https://github.com/huggingface/lerobot), [`lerobot/smolvla_libero`](https://huggingface.co/lerobot/smolvla_libero), [`lerobot/libero`](https://huggingface.co/datasets/lerobot/libero) | Apache-2.0 |
+| [SmolVLM2](https://huggingface.co/HuggingFaceTB/SmolVLM2-500M-Video-Instruct) (Weekend Challenge) | Apache-2.0 |
+| [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO) (scenes and assets in the videos); [LIBERO datasets](https://huggingface.co/datasets/yifengzhu-hf/LIBERO-datasets) | MIT; Apache-2.0 |
+| [robosuite](https://github.com/ARISE-Initiative/robosuite) | MIT |
+| [MuJoCo](https://github.com/google-deepmind/mujoco) | Apache-2.0 |
+| [`weekend-challenge/data`](dev-challenge/weekend-challenge/data) | Its own [LICENSE.txt](dev-challenge/weekend-challenge/data/LICENSE.txt) (MIT) |
