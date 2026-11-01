@@ -19,7 +19,7 @@ INIT=${INIT:-0}
 EPISODES=${EPISODES:-1}
 # Step limit per item; the human demos take about 146 steps per item.
 STEPS_PER_ITEM=${STEPS_PER_ITEM:-300}
-MARK=${MARK:-none}  # gt: box the asked item (datagen/mark.py)
+MARK=${MARK:-none}  # box the asked item: gt (simulator) or detector (OWLv2)
 PARALLEL=${PARALLEL:-10}
 VIDEO=${VIDEO:-0}
 OUT=${OUT:?set OUT to an output folder}

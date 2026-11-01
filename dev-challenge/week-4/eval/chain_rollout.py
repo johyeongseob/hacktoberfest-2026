@@ -14,9 +14,15 @@ LIBERO-Object task given by --task-id, and every item must be in it.
   whether it ended in the basket, so a failure shows whether the robot
   went for another item or missed the one it was asked for
 - inference time is recorded per model call
-- --mark gt draws the asked item's box on both camera images before every
-  model call (datagen/mark.py, the same drawing as the training data), and
-  in the video
+- --mark draws the asked item's box on both camera images whenever the
+  model is called (every --n-action-steps steps; the steps in between replay
+  its queued actions and keep that box), with the same drawing as the
+  training data (datagen/mark.py); the video shows the agent camera as the
+  model saw it
+  - gt: the simulator's exact box
+  - detector: OWLv2's top box for the item name (datagen/detect.py); every
+    detection is recorded with its score, its iou with the exact box and its
+    time, apart from the policy's inference time
 
 eval/run_cross_items.sh (one item, --each) and eval/run_chain_eval.sh (two
 items from data/pair_plan.json) run all ten scenes.
@@ -43,6 +49,7 @@ from lerobot.utils.io_utils import write_video
 from lerobot.utils.random_utils import set_seed
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "datagen"))
+from detect import Owlv2, iou  # noqa: E402
 from mark import draw_box, item_box  # noqa: E402
 
 SUITE = "libero_object"
@@ -87,8 +94,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--steps-per-item", type=int, default=300)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--n-action-steps", type=int, default=10)
-    parser.add_argument("--mark", choices=["none", "gt"], default="none",
-                        help="gt: box the asked item on both cameras with the simulator's exact box")
+    parser.add_argument("--mark", choices=["none", "gt", "detector"], default="none",
+                        help="Box the asked item on both cameras: gt (simulator) or detector (OWLv2)")
+    parser.add_argument("--query", default="{item}", help="--mark detector: text asked for, {item} is the item name")
     parser.add_argument("--no-video", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/chain"))
     return parser.parse_args()
@@ -103,12 +111,11 @@ def object_name(item: str) -> str:
     return item.replace(" ", "_") + "_1"
 
 
-def mark_observation(observation: dict, sim, item: str) -> dict:
-    """observation with the item's box drawn on each camera image."""
+def with_boxes(observation: dict, boxes: dict) -> dict:
+    """observation with a box drawn on each camera image in boxes (key -> box)."""
     pixels = dict(observation["pixels"])
-    for key, camera in MARK_CAMERAS.items():
-        image = pixels[key]
-        pixels[key] = draw_box(image, item_box(sim, object_name(item), camera, image.shape[0], image.shape[1]))
+    for key, box in boxes.items():
+        pixels[key] = draw_box(pixels[key], box)
     return {**observation, "pixels": pixels}
 
 
@@ -122,7 +129,7 @@ def add_batch_dim(value):
 
 
 def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postprocessor,
-              env_preprocessor, env_postprocessor) -> list[dict]:
+              env_preprocessor, env_postprocessor, detector=None) -> list[dict]:
     """Run --episodes episodes asking for items, in order, and return one result per episode."""
     instruction = " / ".join(map(step_sentence, items))
     print(f"Instruction: {instruction!r}")
@@ -144,16 +151,31 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
         if missing:
             raise SystemExit(f"Not in scene {args.task_id}: {missing}")
 
-        def seen(obs):
-            # What the model gets: the observation, with the asked item boxed if --mark.
-            return obs if args.mark == "none" else mark_observation(obs, domain.sim, items[current])
+        def locate(obs, item) -> dict:
+            # The asked item's box per camera for --mark; detections are logged.
+            boxes, log = {}, {"step": step, "item": item}
+            for key, camera in MARK_CAMERAS.items():
+                image = obs["pixels"][key]
+                exact = item_box(domain.sim, object_name(item), camera, image.shape[0], image.shape[1])
+                if args.mark == "gt":
+                    boxes[key] = exact
+                    continue
+                found, score, ms = detector.box(image, args.query.format(item=item))
+                boxes[key] = found
+                log[camera] = {"box": found, "score": round(score, 3),
+                               "iou": None if exact is None else round(iou(found, exact), 3), "ms": round(ms, 1)}
+            if args.mark == "detector":
+                detections.append(log)
+            return boxes
 
         def frame(obs):
             # The video frame; with --mark, the agent camera as the model saw it.
-            return libero_env.render() if args.mark == "none" else seen(obs)["pixels"]["image"][::-1, ::-1]
+            return libero_env.render() if args.mark == "none" else with_boxes(obs, boxes)["pixels"]["image"][::-1, ::-1]
 
         current = 0  # index of the item being asked for
-        frames = [frame(observation)]
+        boxes = {}  # the boxes of the last model call
+        detections = []
+        frames = []
         first_in = {item: None for item in items}
         on_table = [item for item in ITEMS if object_name(item) in domain.object_states_dict]
         height = lambda item: float(domain.object_states_dict[object_name(item)].get_geom_state()["pos"][2])
@@ -166,10 +188,14 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
         step = 0
         episode_start = time.perf_counter()
         while step < max_steps:
-            batch = preprocess_observation(add_batch_dim(seen(observation)))
+            # The model only looks when its action queue is empty; locate the item then.
+            runs_model = len(policy._queues[ACTION]) == 0
+            if runs_model and args.mark != "none":
+                boxes = locate(observation, items[current])
+            frames.append(frame(observation))
+            batch = preprocess_observation(add_batch_dim(with_boxes(observation, boxes)))
             batch["task"] = [instruction_now]
             batch = preprocessor(env_preprocessor(batch))
-            runs_model = len(policy._queues[ACTION]) == 0
             start = time.perf_counter()
             with torch.inference_mode():
                 action = policy.select_action(batch)
@@ -182,7 +208,6 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
             # The scene's own goal ends LeRobot's episode ("terminated"); ignore it
             # and judge all named items instead.
             observation, _, _, _, _ = env.step(action.to("cpu").numpy()[0])
-            frames.append(frame(observation))
             step += 1
             inside = {item: bool(domain._eval_predicate(["in", object_name(item), BASKET])) for item in items}
             for item in on_table:
@@ -202,6 +227,7 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
                 policy.reset()
 
         episode_s = time.perf_counter() - episode_start
+        frames.append(frame(observation))
         video_path = None
         if not args.no_video:
             video_path = args.output_dir / "videos" / f"task{args.task_id}_{tag}" / f"init{init_state}.mp4"
@@ -234,6 +260,15 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
             "device": args.device,
             "video": str(video_path) if video_path else None,
         }
+        if args.mark == "detector":
+            for camera in MARK_CAMERAS.values():
+                ious = [d[camera]["iou"] for d in detections if d[camera]["iou"] is not None]
+                result[f"detect_iou_mean_{camera}"] = round(sum(ious) / len(ious), 3) if ious else None
+            # Both cameras, per model call.
+            result["detect_ms_per_call"] = round(
+                sum(d[camera]["ms"] for d in detections for camera in MARK_CAMERAS.values()) / len(detections), 1)
+            result["query"] = args.query
+            result["detections"] = detections
         results.append(result)
         print(json.dumps(result), flush=True)
 
@@ -283,11 +318,12 @@ def main() -> None:
         },
     )
     env_preprocessor, env_postprocessor = make_env_pre_post_processors(env_cfg=env_cfg, policy_cfg=policy_cfg)
+    detector = Owlv2(args.device) if args.mark == "detector" else None
     print(f"Scene: task {args.task_id} ({libero_env.task_description})")
     results = []
     for items in groups:
         results += run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postprocessor,
-                             env_preprocessor, env_postprocessor)
+                             env_preprocessor, env_postprocessor, detector)
     vec_env.close()
 
 

@@ -10,12 +10,12 @@ training data and --mark gt draw) is the answer:
   so a miss shows which item the detector took for the asked one
 - score: OWLv2's confidence in the top box; ms: one detection, on the GPU
 
-The detector sees the image upright (the raw render turned 180 degrees, as
-the model sees it) and its box is turned back onto the raw render.
+The detector is datagen/detect.py, the same one --mark detector uses.
 
 Writes OUT/results.jsonl (one line per item and camera), prints a summary,
-and saves OUT/agentview.jpg: every scene (rows) and item (columns) on the
-agent camera, exact box green, OWLv2 box red.
+and saves one picture per camera (OUT/agentview.jpg, OUT/robot0_eye_in_hand.jpg):
+every scene (rows) and item (columns), exact box green, OWLv2 box red, with
+the item and the iou on top.
 
 Example (from dev-challenge/week-4):
     python eval/check_detector.py --out /workspace/outputs/week4/eval/detector-check/owlv2
@@ -24,24 +24,21 @@ Example (from dev-challenge/week-4):
 import argparse
 import json
 import sys
-import time
 from pathlib import Path
 
 import numpy as np
-import torch
 from lerobot.envs import make_env
 from lerobot.envs.configs import LiberoEnv as LiberoEnvConfig
 from lerobot.envs.utils import NEW_ROLLOUT_OPTION
 from PIL import Image, ImageDraw
-from transformers import Owlv2ForObjectDetection, Owlv2Processor
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "datagen"))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "data"))
+from detect import Owlv2, iou  # noqa: E402
 from make_chain_plan import SCENE_ITEMS  # noqa: E402
 from mark import draw_box, item_box  # noqa: E402
 
 SUITE = "libero_object"
-MODEL = "google/owlv2-base-patch16-ensemble"
 # LeRobot's LIBERO observation keys -> MuJoCo cameras (as in eval/chain_rollout.py).
 CAMERAS = {"image": "agentview", "image2": "robot0_eye_in_hand"}
 RED = (255, 0, 0)
@@ -49,47 +46,6 @@ RED = (255, 0, 0)
 
 def object_name(item: str) -> str:
     return item.replace(" ", "_") + "_1"
-
-
-def iou(a, b) -> float:
-    if a is None or b is None:
-        return 0.0
-    top, left = max(a[0], b[0]), max(a[1], b[1])
-    bottom, right = min(a[2], b[2]), min(a[3], b[3])
-    inter = max(bottom - top + 1, 0) * max(right - left + 1, 0)
-    area = lambda box: (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
-    return inter / (area(a) + area(b) - inter)
-
-
-class Owlv2:
-    def __init__(self, device: str):
-        self.device = device
-        self.processor = Owlv2Processor.from_pretrained(MODEL)
-        self.model = Owlv2ForObjectDetection.from_pretrained(MODEL).to(device).eval()
-
-    @torch.inference_mode()
-    def box(self, raw: np.ndarray, query: str):
-        """Top box for query as (top, left, bottom, right) on the raw render, its score, and ms."""
-        start = time.perf_counter()
-        upright = np.ascontiguousarray(raw[::-1, ::-1])
-        inputs = self.processor(text=[[query]], images=upright, return_tensors="pt").to(self.device)
-        outputs = self.model(**inputs)
-        scores = outputs.logits[0, :, 0].sigmoid()
-        best = int(scores.argmax())
-        # Boxes are (cx, cy, w, h), relative to the image padded to a square at the bottom and right.
-        cx, cy, w, h = outputs.pred_boxes[0, best].tolist()
-        if self.device == "cuda":
-            torch.cuda.synchronize()
-        ms = (time.perf_counter() - start) * 1000
-        height, width = raw.shape[:2]
-        side = max(height, width)
-        top, bottom = (cy - h / 2) * side, (cy + h / 2) * side
-        left, right = (cx - w / 2) * side, (cx + w / 2) * side
-        top, bottom = max(top, 0), min(bottom, height - 1)
-        left, right = max(left, 0), min(right, width - 1)
-        # Upright -> raw: the 180-degree turn flips both axes.
-        box = (height - 1 - bottom, width - 1 - right, height - 1 - top, width - 1 - left)
-        return tuple(int(round(v)) for v in box), float(scores[best]), ms
 
 
 def tile(raw: np.ndarray, exact, found, label: str) -> Image.Image:
@@ -111,7 +67,6 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
 
     detector = Owlv2(args.device)
-    detector.box(np.zeros((256, 256, 3), np.uint8), "warm up")  # the first call is slow
     rows = []
     tiles = {}
     for scene in args.scenes:
@@ -138,8 +93,7 @@ def main() -> None:
                     "boxed": boxed, "score": round(score, 3), "ms": round(ms, 1),
                 }
                 rows.append(row)
-                if camera == "agentview":
-                    tiles[(scene, item)] = tile(raw, exact[item], found, f"{item} {row['iou']:.2f}")
+                tiles[(camera, scene, item)] = tile(raw, exact[item], found, f"{item} {row['iou']:.2f}")
         vec_env.close()
         print(f"scene {scene} done", flush=True)
 
@@ -164,12 +118,13 @@ def main() -> None:
     print(f"detection: {sum(ms) / len(ms):.1f} ms mean, {max(ms):.1f} ms max, on {args.device}")
 
     size = next(iter(tiles.values())).size
-    sheet = Image.new("RGB", (size[0] * 6, size[1] * len(args.scenes)))
-    for r, scene in enumerate(args.scenes):
-        for c, item in enumerate(SCENE_ITEMS[scene]):
-            sheet.paste(tiles[(scene, item)], (c * size[0], r * size[1]))
-    sheet.save(args.out / "agentview.jpg", quality=85)
-    print(f"wrote {args.out}/results.jsonl and agentview.jpg")
+    for camera in CAMERAS.values():
+        sheet = Image.new("RGB", (size[0] * 6, size[1] * len(args.scenes)))
+        for r, scene in enumerate(args.scenes):
+            for c, item in enumerate(SCENE_ITEMS[scene]):
+                sheet.paste(tiles[(camera, scene, item)], (c * size[0], r * size[1]))
+        sheet.save(args.out / f"{camera}.jpg", quality=85)
+    print(f"wrote {args.out}: results.jsonl, " + ", ".join(f"{camera}.jpg" for camera in CAMERAS.values()))
 
 
 if __name__ == "__main__":

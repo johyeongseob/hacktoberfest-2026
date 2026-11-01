@@ -23,7 +23,7 @@ POLICY=${POLICY:-lerobot/smolvla_libero}
 EPISODES=${EPISODES:-1}
 # Step limit per item; the human demos take about 146 steps per item.
 STEPS_PER_ITEM=${STEPS_PER_ITEM:-300}
-MARK=${MARK:-none}  # gt: box the asked item (datagen/mark.py)
+MARK=${MARK:-none}  # box the asked item: gt (simulator) or detector (OWLv2)
 
 # Items in each LIBERO-Object scene (from the scene BDDL files).
 ITEMS[0]="alphabet soup|butter|cream cheese|milk|salad dressing|tomato sauce"
