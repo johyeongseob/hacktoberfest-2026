@@ -23,7 +23,8 @@ POLICY=${POLICY:-lerobot/smolvla_libero}
 EPISODES=${EPISODES:-1}
 # Step limit per item; the human demos take about 146 steps per item.
 STEPS_PER_ITEM=${STEPS_PER_ITEM:-300}
-MARK=${MARK:-none}  # box the asked item: gt (simulator) or detector (OWLv2)
+MARK=${MARK:-none}  # box the asked item: gt (simulator) or detector (DETECTOR, default owlv2)
+DETECTOR=${DETECTOR:-owlv2}
 
 # Items in each LIBERO-Object scene (from the scene BDDL files).
 ITEMS[0]="alphabet soup|butter|cream cheese|milk|salad dressing|tomato sauce"
@@ -44,7 +45,7 @@ for scene in $SCENES; do
   IFS='|' read -ra items <<< "${ITEMS[$scene]}"
   echo "scene $scene: ${ITEMS[$scene]}"
   python eval/chain_rollout.py --policy-path "$POLICY" --each --task-id "$scene" \
-    --items "${items[@]}" --init-state "$INIT" --episodes "$EPISODES" --steps-per-item "$STEPS_PER_ITEM" --device "$DEVICE" --mark "$MARK" --output-dir "$OUT/scene$scene" \
+    --items "${items[@]}" --init-state "$INIT" --episodes "$EPISODES" --steps-per-item "$STEPS_PER_ITEM" --device "$DEVICE" --mark "$MARK" --detector "$DETECTOR" --output-dir "$OUT/scene$scene" \
     > "$OUT/scene$scene.log" 2>&1 &
 done
 wait

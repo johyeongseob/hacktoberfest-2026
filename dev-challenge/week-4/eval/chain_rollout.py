@@ -20,7 +20,8 @@ LIBERO-Object task given by --task-id, and every item must be in it.
   training data (datagen/mark.py); the video shows the agent camera as the
   model saw it
   - gt: the simulator's exact box
-  - detector: OWLv2's top box for the item name (datagen/detect.py); every
+  - detector: a frozen detector's top box for the item name (--detector,
+    datagen/detect.py); every
     detection is recorded with its score, its iou with the exact box and its
     time, apart from the policy's inference time
 
@@ -49,7 +50,7 @@ from lerobot.utils.io_utils import write_video
 from lerobot.utils.random_utils import set_seed
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "datagen"))
-from detect import Owlv2, iou  # noqa: E402
+from detect import DETECTORS, iou, make_detector  # noqa: E402
 from mark import draw_box, item_box  # noqa: E402
 
 SUITE = "libero_object"
@@ -95,7 +96,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--n-action-steps", type=int, default=10)
     parser.add_argument("--mark", choices=["none", "gt", "detector"], default="none",
-                        help="Box the asked item on both cameras: gt (simulator) or detector (OWLv2)")
+                        help="Box the asked item on both cameras: gt (simulator) or detector (--detector)")
+    parser.add_argument("--detector", choices=DETECTORS, default="owlv2")
     parser.add_argument("--query", default="{item}", help="--mark detector: text asked for, {item} is the item name")
     parser.add_argument("--no-video", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/chain"))
@@ -267,6 +269,7 @@ def run_group(args, items, env, libero_env, env_cfg, policy, preprocessor, postp
             # Both cameras, per model call.
             result["detect_ms_per_call"] = round(
                 sum(d[camera]["ms"] for d in detections for camera in MARK_CAMERAS.values()) / len(detections), 1)
+            result["detector"] = args.detector
             result["query"] = args.query
             result["detections"] = detections
         results.append(result)
@@ -318,7 +321,7 @@ def main() -> None:
         },
     )
     env_preprocessor, env_postprocessor = make_env_pre_post_processors(env_cfg=env_cfg, policy_cfg=policy_cfg)
-    detector = Owlv2(args.device) if args.mark == "detector" else None
+    detector = make_detector(args.detector, args.device) if args.mark == "detector" else None
     print(f"Scene: task {args.task_id} ({libero_env.task_description})")
     results = []
     for items in groups:

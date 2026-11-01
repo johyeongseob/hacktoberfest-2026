@@ -19,7 +19,8 @@ INIT=${INIT:-0}
 EPISODES=${EPISODES:-1}
 # Step limit per item; the human demos take about 146 steps per item.
 STEPS_PER_ITEM=${STEPS_PER_ITEM:-300}
-MARK=${MARK:-none}  # box the asked item: gt (simulator) or detector (OWLv2)
+MARK=${MARK:-none}  # box the asked item: gt (simulator) or detector (DETECTOR, default owlv2)
+DETECTOR=${DETECTOR:-owlv2}
 PARALLEL=${PARALLEL:-10}
 VIDEO=${VIDEO:-0}
 OUT=${OUT:?set OUT to an output folder}
@@ -31,7 +32,7 @@ for scene in 0 1 2 3 4 5 6 7 8 9; do
   python eval/chain_rollout.py --policy-path "$POLICY" --task-id "$scene" \
     --plan "$PLAN" --split "$SPLIT" --lengths $LENGTHS --init-state "$INIT" --episodes "$EPISODES" \
     --steps-per-item "$STEPS_PER_ITEM" \
-    --device cuda --mark "$MARK" $([ "$VIDEO" = 1 ] || echo --no-video) --output-dir "$OUT/scene$scene" \
+    --device cuda --mark "$MARK" --detector "$DETECTOR" $([ "$VIDEO" = 1 ] || echo --no-video) --output-dir "$OUT/scene$scene" \
     > "$OUT/scene$scene.log" 2>&1 &
 done
 wait

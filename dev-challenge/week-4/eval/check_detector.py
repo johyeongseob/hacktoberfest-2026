@@ -1,24 +1,26 @@
-"""Check OWLv2 as the item detector, without moving the robot.
+"""Check a frozen detector on the LIBERO items, without moving the robot.
 
 For every LIBERO-Object scene at one initial state (default 0, the test
-layout), ask OWLv2 for each of the scene's six items by name on both cameras
+layout), ask the detector (--detector, datagen/detect.py) for each of the scene's six items by name on both cameras
 and keep its top box. The simulator's exact box (datagen/mark.py, the box the
 training data and --mark gt draw) is the answer:
 - iou: overlap of the top box with the asked item's exact box
 - hit: iou >= --hit-iou
 - boxed: the item on the table whose exact box the top box overlaps most,
   so a miss shows which item the detector took for the asked one
-- score: OWLv2's confidence in the top box; ms: one detection, on the GPU
+- score: the detector's confidence in the top box (Florence-2 gives none);
+  ms: one detection, on the GPU
 
-The detector is datagen/detect.py, the same one --mark detector uses.
+The detectors are the ones --mark detector uses. Ten scenes x six items x
+two cameras = 120 questions; the summary counts the hits over all 120.
 
 Writes OUT/results.jsonl (one line per item and camera), prints a summary,
 and saves one picture per camera (OUT/agentview.jpg, OUT/robot0_eye_in_hand.jpg):
-every scene (rows) and item (columns), exact box green, OWLv2 box red, with
+every scene (rows) and item (columns), exact box green, detector box red, with
 the item and the iou on top.
 
 Example (from dev-challenge/week-4):
-    python eval/check_detector.py --out /workspace/outputs/week4/eval/detector-check/owlv2
+    python eval/check_detector.py --detector owlv2 --out /workspace/outputs/week4/eval/detector-check/owlv2
 """
 
 import argparse
@@ -34,7 +36,7 @@ from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "datagen"))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "data"))
-from detect import Owlv2, iou  # noqa: E402
+from detect import DETECTORS, iou, make_detector  # noqa: E402
 from make_chain_plan import SCENE_ITEMS  # noqa: E402
 from mark import draw_box, item_box  # noqa: E402
 
@@ -57,6 +59,7 @@ def tile(raw: np.ndarray, exact, found, label: str) -> Image.Image:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--detector", choices=DETECTORS, default="owlv2")
     parser.add_argument("--scenes", type=int, nargs="+", default=list(range(10)))
     parser.add_argument("--init-state", type=int, default=0)
     parser.add_argument("--query", default="{item}", help="Text asked for, with {item} as the item name")
@@ -66,7 +69,7 @@ def main() -> None:
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
-    detector = Owlv2(args.device)
+    detector = make_detector(args.detector, args.device)
     rows = []
     tiles = {}
     for scene in args.scenes:
@@ -87,6 +90,7 @@ def main() -> None:
                 overlaps = {other: iou(found, box) for other, box in exact.items()}
                 boxed = max(overlaps, key=overlaps.get) if max(overlaps.values()) > 0 else None
                 row = {
+                    "detector": args.detector, "init_state": args.init_state,
                     "scene": scene, "camera": camera, "item": item, "query": args.query.format(item=item),
                     "in_view": exact[item] is not None, "exact": exact[item], "found": found,
                     "iou": round(overlaps[item], 3), "hit": overlaps[item] >= args.hit_iou,
@@ -114,6 +118,8 @@ def main() -> None:
         for r in seen:
             if not r["hit"]:
                 print(f"  scene {r['scene']} {r['item']}: boxed {r['boxed']} (iou {r['iou']}, score {r['score']})")
+    hits = sum(r["hit"] for r in rows)
+    print(f"{args.detector}, initial state {args.init_state}: hit {hits}/{len(rows)} over both cameras")
     ms = [r["ms"] for r in rows]
     print(f"detection: {sum(ms) / len(ms):.1f} ms mean, {max(ms):.1f} ms max, on {args.device}")
 
